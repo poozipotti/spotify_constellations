@@ -1,0 +1,7 @@
+FROM node:18
+
+WORKDIR /api
+COPY package.json .
+RUN yarn
+COPY . .
+CMD yarn start
