@@ -1,26 +1,16 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { PropsWithChildren } from "react";
+import * as Login from "./Login";
+import { SpotifyTree } from "./SpotifyTree";
+import { Loader } from "./Core/Loader";
 
-function App() {
+const App: React.FC = () => {
+  const { data: IsLoggedIn, isLoading: isLoginLoading } = Login.useIsLoggedIn();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="w-screen h-screen overflow-hidden text-foreground bg-background">
+      <Loader isLoading={isLoginLoading}>
+        {IsLoggedIn ? <SpotifyTree /> : <Login.Login />}
+      </Loader>
     </div>
   );
-}
-
+};
 export default App;
