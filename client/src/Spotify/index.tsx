@@ -8,11 +8,13 @@ import {
 } from "@spotify/web-api-ts-sdk";
 import { useQuery } from "react-query";
 import { useDebouncedCallback } from "use-debounce";
-import { SearchExecutionFunction } from "@spotify/web-api-ts-sdk/dist/mjs/endpoints/SearchEndpoints";
+export * from "./searchHooks";
+export * from "./authHooks";
 
-console.log(process.env);
 if (!process.env.REACT_APP_SPOTIFY_CLIENT_ID) {
-  throw new Error(`No spotify client id provided check env is ${JSON.stringify(process.env)}`);
+  throw new Error(
+    `No spotify client id provided check env is ${JSON.stringify(process.env)}`
+  );
 }
 
 const sdk = SpotifyApi.withUserAuthorization(
@@ -26,6 +28,8 @@ const sdk = SpotifyApi.withUserAuthorization(
     "user-library-read",
     "user-modify-playback-state",
     "user-read-playback-state",
+    "app-remote-control",
+    "streaming",
   ]
 );
 
@@ -47,37 +51,4 @@ export const useSpotify = () => {
     );
   }
   return sdk;
-};
-
-export const useSearchTracks = () => {
-  const spotify = useSpotify();
-  const [searchTerm, setSearchTerm] = React.useState("");
-  const debouncedSearchSetSearchTerm = useDebouncedCallback((searchTerm) => {
-    setSearchTerm(searchTerm);
-  }, 1000);
-
-  type SearchResults = {
-    tracks: Page<Track>;
-    artists: Page<Artist>;
-    albums: Page<SimplifiedAlbum>;
-  };
-  const searchQuery = useQuery(
-    ["songSearch", searchTerm],
-    () => {
-      return (
-        //this alias is because something seems to be broken in the spotify apk
-        (
-          spotify.search as (
-            q: string,
-            type: ["track"]
-          ) => Promise<SearchResults>
-        )(searchTerm, ["track"])
-      );
-    },
-    {enabled: searchTerm?.length > 0}
-  );
-  return [searchQuery, debouncedSearchSetSearchTerm] as [
-    typeof searchQuery,
-    typeof debouncedSearchSetSearchTerm
-  ];
 };

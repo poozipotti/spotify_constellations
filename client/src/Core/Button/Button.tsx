@@ -1,8 +1,15 @@
 import React, { PropsWithChildren } from "react";
 
-export const Button: React.FC<PropsWithChildren> = ({ children }) => {
+type props = {
+  onClick?: () => void;
+};
+export const Button: React.FC<PropsWithChildren<props>> = ({
+  children,
+  onClick,
+}) => {
   return (
     <button
+      onClick={onClick}
       className={`
         border border-primary-light  
         text-primary-light
