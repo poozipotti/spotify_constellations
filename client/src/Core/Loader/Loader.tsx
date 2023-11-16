@@ -6,7 +6,7 @@ export const Loader: React.FC<{ isLoading: boolean; children: ReactNode }> = ({
 }) => {
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center w-full h-full">
+      <div className="flex items-center justify-center w-full">
         <p>loading!</p>
       </div>
     );

@@ -11,7 +11,7 @@ module.exports = {
         primary: {
           light: colors.green[300],
           medium: colors.green[500],
-          dark: colors.green[900]
+          dark: colors.green[950]
         }
       }
     },

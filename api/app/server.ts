@@ -36,6 +36,7 @@ sequelize
   .authenticate()
   .then(() => {
     console.log("Connection has been established successfully.");
+    sequelize.sync();
   })
   .catch((error:any) => {
     console.error("Unable to connect to the database:", error);
