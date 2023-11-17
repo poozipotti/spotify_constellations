@@ -24,6 +24,7 @@ type Props = {
   duration: number;
   position: number;
   isPaused: boolean;
+  isLoading?: boolean;
 };
 
 export const TrackTitle: React.FC<Partial<Pick<Props, "track">>> = ({
@@ -49,14 +50,14 @@ export const TrackArtists: React.FC<Partial<Pick<Props, "track">>> = ({
 export const TrackVisualizer: React.FC<PropsWithChildren<Partial<Props>>> = (
   props = {}
 ) => {
-  const { track, duration, position, isPaused, nextTrack, children } = props;
+  const { track, duration, position, isPaused, nextTrack, children,isLoading } = props;
   if (children && nextTrack) {
     throw new Error(
       "cannot pass children and show progress in TrackVisualizer"
     );
   }
   return (
-    <AlbumContainer track={nextTrack || track}>
+    <AlbumContainer track={nextTrack || track} isLoading={isLoading}>
       {children}
       {nextTrack && track && (
         <ProgressTracker
@@ -98,6 +99,7 @@ const ProgressTracker: React.FC<PropsWithChildren<Props>> = ({
         } w-full h-full overflow-hidden`}
         key={duration || 0}
         style={{
+          filter: "drop-shadow(0px 0px 10px rgba(255,255,255,.8))",
           backgroundImage: `url(${track.album.images[0].url})`,
           backgroundPosition: `center`,
           backgroundSize: `11rem 11rem`,
@@ -112,20 +114,26 @@ const ProgressTracker: React.FC<PropsWithChildren<Props>> = ({
   );
 };
 const AlbumContainer: React.FC<
-  PropsWithChildren<Partial<Pick<Props, "track">>>
-> = ({ track, children }) => {
+PropsWithChildren<Partial<Pick<Props, "track" | "isLoading">>>
+> = ({ track, isLoading, children }) => {
   return (
     <div
       className="h-44 w-44 bg-background/75 rounded-full flex flex-col justify-center items-center border mx-auto"
       style={
         track && {
-          backgroundImage: `linear-gradient(0deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${track?.album.images[0].url})`,
+          backgroundImage: isLoading
+            ? undefined
+            : `linear-gradient(0deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${track?.album.images[0].url})`,
           backgroundPosition: `center`,
           backgroundSize: `cover`,
         }
       }
     >
-      {children}
+      {isLoading ? (
+        <div className="h-full w-full border-b-2 border-double rounded-full animate-spin" />
+      ) : (
+        children
+      )}
     </div>
   );
 };

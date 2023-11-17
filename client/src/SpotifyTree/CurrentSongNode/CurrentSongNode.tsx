@@ -20,14 +20,15 @@ export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
         onClick={() => {
           player?.togglePlay();
         }}
-
       >
+        
         <TrackVisualizer.TrackVisualizer
           track={track}
           duration={state?.duration}
           position={state?.position}
           isPaused={state?.paused}
           nextTrack={state?.track_window?.next_tracks[0]}
+          isLoading={!!!state}
         />
       </div>
     </>
