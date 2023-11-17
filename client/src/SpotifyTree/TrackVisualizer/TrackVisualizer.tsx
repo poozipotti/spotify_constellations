@@ -20,10 +20,10 @@ interface WebPlaybackTrack {
 
 type Props = {
   track: Track | WebPlaybackTrack;
+  nextTrack?: Track | WebPlaybackTrack;
   duration: number;
   position: number;
   isPaused: boolean;
-  showProgress?: boolean;
 };
 
 export const TrackTitle: React.FC<Partial<Pick<Props, "track">>> = ({
@@ -49,16 +49,16 @@ export const TrackArtists: React.FC<Partial<Pick<Props, "track">>> = ({
 export const TrackVisualizer: React.FC<PropsWithChildren<Partial<Props>>> = (
   props = {}
 ) => {
-  const { track, duration, position, isPaused, showProgress, children } = props;
-  if (children && showProgress) {
+  const { track, duration, position, isPaused, nextTrack, children } = props;
+  if (children && nextTrack) {
     throw new Error(
       "cannot pass children and show progress in TrackVisualizer"
     );
   }
   return (
-    <AlbumContainer track={track}>
+    <AlbumContainer track={nextTrack || track}>
       {children}
-      {showProgress && track && (
+      {nextTrack && track && (
         <ProgressTracker
           track={track}
           duration={duration || 0}
@@ -93,7 +93,9 @@ const ProgressTracker: React.FC<PropsWithChildren<Props>> = ({
       </style>
       <div
         id="progress-bar"
-        className="rounded-full border w-full h-full overflow-hidden"
+        className={`rounded-full ${
+          isPaused ? "border" : "border-4 border-primary-light"
+        } w-full h-full overflow-hidden`}
         key={duration || 0}
         style={{
           backgroundImage: `url(${track.album.images[0].url})`,
@@ -101,7 +103,7 @@ const ProgressTracker: React.FC<PropsWithChildren<Props>> = ({
           backgroundSize: `11rem 11rem`,
           animationName: "grow",
           animationPlayState: isPaused ? "paused" : "running",
-          animationDuration: `${Math.floor(duration / 1000)}s`,
+          animationDuration: `${Math.floor((duration * 1.2) / 1000)}s`,
           animationTimingFunction: "linear",
           animationDelay: `-${position ? Math.floor(position / 1000) : 0}s`,
         }}

@@ -2,7 +2,7 @@ import React, { PropsWithChildren } from "react";
 import { useSearchTracks } from "../../Spotify";
 import { Input } from "../../Core/Input";
 import { Loader } from "../../Core/Loader";
-import * as TrackVisualizer from "../../Core/TrackVisualizer";
+import * as TrackVisualizer from "../../SpotifyTree/TrackVisualizer";
 
 export const SearchSong: React.FC = () => {
   const [searchData, setSearchTerm] = useSearchTracks();

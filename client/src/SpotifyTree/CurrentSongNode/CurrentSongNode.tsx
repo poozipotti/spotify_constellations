@@ -4,7 +4,7 @@ import {
   useSpotifyPlayer,
   useSpotifyState,
 } from "spotify-web-playback-sdk-for-react";
-import * as TrackVisualizer from "../../Core/TrackVisualizer";
+import * as TrackVisualizer from "../TrackVisualizer";
 
 export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
   const player = useSpotifyPlayer();
@@ -27,7 +27,7 @@ export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
           duration={state?.duration}
           position={state?.position}
           isPaused={state?.paused}
-          showProgress
+          nextTrack={state?.track_window?.next_tracks[0]}
         />
       </div>
     </>
