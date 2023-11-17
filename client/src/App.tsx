@@ -13,11 +13,17 @@ const App: React.FC = () => {
     <QueryClientProvider client={queryClient}>
       <SpotifyProvider>
         <SpotifyPlayerProvider>
-          <div className="w-screen h-screen overflow-hidden text-foreground bg-background">
-            <div className="h-1/2">
+          <div
+            className="grid w-screen h-screen overflow-hidden text-foreground bg-background pt-6"
+            style={{ gridTemplateRows: "min-content 1fr" }}
+          >
+            <div>
               <CurrentSongNode />
             </div>
-            <div className="h-1/2 flex flex-col justify-center">
+            <div
+              className="flex flex-col justify-end self-end max-w-screen-lg mx-auto"
+              style={{ height: "calc(100vh - 300px)" }}
+            >
               <SearchSong />
             </div>
           </div>

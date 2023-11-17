@@ -16,7 +16,7 @@ export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
       <TrackVisualizer.TrackTitle track={track} />
       <TrackVisualizer.TrackArtists track={track} />
       <div
-        className="cursor-pointer"
+        className="cursor-pointer mt-4"
         onClick={() => {
           player?.togglePlay();
         }}

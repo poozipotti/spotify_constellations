@@ -12,11 +12,17 @@ export const Input: React.FC<
         border border-primary-light  
         bg-transparent
         text-primary-light
-        placeholder:text-primary-dark
+        placeholder:text-gray-300
         p-2
+        z-10
       `}
       onChange={onChange}
+
       placeholder={placeholder}
+
+      style={{
+        filter:  "drop-shadow(0px 0px 5px rgba(134,239,172,.5))",
+      }}
     >
       {children}
     </input>
