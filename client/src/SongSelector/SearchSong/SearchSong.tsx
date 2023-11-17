@@ -2,6 +2,7 @@ import React, { PropsWithChildren } from "react";
 import { useSearchTracks } from "../../Spotify";
 import { Input } from "../../Core/Input";
 import { Loader } from "../../Core/Loader";
+import * as TrackVisualizer from "../../Core/TrackVisualizer";
 
 export const SearchSong: React.FC = () => {
   const [searchData, setSearchTerm] = useSearchTracks();
@@ -17,18 +18,12 @@ export const SearchSong: React.FC = () => {
       <Loader isLoading={loading}>
         <div className="overflow-scroll h-64 gap-6 flex flex-wrap pb-24 justify-center">
           {tracks?.map((track) => (
-            <div
-              className="grid w-36 h-36 grid-cols-1 grid-rows-3 mt-6"
-              key={track.id}
-            >
-              <img
-                src={track.album.images[0].url}
-                alt={`album art for the album ${track.album.name}`}
-                className="w-full h-full row-start-1 row-span-3 col-start-1"
-              ></img>
-              <p className="bg-background/75 row-start-1 row-span-3 col-start-1 z-10 mt-auto">
-                {track.name}
-              </p>
+            <div key={track.id}>
+              <TrackVisualizer.TrackVisualizer track={track}>
+                <TrackVisualizer.TrackTitle track={track} />
+                <div className="h-2 w-full"></div>
+                <TrackVisualizer.TrackArtists track={track} />
+              </TrackVisualizer.TrackVisualizer>
             </div>
           ))}
         </div>

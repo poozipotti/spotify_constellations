@@ -1,2 +1,0 @@
-export {SpotifyPlayer} from "./SpotifyPlayer";
-
