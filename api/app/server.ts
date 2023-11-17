@@ -1,9 +1,8 @@
 require("dotenv").config();
 import express from "express";
 import cors from "cors";
-import { db } from "./src/models";
 import { connectRoutes } from "./src/routes";
-import { Sequelize } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
 import dbConfig from "./src/config/db.config";
 
 const app = express();
@@ -18,6 +17,7 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     acquire: dbConfig.pool.acquire,
     idle: dbConfig.pool.idle,
   },
+  models: [__dirname + '/**/*.model.ts']
 });
 
 var corsOptions = {
