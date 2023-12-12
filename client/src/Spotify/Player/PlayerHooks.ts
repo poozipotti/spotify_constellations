@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-import { useSpotify } from ".";
+import { useSpotify } from "..";
 
 export function useGetSpotifyPlaybackState() {
   const sdk = useSpotify();

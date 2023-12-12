@@ -4,7 +4,7 @@ import {
   useSpotifyPlayer,
   useSpotifyState,
 } from "spotify-web-playback-sdk-for-react";
-import { useGetSpotifyPlaybackState } from "../Spotify/PlayerHooks";
+import { useGetSpotifyPlaybackState } from "../PlayerHooks";
 import { useMutation } from "react-query";
 
 export function usePlayerState() {

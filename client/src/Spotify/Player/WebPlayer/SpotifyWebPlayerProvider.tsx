@@ -1,6 +1,6 @@
 import React from "react";
 import { SpotifyWebSDK } from "spotify-web-playback-sdk-for-react";
-import {useSpotifyToken} from "../Spotify";
+import {useSpotifyToken} from "../..";
 
 if (!process.env.REACT_APP_SPOTIFY_CLIENT_ID) {
   throw new Error(
@@ -8,7 +8,7 @@ if (!process.env.REACT_APP_SPOTIFY_CLIENT_ID) {
   );
 }
 
-export const SpotifyPlayerProvider: React.FC<React.PropsWithChildren> = ({
+export const WebPlayerProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
   const token = useSpotifyToken();
