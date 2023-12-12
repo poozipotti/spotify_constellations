@@ -1,6 +1,6 @@
 import React from "react";
-import { useGetToken } from "../Spotify";
 import { SpotifyWebSDK } from "spotify-web-playback-sdk-for-react";
+import {useSpotifyToken} from "../Spotify";
 
 if (!process.env.REACT_APP_SPOTIFY_CLIENT_ID) {
   throw new Error(
@@ -11,24 +11,24 @@ if (!process.env.REACT_APP_SPOTIFY_CLIENT_ID) {
 export const SpotifyPlayerProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
-  const { data: tokenData } = useGetToken();
+  const token = useSpotifyToken();
 
-  if (!tokenData?.access_token) {
+  if (!token?.access_token) {
     return <>{children}</>;
   }
   return (
     <SpotifyWebSDK
-      name="Spotify Tree"
+      name="Spotify Quantumn"
       getOAuthToken={(cb) => {
-        if (!tokenData?.access_token) {
+        if (!token?.access_token) {
           console.error(
             `cannot get access token in player tokenData:${JSON.stringify(
-              tokenData
+              token
             )}`
           );
         }
-        if (tokenData?.access_token) {
-          cb(tokenData?.access_token);
+        if (token?.access_token) {
+          cb(token?.access_token);
         }
       }}
       volume={0.5}

@@ -1,9 +1,7 @@
-import React from "react";
-import {
-  SpotifyApi,
-} from "@spotify/web-api-ts-sdk";
+import React, { useEffect } from "react";
+import { AccessToken, SpotifyApi } from "@spotify/web-api-ts-sdk";
+import { useQuery } from "react-query";
 export * from "./searchHooks";
-export * from "./authHooks";
 
 if (!process.env.REACT_APP_SPOTIFY_CLIENT_ID) {
   throw new Error(
@@ -17,8 +15,6 @@ const sdk = SpotifyApi.withUserAuthorization(
   [
     "playlist-read-private",
     "playlist-read-collaborative",
-    "playlist-modify-private",
-    "playlist-modify-public",
     "user-library-read",
     "user-modify-playback-state",
     "user-read-playback-state",
@@ -27,22 +23,58 @@ const sdk = SpotifyApi.withUserAuthorization(
   ]
 );
 
-const SpotifyContext = React.createContext(sdk);
+const SpotifyContext = React.createContext([sdk, undefined] as [
+  SpotifyApi,
+  undefined | null | AccessToken
+]);
 
-export const SpotifyProvider: React.FC<React.PropsWithChildren> = ({
-  children,
-}) => {
+export const SpotifyProvider: React.FC<
+  React.PropsWithChildren<{ enabled: boolean }>
+> = ({ children, enabled }) => {
+  const { data: tokenData } = useGetToken(sdk);
+  useEffect(() => {
+    if (!tokenData && enabled) {
+      sdk.authenticate();
+    }
+  }, [tokenData, enabled]);
   return (
-    <SpotifyContext.Provider value={sdk}>{children}</SpotifyContext.Provider>
+    <SpotifyContext.Provider value={[sdk, tokenData]}>
+      {children}
+    </SpotifyContext.Provider>
   );
 };
 
+function useGetToken(
+  sdk: SpotifyApi,
+  options?: { cacheTime?: number; staleTime?: number; enabled?: boolean }
+) {
+  const tokenQuery = useQuery(
+    ["auth-token"],
+    () => {
+      return sdk.getAccessToken();
+    },
+    options
+  );
+  return tokenQuery;
+}
+
 export const useSpotify = () => {
   const sdk = React.useContext(SpotifyContext);
+
   if (!sdk) {
     throw new Error(
       "cannot access spotify sdk make sure a spotify provider is being used"
     );
   }
-  return sdk;
+  return sdk[0];
+};
+export const useSpotifyToken = () => {
+  const sdk = React.useContext(SpotifyContext);
+
+  if (!sdk) {
+    throw new Error(
+      "cannot access spotify spotify token make sure a spotify provider is being used"
+    );
+  }
+  return sdk[1];
 };
