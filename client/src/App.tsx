@@ -2,7 +2,6 @@ import React from "react";
 import { SearchSong } from "./SongSelector/SearchSong";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { SpotifyProvider, useSpotifyToken } from "./Spotify";
-import { WebPlayerProvider } from "./Spotify/Player/WebPlayer";
 import { CurrentSongNode } from "./SpotifyTree/CurrentSongNode";
 import { ReactQueryDevtools } from "react-query/devtools";
 import {Button} from "./Core/Button";
@@ -14,14 +13,12 @@ const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <SpotifyProvider enabled={appEnabled}>
-        <WebPlayerProvider>
           <div
             className="grid w-screen h-screen overflow-hidden text-foreground bg-background pt-6"
             style={{ gridTemplateRows: "min-content 1fr" }}
           >
             <AppBody appEnabled={appEnabled} setAppEnabled={setAppEnabled} />
           </div>
-        </WebPlayerProvider>
       </SpotifyProvider>
       <ReactQueryDevtools />
     </QueryClientProvider>

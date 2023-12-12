@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { AccessToken, SpotifyApi } from "@spotify/web-api-ts-sdk";
 import { useQuery } from "react-query";
+import { SpotifyWebSDK } from "spotify-web-playback-sdk-for-react";
 export * from "./searchHooks";
 
 if (!process.env.REACT_APP_SPOTIFY_CLIENT_ID) {
@@ -39,8 +40,36 @@ export const SpotifyProvider: React.FC<
   }, [tokenData, enabled]);
   return (
     <SpotifyContext.Provider value={[sdk, tokenData]}>
-      {children}
+      <WebPlayerProvider>{children}</WebPlayerProvider>
     </SpotifyContext.Provider>
+  );
+};
+
+const WebPlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
+  const token = useSpotifyToken();
+
+  if (!token?.access_token) {
+    return <>{children}</>;
+  }
+  return (
+    <SpotifyWebSDK
+      name="Spotify Quantum"
+      getOAuthToken={(cb) => {
+        if (!token?.access_token) {
+          console.error(
+            `cannot get access token in player tokenData:${JSON.stringify(
+              token
+            )}`
+          );
+        }
+        if (token?.access_token) {
+          cb(token?.access_token);
+        }
+      }}
+      volume={0.5}
+    >
+      {children}
+    </SpotifyWebSDK>
   );
 };
 
