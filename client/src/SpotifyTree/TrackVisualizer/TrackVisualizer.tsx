@@ -50,14 +50,27 @@ export const TrackArtists: React.FC<Partial<Pick<Props, "track">>> = ({
 export const TrackVisualizer: React.FC<PropsWithChildren<Partial<Props>>> = (
   props = {}
 ) => {
-  const { track, duration, position, isPaused, nextTrack, children,isLoading,size } = props;
+  const {
+    track,
+    duration,
+    position,
+    isPaused,
+    nextTrack,
+    children,
+    isLoading,
+    size,
+  } = props;
   if (children && nextTrack) {
     throw new Error(
       "cannot pass children and show progress in TrackVisualizer"
     );
   }
   return (
-    <AlbumContainer track={nextTrack || track} isLoading={isLoading} size={size}>
+    <AlbumContainer
+      track={nextTrack || track}
+      isLoading={isLoading}
+      size={size}
+    >
       {children}
       {nextTrack && track && (
         <ProgressTracker
@@ -99,7 +112,9 @@ const ProgressTracker: React.FC<PropsWithChildren<Props>> = ({
         } w-full h-full overflow-hidden`}
         key={duration || 0}
         style={{
-          filter: isPaused ?"drop-shadow(0px 0px 5px rgba(134,239,172,.8))" : "drop-shadow(0px 0px 10px rgba(134,239,172,.8))",
+          filter: isPaused
+            ? "drop-shadow(0px 0px 5px rgba(134,239,172,.8))"
+            : "drop-shadow(0px 0px 10px rgba(134,239,172,.8))",
           backgroundImage: `url(${track.album.images[0].url})`,
           backgroundPosition: `center`,
           backgroundSize: `11rem 11rem`,
@@ -114,12 +129,12 @@ const ProgressTracker: React.FC<PropsWithChildren<Props>> = ({
   );
 };
 const AlbumContainer: React.FC<
-PropsWithChildren<Partial<Pick<Props, "track" | "isLoading" | "size">>>
-> = ({ track, isLoading, children,size }) => {
+  PropsWithChildren<Partial<Pick<Props, "track" | "isLoading" | "size">>>
+> = ({ track, isLoading, children, size }) => {
   return (
     <div
       className={`
-      ${size || 'h-44 w-44'}
+      ${size || "h-44 w-44"}
       mx-auto
       bg-background/75 
       rounded-full 

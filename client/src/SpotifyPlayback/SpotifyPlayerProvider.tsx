@@ -18,7 +18,7 @@ export const SpotifyPlayerProvider: React.FC<React.PropsWithChildren> = ({
   }
   return (
     <SpotifyWebSDK
-      name="Spotify Quantumn"
+      name="Spotify Quantum"
       getOAuthToken={(cb) => {
         if (!token?.access_token) {
           console.error(

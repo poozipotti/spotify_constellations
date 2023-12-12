@@ -8591,9 +8591,9 @@ spdy@^4.0.2:
     spdy-transport "^3.0.0"
 
 spotify-web-playback-sdk-for-react@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/spotify-web-playback-sdk-for-react/-/spotify-web-playback-sdk-for-react-2.0.2.tgz#7e13555075cef89c8b8c312b8c20c7f22f37cde8"
-  integrity sha512-xEe2Wb8etZuMcBGYgmrkiY9nDgNGMTWMWFMV2Ng5okS5A+1Tls5JBSooHxVUM0K/IUHdVbkGtTV0ibBGJvZphA==
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/spotify-web-playback-sdk-for-react/-/spotify-web-playback-sdk-for-react-2.0.3.tgz#97ef751b349c5e688b1a8864e82f619c8026217d"
+  integrity sha512-kql1A7H4zy2QJ4y670zISs1NF1zhrjPOeK4iQyOuZ7rjNVJIuKBrqBrlJpeazN6NSxCnwJpHN2tmKgmJuTUTGw==
 
 sprintf-js@~1.0.2:
   version "1.0.3"
