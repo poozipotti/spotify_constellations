@@ -5,6 +5,7 @@ import { SpotifyProvider, useSpotifyToken } from "./Spotify";
 import { SpotifyPlayerProvider } from "./SpotifyPlayback";
 import { CurrentSongNode } from "./SpotifyTree/CurrentSongNode";
 import { ReactQueryDevtools } from "react-query/devtools";
+import {Button} from "./Core/Button";
 
 const queryClient = new QueryClient();
 
@@ -52,6 +53,6 @@ const AppBody: React.FC<{
   );
 };
 const EnableAppButton: React.FC<{ onClick: () => void }> = ({ onClick }) => {
-  return <button onClick={onClick}>enable</button>;
+  return <Button onClick={onClick}>enable</Button>;
 };
 export default App;
