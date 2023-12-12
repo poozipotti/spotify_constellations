@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from "react";
+import React from "react";
 import { useSearchTracks } from "../../Spotify";
 import { Input } from "../../Core/Input";
 import { Loader } from "../../Core/Loader";

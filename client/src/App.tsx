@@ -1,11 +1,11 @@
-import React, { PropsWithChildren } from "react";
-import { SpotifyTree } from "./SpotifyTree";
-import { Loader } from "./Core/Loader";
+import React from "react";
 import { SearchSong } from "./SongSelector/SearchSong";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { SpotifyProvider } from "./Spotify";
 import { SpotifyPlayerProvider } from "./SpotifyPlayback";
 import { CurrentSongNode } from "./SpotifyTree/CurrentSongNode";
+import { ReactQueryDevtools } from 'react-query/devtools'
+
 const queryClient = new QueryClient();
 
 const App: React.FC = () => {
@@ -29,6 +29,7 @@ const App: React.FC = () => {
           </div>
         </SpotifyPlayerProvider>
       </SpotifyProvider>
+      <ReactQueryDevtools />
     </QueryClientProvider>
   );
 };

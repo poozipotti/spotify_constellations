@@ -1,7 +1,6 @@
 import React from "react";
 import { useGetToken } from "../Spotify";
 import { SpotifyWebSDK } from "spotify-web-playback-sdk-for-react";
-import { Loader } from "../Core/Loader";
 
 if (!process.env.REACT_APP_SPOTIFY_CLIENT_ID) {
   throw new Error(
@@ -12,7 +11,7 @@ if (!process.env.REACT_APP_SPOTIFY_CLIENT_ID) {
 export const SpotifyPlayerProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
-  const { data: tokenData, isLoading } = useGetToken();
+  const { data: tokenData } = useGetToken();
 
   if (!tokenData?.access_token) {
     return <>{children}</>;
