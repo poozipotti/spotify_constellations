@@ -3,6 +3,7 @@ import {
   useGetNextSong,
   useGetSpotifyPlaybackState,
   usePlayPause,
+  useTransitionTrackWhenDoneEffect,
 } from "./PlayerHooks";
 import { Episode, PlaybackState, Track } from "@spotify/web-api-ts-sdk";
 
@@ -37,6 +38,7 @@ export const SpotifyPlayerProvider: React.FC<React.PropsWithChildren> = ({
   const isLoading = !![playbackStateQuery].find((loading) => {
     loading;
   });
+  useTransitionTrackWhenDoneEffect();
   return (
     <PlayerContext.Provider
       value={{

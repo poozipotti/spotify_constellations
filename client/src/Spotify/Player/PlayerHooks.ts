@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useSpotify } from "..";
 import { Track } from "@spotify/web-api-ts-sdk";
 import { useGetPlaylistItems } from "@app/Spotify/playlistHooks";
+import { useEffect } from "react";
 
 export function useGetSpotifyPlaybackState() {
   const sdk = useSpotify();
@@ -55,4 +56,20 @@ export function useGetNextSong(currentSong?: Track) {
     return { ...query, data: tracks[(currentIndex + 1) % tracks?.length] };
   }
   return { ...query, data: undefined };
+}
+export function useTransitionTrackWhenDoneEffect() {
+  const queryClient = useQueryClient();
+  const playbackContext = useGetSpotifyPlaybackState();
+  const context = playbackContext?.data;
+
+  useEffect(() => {
+    if (context?.item.duration_ms && context?.progress_ms) {
+      const songTransition = setTimeout(() => {
+        queryClient.invalidateQueries("playbackState");
+      }, context.item.duration_ms - context.progress_ms);
+      return () => {
+        clearTimeout(songTransition);
+      };
+    }
+  }, [context?.item.duration_ms, context?.progress_ms, queryClient]);
 }

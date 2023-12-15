@@ -69,6 +69,11 @@ const ProgressTracker: React.FC<PropsWithChildren<Props>> = ({
   position,
   isPaused,
 }) => {
+  const durationSeconds = Math.ceil(duration / 1000);
+  const positionSeconds = position
+    ? Math.floor((position < duration ? position : duration) / 1000)
+    : 0;
+  console.log({ positionSeconds, durationSeconds });
   return (
     <>
       <style>
@@ -77,7 +82,6 @@ const ProgressTracker: React.FC<PropsWithChildren<Props>> = ({
           from {
             transform:scale(1.0);
           }
-
           to {
             transform:scale(0.1);
             
@@ -101,9 +105,9 @@ const ProgressTracker: React.FC<PropsWithChildren<Props>> = ({
           backgroundSize: `11rem 11rem`,
           animationName: "grow",
           animationPlayState: isPaused ? "paused" : "running",
-          animationDuration: `${Math.floor((duration * 1.2) / 1000)}s`,
-          animationTimingFunction: "linear",
-          animationDelay: `-${position ? Math.floor(position / 1000) : 0}s`,
+          animationTimingFunction: "ease-out",
+          animationDuration: `${durationSeconds+5}s`,
+          animationDelay: `-${positionSeconds}s`,
         }}
       ></div>
     </>
