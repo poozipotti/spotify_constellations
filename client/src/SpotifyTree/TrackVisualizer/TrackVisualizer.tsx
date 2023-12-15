@@ -1,26 +1,9 @@
 import { Track } from "@spotify/web-api-ts-sdk";
 import React, { PropsWithChildren } from "react";
 
-//stolen from the package spotify-web-playback-sdk-for-react/src/interfaces.ts with love
-//because it's not exported
-interface WebPlaybackTrack {
-  uri: string;
-  id: string | null;
-  type: "track" | "episode" | "ad";
-  media_type: "audio" | "video";
-  name: string;
-  is_playable: boolean;
-  album: {
-    uri: string;
-    name: string;
-    images: { url: string }[];
-  };
-  artists: { uri: string; name: string }[];
-}
-
 type Props = {
-  track: Track | WebPlaybackTrack;
-  nextTrack?: Track | WebPlaybackTrack;
+  track: Track;
+  nextTrack?: Track;
   duration: number;
   position: number;
   isPaused: boolean;
@@ -39,7 +22,7 @@ export const TrackArtists: React.FC<Partial<Pick<Props, "track">>> = ({
 }) => {
   return (
     <div className="flex justify-center flex-wrap gap-4">
-      {track?.artists.map((artist, i) => (
+      {track?.artists.map((artist) => (
         <p className="text-center" key={artist.uri}>
           {artist.name}
         </p>

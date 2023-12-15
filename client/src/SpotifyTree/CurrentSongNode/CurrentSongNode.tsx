@@ -1,15 +1,13 @@
 import React, { PropsWithChildren } from "react";
-import {
-  useCurrentTrack,
-  useSpotifyPlayer,
-  useSpotifyState,
-} from "spotify-web-playback-sdk-for-react";
 import * as TrackVisualizer from "../TrackVisualizer";
+import { useGetSpotifyPlaybackState } from "../../Spotify/Player/PlayerHooks";
 
 export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
-  const player = useSpotifyPlayer();
-  const state = useSpotifyState();
-  const track = useCurrentTrack();
+  const { data: playbackState,isLoading:isPlaybackStateLoading } = useGetSpotifyPlaybackState();
+  const track =
+    playbackState?.item && "artists" in playbackState?.item
+      ? playbackState?.item
+      : undefined;
 
   return (
     <>
@@ -18,17 +16,16 @@ export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
       <div
         className="cursor-pointer mt-4"
         onClick={() => {
-          player?.togglePlay();
+          /* TODO play/pause */
         }}
       >
-        
         <TrackVisualizer.TrackVisualizer
           track={track}
-          duration={state?.duration}
-          position={state?.position}
-          isPaused={state?.paused}
-          nextTrack={state?.track_window?.next_tracks[0]}
-          isLoading={!!!state}
+          duration={track?.duration_ms}
+          position={playbackState?.progress_ms}
+          isPaused={playbackState?.is_playing}
+          nextTrack={undefined}
+          isLoading={isPlaybackStateLoading}
         />
       </div>
     </>
