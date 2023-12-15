@@ -3,14 +3,15 @@ import { AccessToken, SpotifyApi } from "@spotify/web-api-ts-sdk";
 import { useQuery } from "react-query";
 export * from "./searchHooks";
 
-if (!process.env.REACT_APP_SPOTIFY_CLIENT_ID) {
+const clientId =import.meta.env.VITE_SPOTIFY_CLIENT_ID ;
+if (!clientId) {
   throw new Error(
-    `No spotify client id provided check env is ${JSON.stringify(process.env)}`
+    `No spotify client id provided in .env ${JSON.stringify(import.meta.env)}`
   );
 }
 
 const sdk = SpotifyApi.withUserAuthorization(
-  process.env.REACT_APP_SPOTIFY_CLIENT_ID,
+  clientId,
   "http://localhost:3000",
   [
     "playlist-read-private",
