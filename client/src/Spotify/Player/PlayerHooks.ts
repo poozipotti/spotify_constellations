@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useSpotify } from "..";
 import { Track } from "@spotify/web-api-ts-sdk";
+import { useGetPlaylistItems } from "../playlistHooks";
 
 export function useGetSpotifyPlaybackState() {
   const sdk = useSpotify();
@@ -32,32 +33,25 @@ export function usePlayPause() {
   return queryData;
 }
 export function useGetContextPlaylist() {
-  const sdk = useSpotify();
   const { data: playbackState } = useGetSpotifyPlaybackState();
   const playbackContext = playbackState?.context;
   const playlistId = playbackContext?.href.split("/").at(-1);
-  const queryData = useQuery(
-    ["currentPlaybackContext", playlistId],
-    () => {
-      if (playbackContext?.type !== "playlist") {
-        throw new Error("cannot get context unless inside playlist");
-      }
-      if (!playlistId) {
-        throw new Error("no playlist in context");
-      }
-      return sdk.playlists.getPlaylist(playlistId);
-    },
-    { enabled: !!playlistId }
-  );
+
+  const queryData = useGetPlaylistItems(playlistId);
   return queryData;
 }
 export function useGetNextSong(currentSong?: Track) {
   const query = useGetContextPlaylist();
-  const tracks = query.data?.tracks.items;
+  const trackPages = query.data?.pages;
+  const tracks = trackPages?.flatMap((trackPage) => trackPage.items);
   if (tracks && currentSong) {
     const currentIndex = tracks?.findIndex(
       (track) => track.track.id === currentSong.id
     );
+    if (!currentIndex) {
+      query.hasNextPage && query.fetchNextPage();
+      return { ...query, data: undefined };
+    }
     return { ...query, data: tracks[(currentIndex + 1) % tracks?.length] };
   }
   return { ...query, data: undefined };
