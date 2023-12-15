@@ -4,13 +4,15 @@ import {
   useGetSpotifyPlaybackState,
   usePlayPause,
   useSkipSong,
+  useSkipToPrevSong,
   useTransitionTrackWhenDoneEffect,
 } from "./PlayerHooks";
 import { Episode, PlaybackState, Track } from "@spotify/web-api-ts-sdk";
 
 interface player {
   togglePlay: () => void;
-  skipSong: () => void;
+  skipToNextSong: () => void;
+  skipToPrevSong: () => void;
   isLoading: boolean;
   state:
     | (Partial<PlaybackState> & {
@@ -22,7 +24,8 @@ interface player {
 export const PlayerContext = React.createContext<player>({
   isLoading: true,
   togglePlay: ()=>{},
-  skipSong: ()=>{},
+  skipToNextSong: ()=>{},
+  skipToPrevSong: ()=>{},
   state: undefined,
 
 });
@@ -41,6 +44,7 @@ export const SpotifyPlayerProvider: React.FC<React.PropsWithChildren> = ({
 
   const playPauseQuery = usePlayPause();
   const skipQuery = useSkipSong();
+  const skipToPrevSong = useSkipToPrevSong();
 
   const isLoading = !![playbackStateQuery].find((loading) => {
     loading;
@@ -50,7 +54,8 @@ export const SpotifyPlayerProvider: React.FC<React.PropsWithChildren> = ({
     <PlayerContext.Provider
       value={{
         togglePlay: playPauseQuery.mutate,
-        skipSong: skipQuery.mutate,
+        skipToNextSong: skipQuery.mutate,
+        skipToPrevSong: skipToPrevSong.mutate, 
         isLoading,
         state: {
           ...playbackStateQuery.data,

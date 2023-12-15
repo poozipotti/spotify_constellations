@@ -36,7 +36,12 @@ export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
 const NextButton: React.FC = () => {
   const player = useSpotifyPlayer();
   return (
-    <Button hideBorder onClick={()=>{player.skipSong()}}>
+    <Button
+      hideBorder
+      onClick={() => {
+        player.skipToNextSong();
+      }}
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="48"
@@ -51,8 +56,14 @@ const NextButton: React.FC = () => {
 };
 
 const PrevButton: React.FC = () => {
+  const player = useSpotifyPlayer();
   return (
-    <Button hideBorder>
+    <Button
+      hideBorder
+      onClick={() => {
+        player.skipToPrevSong();
+      }}
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="48"

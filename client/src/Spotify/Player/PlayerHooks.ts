@@ -93,3 +93,23 @@ export function useSkipSong() {
   );
   return queryData;
 }
+export function useSkipToPrevSong() {
+  const sdk = useSpotify();
+  const queryClient = useQueryClient();
+  const { data: playbackState } = useGetSpotifyPlaybackState();
+  const deviceId = playbackState?.device.id;
+  const queryData = useMutation(
+    ["skip"],
+    async () => {
+      if (deviceId && !queryData?.isLoading) {
+        return sdk.player.skipToPrevious(deviceId);
+      }
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("playbackState");
+      },
+    }
+  );
+  return queryData;
+}
