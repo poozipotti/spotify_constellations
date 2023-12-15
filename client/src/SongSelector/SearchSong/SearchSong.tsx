@@ -29,10 +29,9 @@ export const SearchSong: React.FC = () => {
           height="24"
           viewBox="0 0 24 24"
           style={{
-            fill: "currentColor",
-            filter: "drop-shadow(0px 0px 10px rgba(134,239,172,.8))",
             transform: "scale(1.2)",
           }}
+          className="drop-shadow-lg fill-current"
         >
           <path d="M5 21h14c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2zM5 5h14l.001 14H5V5z"></path>
           <path d="m6.293 13.293 1.414 1.414L12 10.414l4.293 4.293 1.414-1.414L12 7.586z"></path>
@@ -54,10 +53,9 @@ export const SearchSong: React.FC = () => {
           height="24"
           viewBox="0 0 24 24"
           style={{
-            fill: "currentColor",
-            filter: "drop-shadow(0px 0px 10px rgba(134,239,172,.8))",
             transform: "scale(1.2)",
           }}
+          className="drop-shadow-lg fill-current"
         >
           <path d="M5 21h14c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2zM5 5h14l.001 14H5V5z"></path>
           <path d="M12 13.586 7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707-1.414-1.414z"></path>
@@ -91,18 +89,15 @@ export const SearchSong: React.FC = () => {
               <div
                 key={track.id}
                 className="w-full md:w-max pt-6 "
-                style={{
-                  filter: "drop-shadow(0px 0px 10px rgba(0,0,0,.8))",
-                }}
               >
-                <TrackVisualizer.TrackVisualizer
+                <TrackVisualizer.AlbumContainer
                   track={track}
                   size={"w-full md:w-max h-24 px-4 "}
                 >
                   <TrackVisualizer.TrackTitle track={track} />
                   <div className="h-2 w-full"></div>
                   <TrackVisualizer.TrackArtists track={track} />
-                </TrackVisualizer.TrackVisualizer>
+                </TrackVisualizer.AlbumContainer>
               </div>
             ))}
           </div>

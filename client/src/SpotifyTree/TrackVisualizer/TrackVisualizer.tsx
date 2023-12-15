@@ -49,13 +49,9 @@ export const TrackVisualizer: React.FC<PropsWithChildren<Partial<Props>>> = (
     );
   }
   return (
-    <AlbumContainer
-      track={nextTrack || track}
-      isLoading={isLoading}
-      size={size}
-    >
+    <AlbumContainer track={nextTrack} isLoading={isLoading} size={size}>
       {children}
-      {nextTrack && track && (
+      {track && (
         <ProgressTracker
           track={track}
           duration={duration || 0}
@@ -90,16 +86,18 @@ const ProgressTracker: React.FC<PropsWithChildren<Props>> = ({
       </style>
       <div
         id="progress-bar"
-        className={`rounded-full ${
-          isPaused ? "border-4" : "border-4 border-primary-light"
-        } w-full h-full overflow-hidden`}
+        className={`rounded-full 
+        ${
+          isPaused
+            ? "border-4 drop-shadow-md"
+            : "border-4 border-primary-light drop-shadow-lg"
+        } 
+        w-full h-full overflow-hidden
+        bg-center 
+        `}
         key={duration || 0}
         style={{
-          filter: isPaused
-            ? "drop-shadow(0px 0px 5px rgba(134,239,172,.8))"
-            : "drop-shadow(0px 0px 10px rgba(134,239,172,.8))",
           backgroundImage: `url(${track.album.images[0].url})`,
-          backgroundPosition: `center`,
           backgroundSize: `11rem 11rem`,
           animationName: "grow",
           animationPlayState: isPaused ? "paused" : "running",
@@ -111,7 +109,7 @@ const ProgressTracker: React.FC<PropsWithChildren<Props>> = ({
     </>
   );
 };
-const AlbumContainer: React.FC<
+export const AlbumContainer: React.FC<
   PropsWithChildren<Partial<Pick<Props, "track" | "isLoading" | "size">>>
 > = ({ track, isLoading, children, size }) => {
   return (
@@ -123,14 +121,14 @@ const AlbumContainer: React.FC<
       rounded-full 
       flex flex-col 
       justify-center items-center 
+      border border-gray-900
+      bg-center bg-cover
       `}
       style={
         track && {
           backgroundImage: isLoading
             ? undefined
             : `linear-gradient(0deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${track?.album.images[0].url})`,
-          backgroundPosition: `center`,
-          backgroundSize: `cover`,
         }
       }
     >
