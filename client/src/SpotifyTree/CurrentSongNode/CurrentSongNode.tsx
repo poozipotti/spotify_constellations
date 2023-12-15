@@ -19,7 +19,7 @@ export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
           track={player.state?.currentTrack}
           duration={player.state?.currentTrack?.duration_ms}
           position={player.state?.progress_ms}
-          isPaused={player.state?.is_playing}
+          isPaused={!player.state?.is_playing}
           nextTrack={player.state?.nextTrack}
           isLoading={player.isLoading}
         />
