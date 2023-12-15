@@ -1,35 +1,55 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from "react";
+import { SearchSong } from "./SongSelector/SearchSong";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { SpotifyProvider, useSpotifyToken } from "./Spotify";
+import { CurrentSongNode } from "./SpotifyTree/CurrentSongNode";
+import { ReactQueryDevtools } from "react-query/devtools";
+import {Button} from "./Core/Button";
 
-function App() {
-  const [count, setCount] = useState(0)
+const queryClient = new QueryClient();
 
+const App: React.FC = () => {
+  const [appEnabled, setAppEnabled] = React.useState(false);
   return (
+    <QueryClientProvider client={queryClient}>
+      <SpotifyProvider enabled={appEnabled}>
+          <div
+            className="grid w-screen h-screen overflow-hidden text-foreground bg-background pt-6"
+            style={{ gridTemplateRows: "min-content 1fr" }}
+          >
+            <AppBody appEnabled={appEnabled} setAppEnabled={setAppEnabled} />
+          </div>
+      </SpotifyProvider>
+      <ReactQueryDevtools />
+    </QueryClientProvider>
+  );
+};
+const AppBody: React.FC<{
+  appEnabled: boolean;
+  setAppEnabled: (newAppEnabled: boolean) => void;
+}> = ({ appEnabled, setAppEnabled }) => {
+  const token = useSpotifyToken();
+  return appEnabled || !!token ? (
     <>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <CurrentSongNode />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+      <div
+        className="flex flex-col justify-end self-end max-w-screen-lg mx-auto"
+        style={{ height: "calc(100vh - 300px)" }}
+      >
+        <SearchSong />
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
-  )
-}
-
-export default App
+  ) : (
+    <EnableAppButton
+      onClick={() => {
+        setAppEnabled(true);
+      }}
+    />
+  );
+};
+const EnableAppButton: React.FC<{ onClick: () => void }> = ({ onClick }) => {
+  return <Button onClick={onClick}>enable</Button>;
+};
+export default App;
