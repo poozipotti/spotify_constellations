@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import { AccessToken, SpotifyApi } from "@spotify/web-api-ts-sdk";
 import { useQuery } from "react-query";
+import { SpotifyPlayerProvider } from "./Player/PlayerProvider";
 
-const clientId =import.meta.env.VITE_SPOTIFY_CLIENT_ID ;
+const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
 if (!clientId) {
   throw new Error(
     `No spotify client id provided in .env ${JSON.stringify(import.meta.env)}`
@@ -23,10 +24,9 @@ const sdk = SpotifyApi.withUserAuthorization(
   ]
 );
 
-export const SpotifyContext = React.createContext([sdk, undefined] as [
-  SpotifyApi,
-  undefined | null | AccessToken
-]);
+export const SpotifyContext = React.createContext<
+  [SpotifyApi, undefined | null | AccessToken]
+>([sdk, undefined]);
 
 export const SpotifyProvider: React.FC<
   React.PropsWithChildren<{ enabled: boolean }>
@@ -39,7 +39,7 @@ export const SpotifyProvider: React.FC<
   }, [tokenData, enabled]);
   return (
     <SpotifyContext.Provider value={[sdk, tokenData]}>
-      {children}
+      <SpotifyPlayerProvider>{children}</SpotifyPlayerProvider>
     </SpotifyContext.Provider>
   );
 };
@@ -57,4 +57,3 @@ function useGetToken(
   );
   return tokenQuery;
 }
-
