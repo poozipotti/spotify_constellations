@@ -2,19 +2,21 @@ import React, { PropsWithChildren } from "react";
 
 type props = {
   onClick?: () => void;
+  hideBorder?: boolean;
 };
 export const Button: React.FC<PropsWithChildren<props>> = ({
   children,
   onClick,
+  hideBorder
 }) => {
   return (
     <button
       onClick={onClick}
       className={`
-        border border-primary-light  
+        ${hideBorder ? '' : 'border border-primary-light p-2 px-6'}
         text-primary-light
         uppercase 
-        p-2 px-6
+        
       `}
     >
       {children}

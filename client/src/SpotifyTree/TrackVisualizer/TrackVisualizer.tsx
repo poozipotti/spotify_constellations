@@ -73,7 +73,6 @@ const ProgressTracker: React.FC<PropsWithChildren<Props>> = ({
   const positionSeconds = position
     ? Math.floor((position < duration ? position : duration) / 1000)
     : 0;
-  console.log({ positionSeconds, durationSeconds });
   return (
     <>
       <style>

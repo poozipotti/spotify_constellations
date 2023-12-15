@@ -73,3 +73,23 @@ export function useTransitionTrackWhenDoneEffect() {
     }
   }, [context?.item.duration_ms, context?.progress_ms, queryClient]);
 }
+export function useSkipSong() {
+  const sdk = useSpotify();
+  const queryClient = useQueryClient();
+  const { data: playbackState } = useGetSpotifyPlaybackState();
+  const deviceId = playbackState?.device.id;
+  const queryData = useMutation(
+    ["skip"],
+    async () => {
+      if (deviceId && !queryData?.isLoading) {
+        return sdk.player.skipToNext(deviceId);
+      }
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("playbackState");
+      },
+    }
+  );
+  return queryData;
+}
