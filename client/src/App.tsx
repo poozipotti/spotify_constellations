@@ -1,10 +1,12 @@
 import React from "react";
 import { SearchSong } from "./SongSelector/SearchSong";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { SpotifyProvider, useSpotifyToken } from "./Spotify";
+import { useSpotifyToken } from "./Spotify";
+import { SpotifyProvider } from "./Spotify/SpotifyProvider";
 import { CurrentSongNode } from "./SpotifyTree/CurrentSongNode";
 import { ReactQueryDevtools } from "react-query/devtools";
 import {Button} from "./Core/Button";
+
 
 const queryClient = new QueryClient();
 

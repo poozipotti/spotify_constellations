@@ -1,5 +1,5 @@
 import React from "react";
-import { useSearchTracks } from "../../Spotify";
+import { useSearchTracks } from "../../Spotify/searchHooks";
 import { Input } from "../../Core/Input";
 import { Loader } from "../../Core/Loader";
 import * as TrackVisualizer from "../../SpotifyTree/TrackVisualizer";
