@@ -1,5 +1,5 @@
 import React from "react";
-import { SpotifyContext } from "./SpotifyProvider";
+import { SpotifyContext } from "@app/Spotify/SpotifyProvider";
 
 
 export const useSpotify = () => {

@@ -1,12 +1,11 @@
 import React from "react";
-import { SearchSong } from "./SongSelector/SearchSong";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { useSpotifyToken } from "./Spotify";
-import { SpotifyProvider } from "./Spotify/SpotifyProvider";
-import { CurrentSongNode } from "./SpotifyTree/CurrentSongNode";
 import { ReactQueryDevtools } from "react-query/devtools";
-import {Button} from "./Core/Button";
-
+import { useSpotifyToken } from "@app/Spotify";
+import { SpotifyProvider } from "@app/Spotify/SpotifyProvider";
+import { CurrentSongNode } from "@app/SpotifyTree/CurrentSongNode";
+import { SearchSong } from "@app/SongSelector/SearchSong";
+import { Button } from "./Core/Button";
 
 const queryClient = new QueryClient();
 
@@ -15,12 +14,12 @@ const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <SpotifyProvider enabled={appEnabled}>
-          <div
-            className="grid w-screen h-screen overflow-hidden text-foreground bg-background pt-6"
-            style={{ gridTemplateRows: "min-content 1fr" }}
-          >
-            <AppBody appEnabled={appEnabled} setAppEnabled={setAppEnabled} />
-          </div>
+        <div
+          className="grid w-screen h-screen overflow-hidden text-foreground bg-background pt-6"
+          style={{ gridTemplateRows: "min-content 1fr" }}
+        >
+          <AppBody appEnabled={appEnabled} setAppEnabled={setAppEnabled} />
+        </div>
       </SpotifyProvider>
       <ReactQueryDevtools />
     </QueryClientProvider>

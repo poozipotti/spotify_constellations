@@ -1,8 +1,8 @@
 import React from "react";
-import { useSearchTracks } from "../../Spotify/searchHooks";
-import { Input } from "../../Core/Input";
-import { Loader } from "../../Core/Loader";
-import * as TrackVisualizer from "../../SpotifyTree/TrackVisualizer";
+import { useSearchTracks } from "@app/Spotify/searchHooks";
+import { Input } from "@core/Input";
+import { Loader } from "@core/Loader";
+import * as TrackVisualizer from "@app/SpotifyTree/TrackVisualizer";
 
 export const SearchSong: React.FC = () => {
   const [searchData, setSearchTerm] = useSearchTracks();

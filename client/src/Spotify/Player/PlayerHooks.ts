@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useSpotify } from "..";
 import { Track } from "@spotify/web-api-ts-sdk";
-import { useGetPlaylistItems } from "../playlistHooks";
+import { useGetPlaylistItems } from "@app/Spotify/playlistHooks";
 
 export function useGetSpotifyPlaybackState() {
   const sdk = useSpotify();
