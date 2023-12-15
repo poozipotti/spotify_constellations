@@ -1,7 +1,6 @@
 import React, { PropsWithChildren } from "react";
 import * as TrackVisualizer from "../TrackVisualizer";
 import {
-  useGetContextPlaylist,
   useGetNextSong,
   useGetSpotifyPlaybackState,
   usePlayPause,

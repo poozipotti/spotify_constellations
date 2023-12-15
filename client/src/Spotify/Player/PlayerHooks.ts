@@ -33,7 +33,6 @@ export function usePlayPause() {
 }
 export function useGetContextPlaylist() {
   const sdk = useSpotify();
-  const queryClient = useQueryClient();
   const { data: playbackState } = useGetSpotifyPlaybackState();
   const playbackContext = playbackState?.context;
   const playlistId = playbackContext?.href.split("/").at(-1);
