@@ -39,7 +39,7 @@ export const SpotifyPlayerProvider: React.FC<React.PropsWithChildren> = ({
 }) => {
   const playbackStateQuery = useGetSpotifyPlaybackState();
   const currentTrack = asTrack(playbackStateQuery?.data?.item);
-  const { data: nextTrackData } = useGetNextSong(currentTrack);
+  const { data: nextTrackData } = useGetNextSong();
 
 
   const playPauseQuery = usePlayPause();
@@ -59,7 +59,7 @@ export const SpotifyPlayerProvider: React.FC<React.PropsWithChildren> = ({
         isLoading,
         state: {
           ...playbackStateQuery.data,
-          nextTrack: asTrack(nextTrackData?.track),
+          nextTrack: asTrack(nextTrackData),
           currentTrack,
         },
       }}
