@@ -82,7 +82,7 @@ const ProgressTracker: React.FC<PropsWithChildren<Props>> = ({
             transform:scale(1.0);
           }
           to {
-            transform:scale(0.1);
+            transform:scale(0.3);
             
           }
         `}
