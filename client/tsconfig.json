@@ -22,9 +22,11 @@
     "paths": {
         "@core/*": ["./src/Core/*"],
         "@app/*": ["./src/*"],
+        "@websdk/*": ["./src/WebSdk/*"],
+        "@api/*": ["../api/app/src/*"],
     },
 
   },
   "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "references": [{ "path": "../api/app/" }]
 }
