@@ -1,25 +1,19 @@
-import { Table, Column, Model, HasMany, PrimaryKey, ForeignKey } from "sequelize-typescript";
+import { Table, Column, Model, HasMany, PrimaryKey, ForeignKey, AutoIncrement, HasOne, BelongsTo } from "sequelize-typescript";
 
 @Table
-export default class Track extends Model {
-  @PrimaryKey
-  @Column
-  id: number;
+export default class TrackModel extends Model {
 
+  @ForeignKey(()=>TrackModel)
   @Column
-  @ForeignKey(()=>Track)
-  parentId: number;
+  parent_id: number;
 
-  @Column
-  spotify_uri: string;
+  @BelongsTo(() => TrackModel)
+  team: TrackModel;
 
   @Column
   spotify_id: string;
 
   @Column
   name: string;
-
-  @Column
-  album_uri: string;
 }
 
