@@ -2,9 +2,11 @@ import React, { PropsWithChildren } from "react";
 import * as TrackVisualizer from "@app/SpotifyTree/TrackVisualizer";
 import { useSpotifyPlayer } from "@app/Spotify/Player";
 import { Button } from "@core/Button";
+import { useCreateTrack } from "../hooks";
 
 export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
   const player = useSpotifyPlayer();
+  const { mutate: createTrack } = useCreateTrack();
 
   return (
     <div>
@@ -28,6 +30,23 @@ export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
           />
         </div>
         <NextButton />
+      </div>
+      <div className="flex w-full justify-center p-4">
+        {player.state?.currentTrack && (
+          <Button
+            onClick={() => {
+              if (!player.state?.currentTrack) {
+                throw new Error("no track to be added");
+              }
+              createTrack({
+                name: player.state?.currentTrack.name,
+                spotify_id: player.state?.currentTrack.id,
+              });
+            }}
+          >
+            +
+          </Button>
+        )}
       </div>
     </div>
   );

@@ -9,7 +9,7 @@ export const TrackNode: React.FC<PropsWithChildren<{ trackId?: string }>> = ({
     data: TrackData,
     isLoading: trackLoading,
     error: trackError,
-  } = useGetTrack("5oOC6EBnSQ3PfRAQyfjAla");
+  } = useGetTrack(trackId);
   return (
     <div>
       <TrackVisualizer.AlbumContainer

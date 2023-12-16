@@ -1,10 +1,8 @@
 const BASE_API_HOSTNAME = import.meta.env.VITE_API_HOSTNAME;
 import TrackModel from "@api/models/track.model";
 
-export type TCreateTrackData = Pick<
-  TrackModel,
-  "name" | "spotify_id" | "parent_id"
->;
+export type TCreateTrackData = Pick<TrackModel, "name" | "spotify_id"> &
+  Partial<Pick<TrackModel, "parent_id">>;
 export async function getAllTracks(): Promise<{ tracks: TrackModel[] }> {
   const response = await fetch(`${BASE_API_HOSTNAME}/tracks`);
   if (!response.ok) {
