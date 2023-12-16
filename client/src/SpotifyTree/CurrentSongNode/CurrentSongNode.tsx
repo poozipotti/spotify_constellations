@@ -7,7 +7,7 @@ export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
   const player = useSpotifyPlayer();
 
   return (
-    <>
+    <div>
       <TrackVisualizer.TrackTitle track={player.state?.currentTrack} />
       <TrackVisualizer.TrackArtists track={player.state?.currentTrack} />
       <div className="flex justify-center gap-4">
@@ -29,7 +29,7 @@ export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
         </div>
         <NextButton />
       </div>
-    </>
+    </div>
   );
 };
 

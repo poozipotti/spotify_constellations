@@ -3,12 +3,7 @@ import TrackModel from "@api/models/track.model";
 
 export async function getAllTracks(): Promise<{ tracks: TrackModel[] }> {
   console.log('getting tracks');
-  const response = await fetch(`${BASE_API_HOSTNAME}/tracks`, {
-    mode: "no-cors",
-  });
-  console.log(response.status);
-  const tracks = await response.json();
-  console.log(response.status);
+  const response = await fetch(`${BASE_API_HOSTNAME}/tracks`);
   if (!response.ok) {
     throw new Error("could not get all tracks");
   }
