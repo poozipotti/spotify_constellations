@@ -124,7 +124,7 @@ export const AlbumContainer: React.FC<
       rounded-full 
       flex flex-col 
       justify-center items-center 
-      border border-gray-900
+      border border-gray-700
       bg-center bg-cover
       `}
       style={

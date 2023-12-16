@@ -1,6 +1,10 @@
 const BASE_API_HOSTNAME = import.meta.env.VITE_API_HOSTNAME;
 import TrackModel from "@api/models/track.model";
 
+export type TCreateTrackData = Pick<
+  TrackModel,
+  "name" | "spotify_id" | "parent_id"
+>;
 export async function getAllTracks(): Promise<{ tracks: TrackModel[] }> {
   const response = await fetch(`${BASE_API_HOSTNAME}/tracks`);
   if (!response.ok) {
@@ -24,8 +28,9 @@ export async function getTrackChildren(
   }
   return response.json();
 }
+
 export async function createTrack(
-  track: TrackModel
+  track: TCreateTrackData
 ): Promise<{ track: TrackModel }> {
   const response = await fetch(`${BASE_API_HOSTNAME}/tracks`, {
     method: "POST",
