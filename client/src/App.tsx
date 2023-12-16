@@ -37,7 +37,6 @@ const AppBody: React.FC<{
       </div>
       <div
         className="flex flex-col justify-end self-end max-w-screen-lg mx-auto"
-        style={{ height: "calc(100vh - 300px)" }}
       >
         <SearchSong />
       </div>
