@@ -6,7 +6,6 @@ import { Button } from "@core/Button";
 export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
   const player = useSpotifyPlayer();
 
-  console.log(player.state?.currentTrack)
   return (
     <>
       <TrackVisualizer.TrackTitle track={player.state?.currentTrack} />

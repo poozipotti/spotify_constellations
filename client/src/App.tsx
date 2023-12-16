@@ -3,9 +3,9 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { useSpotifyToken } from "@app/Spotify";
 import { SpotifyProvider } from "@app/Spotify/SpotifyProvider";
-import { CurrentSongNode } from "@app/SpotifyTree/CurrentSongNode";
 import { SearchSong } from "@app/SongSelector/SearchSong";
 import { Button } from "./Core/Button";
+import {SpotifyTree} from "./SpotifyTree";
 
 const queryClient = new QueryClient();
 
@@ -33,7 +33,7 @@ const AppBody: React.FC<{
   return appEnabled || !!token ? (
     <>
       <div>
-        <CurrentSongNode />
+        <SpotifyTree />
       </div>
       <div
         className="flex flex-col justify-end self-end max-w-screen-lg mx-auto"

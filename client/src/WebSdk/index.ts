@@ -2,7 +2,13 @@ const BASE_API_HOSTNAME = import.meta.env.VITE_API_HOSTNAME;
 import TrackModel from "@api/models/track.model";
 
 export async function getAllTracks(): Promise<{ tracks: TrackModel[] }> {
-  const response = await fetch(`${BASE_API_HOSTNAME}/tracks`);
+  console.log('getting tracks');
+  const response = await fetch(`${BASE_API_HOSTNAME}/tracks`, {
+    mode: "no-cors",
+  });
+  console.log(response.status);
+  const tracks = await response.json();
+  console.log(response.status);
   if (!response.ok) {
     throw new Error("could not get all tracks");
   }
