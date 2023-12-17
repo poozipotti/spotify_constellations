@@ -46,6 +46,19 @@ export const getTrackById = async (
     return res.status(500).json({ error: e });
   }
 };
+export const getTracksBySpotifyId = async (
+  req: Request<{ spotifyId: string }>,
+  res: Response<{ tracks: TrackModel[] } | { error: any }>
+) => {
+  try {
+    const tracks = await TrackModel.findAll({
+      where: { spotify_id: req.params.spotifyId },
+    });
+    return res.status(200).json({ tracks });
+  } catch (e) {
+    return res.status(500).json({ error: e });
+  }
+};
 
 export const getTrackChildrenById = async (
   req: Request<{ id: number }>,
@@ -55,7 +68,7 @@ export const getTrackChildrenById = async (
     const tracks = await TrackModel.findAll({
       where: { parent_id: req.params.id },
     });
-    console.log('gettig by parent_id');
+    console.log("gettig by parent_id");
     return res.status(200).json({ tracks });
   } catch (e) {
     return res.status(500).json({ error: e });

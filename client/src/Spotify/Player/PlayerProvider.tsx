@@ -9,7 +9,7 @@ import {
 } from "./PlayerHooks";
 import { Episode, PlaybackState, Track } from "@spotify/web-api-ts-sdk";
 
-interface player {
+export interface player {
   togglePlay: () => void;
   skipToNextSong: () => void;
   skipToPrevSong: () => void;

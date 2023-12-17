@@ -1,8 +1,8 @@
 import React, { PropsWithChildren } from "react";
-import * as TrackVisualizer from "@app/SpotifyTree/TrackVisualizer";
+import * as TrackVisualizer from "@app/SpotifyTree/SpotifyTree/TrackVisualizer";
 import { useSpotifyPlayer } from "@app/Spotify/Player";
 import { Button } from "@core/Button";
-import { useCreateTrack } from "../hooks";
+import { useCreateTrack } from "@app/SpotifyTree/apiHooks";
 
 export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
   const player = useSpotifyPlayer();

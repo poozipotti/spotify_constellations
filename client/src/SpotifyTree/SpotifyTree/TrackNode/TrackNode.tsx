@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from "react";
-import * as TrackVisualizer from "@app/SpotifyTree/TrackVisualizer";
+import * as TrackVisualizer from "@app/SpotifyTree/SpotifyTree/TrackVisualizer";
 import { useGetTrack } from "@app/Spotify/trackHooks";
 
 export const TrackNode: React.FC<PropsWithChildren<{ trackId?: string }>> = ({

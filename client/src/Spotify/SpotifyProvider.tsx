@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { AccessToken, SpotifyApi } from "@spotify/web-api-ts-sdk";
 import { useQuery } from "react-query";
-import { SpotifyPlayerProvider } from "./Player/PlayerProvider";
+import { SpotifyTreeProvider } from "@app/SpotifyTree/SpotifyTreeProvider";
 
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
 if (!clientId) {
@@ -39,7 +39,7 @@ export const SpotifyProvider: React.FC<
   }, [tokenData, enabled]);
   return (
     <SpotifyContext.Provider value={[sdk, tokenData]}>
-      <SpotifyPlayerProvider>{children}</SpotifyPlayerProvider>
+      <SpotifyTreeProvider>{children}</SpotifyTreeProvider>
     </SpotifyContext.Provider>
   );
 };

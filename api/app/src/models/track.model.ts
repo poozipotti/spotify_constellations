@@ -8,7 +8,7 @@ export default class TrackModel extends Model {
   parent_id: number;
 
   @BelongsTo(() => TrackModel)
-  team: TrackModel;
+  track: TrackModel;
 
   @Column
   spotify_id: string;
