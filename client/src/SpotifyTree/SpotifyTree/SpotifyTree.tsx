@@ -10,11 +10,11 @@ export const SpotifyTree: React.FC<PropsWithChildren> = () => {
     <div className="flex flex-col gap-12">
       <CurrentSongNode />
       <div className="flex justify-center gap-6 w-screen overflow-auto">
-        {tree.nextSongs.map((track) => (
+        {tree.state.nextSongs.map((track) => (
           <TrackNode
             track={track}
             key={track.id}
-            selected={tree.selectedNextSong?.id === track.id}
+            selected={tree.state.selectedNextSong?.id === track.id}
           />
         ))}
       </div>

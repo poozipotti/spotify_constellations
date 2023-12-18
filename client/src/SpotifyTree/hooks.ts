@@ -6,6 +6,7 @@ import { useAddTracksToPlaylist } from "@app/Spotify/playlistHooks";
 import { usePlayPlaylist } from "@app/Spotify/Player/PlayerHooks";
 import { useSpotifyPlayer } from "@app/Spotify/Player";
 import TrackModel from "@api/models/track.model";
+import { useGetTracksBySpotifyId } from "./apiHooks";
 
 export const useSpotifyTree = () => {
   const tree = React.useContext(TreeContext);
@@ -21,19 +22,16 @@ export const useSpotifyTree = () => {
 export const useSyncToSpotify = () => {
   const tree = useSpotifyTree();
   const player = useSpotifyPlayer();
+  const currentTrack = tree.state.currentTrack;
   const [shouldSync, setShouldSync] = React.useState(false);
   const { data: historyPlaylistData } = useHistoryPlaylist();
-  const { data: currentTrackSpotify } = useGetSpotifyTrack(
-    tree.currentSong?.spotify_id
-  );
-  const { data: selectedNextSongSpotify } = useGetSpotifyTrack(
-    tree.selectedNextSong?.spotify_id
-  );
+  const { data: currentTrackSpotify } = useGetSpotifyTrack(currentTrack?.id);
   const { mutate: addTracksToPlaylist } = useAddTracksToPlaylist();
   const { mutate: playPlaylist } = usePlayPlaylist();
   const isSynced = currentTrackSpotify?.id === player.state.currentTrack?.id;
   const isInHistoryPlaylist =
     player.state.context?.uri === historyPlaylistData?.uri;
+  useNextSongSyncEffect();
   React.useEffect(() => {
     if (isInHistoryPlaylist && !isSynced && !shouldSync) {
       setShouldSync(true);
@@ -58,14 +56,25 @@ export const useSyncToSpotify = () => {
       setShouldSync(false);
     }
   }, [
+    tree.state.currentTrack,
     addTracksToPlaylist,
     currentTrackSpotify,
     historyPlaylistData,
     shouldSync,
     playPlaylist,
   ]);
+  return { setShouldSync, isSynced };
+};
+
+function useNextSongSyncEffect() {
+  const tree = useSpotifyTree();
+  const { data: historyPlaylistData } = useHistoryPlaylist();
+  const { data: selectedNextSongSpotify } = useGetSpotifyTrack(
+    tree.state.selectedNextSong?.spotify_id
+  );
+  const { mutate: addTracksToPlaylist } = useAddTracksToPlaylist();
   React.useEffect(() => {
-    if (selectedNextSongSpotify?.id === tree.selectedNextSong?.spotify_id) {
+    if (selectedNextSongSpotify?.id === tree.state.selectedNextSong?.spotify_id) {
       const nextSongInPlaylist = !!historyPlaylistData?.tracks.items.find(
         (track) => track.track.id === selectedNextSongSpotify?.id
       );
@@ -83,51 +92,54 @@ export const useSyncToSpotify = () => {
   }, [
     addTracksToPlaylist,
     historyPlaylistData,
-    tree.selectedNextSong?.spotify_id,
+    tree.state.selectedNextSong?.spotify_id,
     selectedNextSongSpotify,
   ]);
-  return { setShouldSync, isSynced };
-};
+}
 
-export const useSyncToPlayerEffect = (
-  setCurrentTrack: React.Dispatch<React.SetStateAction<TrackModel | undefined>>
-) => {
+export const useGetCurrentTrack = () => {
+  const [currentTrack, setCurrentTrack] = React.useState<
+    TrackModel | undefined
+  >();
   const player = useSpotifyPlayer();
   const tree = useSpotifyTree();
-  const nextSongs = tree.nextSongs;
-  const selectedNextSong = tree.selectedNextSong;
-
+  const { data: trackData } = useGetTracksBySpotifyId(
+    player.state.currentTrack?.id
+  );
+  const nextSongSpotify = tree.state.nextSongs?.find(({ spotify_id }) => {
+    spotify_id === player.state.currentTrack?.id;
+  });
+  const webTrackFromHistory = trackData?.tracks;
   React.useEffect(() => {
-    if (nextSongs) {
-      if (
-        !selectedNextSong ||
-        !nextSongs?.find(({ id }) => id === selectedNextSong?.id)
-      ) {
-        tree.setSelectedNextSong(nextSongs[0]?.id);
-      }
+    if (nextSongSpotify && !tree.state.currentTrack?.id !== nextSongSpotify?.id) {
+      setCurrentTrack(nextSongSpotify);
+      return;
     }
-  }, [nextSongs, selectedNextSong, tree]);
-
-  React.useEffect(() => {
-    const playingTrackId = player?.state.currentTrack?.id;
-    if (playingTrackId !== tree.currentSong?.spotify_id) {
-      setCurrentTrack(selectedNextSong);
+    if (!tree.state.currentTrack && webTrackFromHistory) {
+      setCurrentTrack(webTrackFromHistory[0]);
+      return;
     }
   }, [
-    tree.currentSong?.spotify_id,
+    nextSongSpotify,
     setCurrentTrack,
-    player?.state.currentTrack?.id,
-    selectedNextSong,
+    tree.state.currentTrack,
+    webTrackFromHistory,
+    trackData?.tracks,
   ]);
+  return currentTrack;
 };
-export const useInitCurrentTrackEffect = (
-  setCurrentTrack: React.Dispatch<React.SetStateAction<TrackModel | undefined>>
-) => {
+
+export const useUpdateSelectedNextSongEffect = () => {
   const tree = useSpotifyTree();
 
   React.useEffect(() => {
-    if (!tree.currentSong && tree.rootNodes?.length) {
-      setCurrentTrack(tree.rootNodes[0]);
+    if (tree.state.nextSongs) {
+      if (
+        !tree.state.selectedNextSong ||
+        !tree.state.nextSongs?.find(({ id }) => id === tree.state.selectedNextSong?.id)
+      ) {
+        tree.setSelectedNextSong(tree.state.nextSongs[0]?.id);
+      }
     }
-  }, [tree.currentSong, tree.rootNodes, setCurrentTrack]);
+  }, [tree]);
 };
