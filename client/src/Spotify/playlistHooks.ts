@@ -1,4 +1,9 @@
-import { useInfiniteQuery, useMutation, useQuery } from "react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "react-query";
 import { useSpotify } from ".";
 
 const PAGE_SIZE = 49;
@@ -64,6 +69,7 @@ export function useCreatePlaylist() {
 }
 export function useAddTracksToPlaylist() {
   const sdk = useSpotify();
+  const queryClient = useQueryClient();
   const query = useMutation(
     ["create-playlist"],
     async ({
@@ -77,6 +83,11 @@ export function useAddTracksToPlaylist() {
         playlistId,
         tracks.map((track) => track.uri)
       );
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("playlist");
+      },
     }
   );
   return query;
