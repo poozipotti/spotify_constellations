@@ -5,7 +5,7 @@ import { useSpotifyTree, useSyncSpotify } from "../hooks";
 
 export const SpotifyTree: React.FC<PropsWithChildren> = () => {
   const tree = useSpotifyTree();
-  const { isSynced } = useSyncSpotify();
+  useSyncSpotify();
   return (
     <div className="flex flex-col gap-12">
       <CurrentSongNode />

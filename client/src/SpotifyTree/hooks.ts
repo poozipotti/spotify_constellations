@@ -1,10 +1,9 @@
-import React, { SetStateAction, useEffect } from "react";
+import React, { useEffect } from "react";
 import { TreeContext } from "@app/SpotifyTree/SpotifyTreeProvider";
 import { useGetSpotifyTrack } from "@app/Spotify/trackHooks";
 import { useHistoryPlaylist } from "./historyHooks";
 import { usePlayPlaylist } from "@app/Spotify/Player/PlayerHooks";
 import { useSpotifyPlayer } from "@app/Spotify/Player";
-import { useGetTracksBySpotifyId } from "./apiHooks";
 import TrackModel from "@api/models/track.model";
 import { useAddTracksToPlaylist } from "@app/Spotify/playlistHooks";
 
@@ -35,7 +34,7 @@ const useCheckSynced = () => {
   const isSynced = !!(
     currentTrack && currentTrack?.spotify_id === player.state.currentTrack?.id
   );
-  return isSynced && isCurrentlyPlayingHistoryPlaylist;
+  return isSynced && !!isCurrentlyPlayingHistoryPlaylist;
 };
 
 const useIsTrackInHistoryPlaylist = (track?: TrackModel) => {
@@ -121,7 +120,6 @@ const useSyncTracksToHistory = () => {
   ]);
 };
 const useSyncCurrentSongToPlayer = () => {
-  const player = useSpotifyPlayer();
   const tree = useSpotifyTree();
 
   useEffect(() => {

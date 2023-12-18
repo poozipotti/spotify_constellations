@@ -8,13 +8,11 @@ import {
   useGetTrackChildren,
 } from "./apiHooks";
 import { TCreateTrackData } from "@app/WebSdk";
-import { useSyncSpotify } from "./hooks";
 
 interface tree {
   setSelectedNextSong: (id: number) => void;
   setCurrentTrack: React.Dispatch<React.SetStateAction<TrackModel | undefined>>;
   addSuggestion: (track: TCreateTrackData) => void;
-  sync: () => void;
   state: {
     prevSong: TrackModel | undefined;
     nextSongs: TrackModel[];
@@ -80,9 +78,6 @@ const SpotifyTreeProviderInternal: React.FC<React.PropsWithChildren> = ({
         setCurrentTrack,
         addSuggestion: (track: TCreateTrackData) => {
           addSuggestion({ ...track, parent_id: currentTrack?.id });
-        },
-        sync: () => {
-          setShouldSync(true);
         },
       }}
     >

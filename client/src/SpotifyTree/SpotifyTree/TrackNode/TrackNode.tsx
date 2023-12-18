@@ -23,7 +23,7 @@ export const TrackNode: React.FC<
         isLoading={trackLoading}
         onClick={() => {
           if (track.id) {
-            tree.setSelectedNextSong(track.id);
+            tree?.setSelectedNextSong(track.id);
           }
         }}
       >

@@ -2,13 +2,9 @@ import React, { PropsWithChildren } from "react";
 import * as TrackVisualizer from "@app/SpotifyTree/SpotifyTree/TrackVisualizer";
 import { useSpotifyPlayer } from "@app/Spotify/Player";
 import { Button } from "@core/Button";
-import { useCreateTrack } from "@app/SpotifyTree/apiHooks";
-import { useSpotifyTree } from "@app/SpotifyTree/hooks";
 
 export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
   const player = useSpotifyPlayer();
-  const tree = useSpotifyTree();
-  const { mutate: createTrack } = useCreateTrack();
   return (
     <div>
       <TrackVisualizer.TrackTitle track={player.state?.currentTrack} />
