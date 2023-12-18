@@ -1,17 +1,21 @@
 import React, { PropsWithChildren } from "react";
 import { CurrentSongNode } from "./CurrentSongNode";
-import { useGetAllTracks } from "@app/SpotifyTree/apiHooks";
 import { TrackNode } from "@app/SpotifyTree/SpotifyTree/TrackNode/TrackNode";
+import { useSpotifyTree } from "../hooks";
 
 export const SpotifyTree: React.FC<PropsWithChildren> = () => {
-  const { data: tracks } = useGetAllTracks();
+  const tree = useSpotifyTree();
 
   return (
     <div className="flex flex-col gap-12">
       <CurrentSongNode />
       <div className="flex justify-center gap-6 w-screen overflow-auto">
-        {tracks?.tracks.map((track) => (
-          <TrackNode trackId={track.spotify_id} key={track.id} />
+        {tree.nextSongs.map((track) => (
+          <TrackNode
+            track={track}
+            key={track.id}
+            selected={tree.selectedNextSong?.id === track.id}
+          />
         ))}
       </div>
     </div>

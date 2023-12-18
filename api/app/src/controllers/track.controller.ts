@@ -56,6 +56,7 @@ export const getTracksBySpotifyId = async (
     });
     return res.status(200).json({ tracks });
   } catch (e) {
+    console.error(e);
     return res.status(500).json({ error: e });
   }
 };

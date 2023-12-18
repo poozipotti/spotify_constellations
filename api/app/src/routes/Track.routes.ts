@@ -5,7 +5,7 @@ const routes = (app: express.Application) => {
   const path = "/tracks";
   router.get("/:id/children", trackController.getTrackChildrenById);
   router.get("/:id", trackController.getTrackById);
-  router.get("/spotify/:id", trackController.getTracksBySpotifyId);
+  router.get("/spotify/:spotifyId", trackController.getTracksBySpotifyId);
   router.get("", trackController.getAllTracks);
   router.post("", trackController.createTrack);
   app.use(path, router);

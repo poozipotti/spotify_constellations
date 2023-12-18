@@ -16,6 +16,8 @@ const sdk = SpotifyApi.withUserAuthorization(
   [
     "playlist-read-private",
     "playlist-read-collaborative",
+    "playlist-modify-private",
+    "playlist-modify-public",
     "user-library-read",
     "user-modify-playback-state",
     "user-read-playback-state",

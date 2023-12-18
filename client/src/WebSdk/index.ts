@@ -17,10 +17,19 @@ export async function getTrack(id: number): Promise<{ track: TrackModel }> {
   }
   return response.json();
 }
+export async function getTracksBySpotifyId(
+  id: string
+): Promise<{ tracks: TrackModel[] }> {
+  const response = await fetch(`${BASE_API_HOSTNAME}/tracks/spotify/${id}`);
+  if (!response.ok) {
+    throw new Error(`could not get track ${id}`);
+  }
+  return response.json();
+}
 export async function getTrackChildren(
   id: number
 ): Promise<{ tracks: TrackModel[] }> {
-  const response = await fetch(`${BASE_API_HOSTNAME}/tracks/${id}`);
+  const response = await fetch(`${BASE_API_HOSTNAME}/tracks/${id}/children`);
   if (!response.ok) {
     throw new Error("could not get track children");
   }

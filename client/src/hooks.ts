@@ -1,17 +1,14 @@
 import React from 'react';
 export function useLocalStorage(storageKey: string) {
-  const [data, setData] = React.useState<string | undefined>(undefined);
-  React.useEffect(() => {
-    setData(localStorage.getItem(storageKey) || undefined);
-  }, [storageKey]);
-  React.useEffect(() => {
-    if (data) {
-      localStorage.setItem(storageKey, data);
+  const localStorageData =localStorage.getItem(storageKey);
+  const setData = React.useCallback((newData:string) => {
+    if (newData) {
+      localStorage.setItem(storageKey, newData);
     } else {
       localStorage.removeItem(storageKey);
     }
-  }, [data, storageKey]);
-  return [data, setData] as [
+  }, [storageKey]);
+  return [localStorageData, setData] as [
     string | undefined,
     React.Dispatch<React.SetStateAction<string | undefined>>
   ];

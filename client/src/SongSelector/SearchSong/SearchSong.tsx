@@ -3,12 +3,14 @@ import { useSearchTracks } from "@app/Spotify/searchHooks";
 import { Input } from "@core/Input";
 import { Loader } from "@core/Loader";
 import * as TrackVisualizer from "@app/SpotifyTree/SpotifyTree/TrackVisualizer";
+import { useSpotifyTree } from "@app/SpotifyTree/hooks";
 
 export const SearchSong: React.FC = () => {
   const [searchData, setSearchTerm] = useSearchTracks();
   const tracks = searchData.data?.tracks.items;
   const loading = searchData.isLoading;
   const [isOpen, setIsOpen] = React.useState(false);
+  const tree = useSpotifyTree();
 
   return (
     <>
@@ -98,7 +100,13 @@ export const SearchSong: React.FC = () => {
                 <div key={track.id} className="w-full md:w-max pt-6 ">
                   <TrackVisualizer.AlbumContainer
                     track={track}
-                    size={"w-full md:w-max h-24 px-4 "}
+                    size={"w-full md:w-max h-24 px-4 pointer"}
+                    onClick={() => {
+                      tree.addSuggestion({
+                        name: track.name,
+                        spotify_id: track.id,
+                      });
+                    }}
                   >
                     <TrackVisualizer.TrackTitle track={track} />
                     <div className="h-2 w-full"></div>

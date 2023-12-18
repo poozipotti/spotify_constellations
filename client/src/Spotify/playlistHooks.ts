@@ -1,6 +1,7 @@
 import { useInfiniteQuery, useMutation, useQuery } from "react-query";
 import { useSpotify } from ".";
 import { useGetUser } from "./userhooks";
+import { Track } from "@spotify/web-api-ts-sdk";
 
 const PAGE_SIZE = 49;
 
@@ -53,13 +54,32 @@ export function useGetPlaylist(
 
 export function useCreatePlaylist() {
   const sdk = useSpotify();
-  const { data: userData } = useGetUser();
-  const query = useMutation(["create-playlist"], async (name: string) => {
-    if (userData) {
-      return sdk.playlists.createPlaylist(userData?.id, {
+  const query = useMutation(
+    ["create-playlist"],
+    async ({ name, userId }: { name: string; userId: string }) => {
+      return sdk.playlists.createPlaylist(userId, {
         name,
       });
     }
-  });
+  );
+  return query;
+}
+export function useAddTracksToPlaylist() {
+  const sdk = useSpotify();
+  const query = useMutation(
+    ["create-playlist"],
+    async ({
+      playlistId,
+      tracks,
+    }: {
+      playlistId: string;
+      tracks: { uri: string }[];
+    }) => {
+      return sdk.playlists.addItemsToPlaylist(
+        playlistId,
+        tracks.map((track) => track.uri)
+      );
+    }
+  );
   return query;
 }

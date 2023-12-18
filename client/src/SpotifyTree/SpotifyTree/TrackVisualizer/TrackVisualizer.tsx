@@ -105,7 +105,7 @@ const ProgressTracker: React.FC<PropsWithChildren<Props>> = ({
           animationName: "grow",
           animationPlayState: isPaused ? "paused" : "running",
           animationTimingFunction: "ease-out",
-          animationDuration: `${durationSeconds+5}s`,
+          animationDuration: `${durationSeconds + 5}s`,
           animationDelay: `-${positionSeconds}s`,
         }}
       ></div>
@@ -113,8 +113,13 @@ const ProgressTracker: React.FC<PropsWithChildren<Props>> = ({
   );
 };
 export const AlbumContainer: React.FC<
-  PropsWithChildren<Partial<Pick<Props, "track" | "isLoading" | "size">>>
-> = ({ track, isLoading, children, size }) => {
+  PropsWithChildren<
+    Partial<Pick<Props, "track" | "isLoading" | "size">> & {
+      onClick?: () => void;
+      selected?: boolean;
+    }
+  >
+> = ({ track, isLoading, children, size, onClick, selected }) => {
   return (
     <div
       className={`
@@ -124,9 +129,11 @@ export const AlbumContainer: React.FC<
       rounded-full 
       flex flex-col 
       justify-center items-center 
-      border border-gray-700
+      border 
       bg-center bg-cover
+      ${selected ? "border-primary-light drop-shadow-md" : "border-gray-700"}
       `}
+      onClick={onClick}
       style={
         track && {
           backgroundImage: isLoading

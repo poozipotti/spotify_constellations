@@ -3,11 +3,12 @@ import * as TrackVisualizer from "@app/SpotifyTree/SpotifyTree/TrackVisualizer";
 import { useSpotifyPlayer } from "@app/Spotify/Player";
 import { Button } from "@core/Button";
 import { useCreateTrack } from "@app/SpotifyTree/apiHooks";
+import { useSpotifyTree } from "@app/SpotifyTree/hooks";
 
 export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
   const player = useSpotifyPlayer();
+  const tree = useSpotifyTree();
   const { mutate: createTrack } = useCreateTrack();
-
   return (
     <div>
       <TrackVisualizer.TrackTitle track={player.state?.currentTrack} />
@@ -32,20 +33,29 @@ export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
         <NextButton />
       </div>
       <div className="flex w-full justify-center p-4">
-        {player.state?.currentTrack && (
-          <Button
-            onClick={() => {
-              if (!player.state?.currentTrack) {
-                throw new Error("no track to be added");
-              }
-              createTrack({
-                name: player.state?.currentTrack.name,
-                spotify_id: player.state?.currentTrack.id,
-              });
-            }}
-          >
-            +
-          </Button>
+        {player.state?.currentTrack && !tree.isSynced && (
+          <div className="flex gap-4">
+            <Button
+              onClick={() => {
+                if (!player.state?.currentTrack) {
+                  throw new Error("no track to be added");
+                }
+                createTrack({
+                  name: player.state?.currentTrack.name,
+                  spotify_id: player.state?.currentTrack.id,
+                });
+              }}
+            >
+              Add Root
+            </Button>
+            <Button
+              onClick={() => {
+                tree.sync();
+              }}
+            >
+              Sync
+            </Button>
+          </div>
         )}
       </div>
     </div>

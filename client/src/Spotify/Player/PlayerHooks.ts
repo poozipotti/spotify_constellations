@@ -31,20 +31,14 @@ export function usePlayPause() {
   );
   return queryData;
 }
-export function usePlayPlaylist({
-  contextUri,
-  offset,
-}: {
-  contextUri: string;
-  offset?: object;
-}) {
+export function usePlayPlaylist() {
   const sdk = useSpotify();
   const queryClient = useQueryClient();
   const { data: playbackState } = useGetSpotifyPlaybackState();
   const deviceId = playbackState?.device.id;
   const queryData = useMutation(
     ["play song"],
-    async () => {
+    async ({ contextUri, offset }: { contextUri: string; offset?: object }) => {
       if (deviceId && !queryData?.isLoading) {
         sdk.player.startResumePlayback(deviceId, contextUri, undefined, offset);
       }
