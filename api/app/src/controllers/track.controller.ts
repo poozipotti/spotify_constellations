@@ -69,7 +69,6 @@ export const getTrackChildrenById = async (
     const tracks = await TrackModel.findAll({
       where: { parent_id: req.params.id },
     });
-    console.log("gettig by parent_id");
     return res.status(200).json({ tracks });
   } catch (e) {
     return res.status(500).json({ error: e });

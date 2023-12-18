@@ -22,7 +22,6 @@ export function useHistoryPlaylist() {
             console.error(error);
           },
           onSuccess: (data) => {
-            console.log('success');
             setPlayListId(data?.id);
           },
         }

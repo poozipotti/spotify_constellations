@@ -8,10 +8,11 @@ import {
   useGetTrackChildren,
 } from "./apiHooks";
 import { TCreateTrackData } from "@app/WebSdk";
-import { useGetCurrentTrack, useSyncToSpotify } from "./hooks";
+import { useSyncSpotify } from "./hooks";
 
 interface tree {
   setSelectedNextSong: (id: number) => void;
+  setCurrentTrack: React.Dispatch<React.SetStateAction<TrackModel | undefined>>;
   addSuggestion: (track: TCreateTrackData) => void;
   sync: () => void;
   state: {
@@ -21,37 +22,24 @@ interface tree {
     currentTrack: TrackModel | undefined;
     selectedNextSong: TrackModel | undefined;
     isLoading: boolean;
-    isSynced: boolean;
   };
 }
-const INIT_TREE = {
-  setSelectedNextSong: () => {},
-  addSuggestion: () => {},
-  sync: () => {},
-  state: {
-    nextSongs: [],
-    rootNodes: [],
-    currentTrack: undefined,
-    selectedNextSong: undefined,
-    prevSong: undefined,
-    isSynced: false,
-    isLoading: true,
-  },
-};
-export const TreeContext = React.createContext<tree>(INIT_TREE);
+
+export const TreeContext = React.createContext<tree | undefined>(undefined);
 
 const SpotifyTreeProviderInternal: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
+  const [currentTrack, setCurrentTrack] = React.useState<
+    TrackModel | undefined
+  >();
   const { data: allTracks } = useGetAllTracks();
   const [selectedNextSong, _setSelectedNextSong] = React.useState<
     TrackModel | undefined
   >();
-  const currentTrack = useGetCurrentTrack();
   const { data: nextTracks } = useGetTrackChildren(currentTrack?.id);
   const { data: prevTrack } = useGetTrack(currentTrack?.parent_id);
   const { mutate: addSuggestion } = useCreateTrack();
-  const { setShouldSync, isSynced } = useSyncToSpotify();
 
   const rootNodes = React.useMemo(
     () => allTracks?.tracks.filter(({ parent_id }) => !parent_id),
@@ -59,8 +47,8 @@ const SpotifyTreeProviderInternal: React.FC<React.PropsWithChildren> = ({
   );
 
   const nextSongs = React.useMemo(
-    () => (isSynced ? nextTracks?.tracks : rootNodes),
-    [isSynced, nextTracks?.tracks, rootNodes]
+    () => (nextTracks?.tracks.length ? nextTracks?.tracks : rootNodes),
+    [ nextTracks?.tracks, rootNodes]
   );
   const setSelectedNextSong = useCallback(
     (id: number) => {
@@ -80,23 +68,16 @@ const SpotifyTreeProviderInternal: React.FC<React.PropsWithChildren> = ({
       currentTrack,
       selectedNextSong,
       prevSong: prevTrack?.track,
-      isSynced,
       isLoading: false,
     }),
-    [
-      currentTrack,
-      isSynced,
-      nextSongs,
-      prevTrack?.track,
-      rootNodes,
-      selectedNextSong,
-    ]
+    [currentTrack, nextSongs, prevTrack?.track, rootNodes, selectedNextSong]
   );
   return (
     <TreeContext.Provider
       value={{
         state,
         setSelectedNextSong: setSelectedNextSong,
+        setCurrentTrack,
         addSuggestion: (track: TCreateTrackData) => {
           addSuggestion({ ...track, parent_id: currentTrack?.id });
         },
