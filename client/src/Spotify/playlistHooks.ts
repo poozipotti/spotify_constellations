@@ -1,7 +1,5 @@
 import { useInfiniteQuery, useMutation, useQuery } from "react-query";
 import { useSpotify } from ".";
-import { useGetUser } from "./userhooks";
-import { Track } from "@spotify/web-api-ts-sdk";
 
 const PAGE_SIZE = 49;
 
