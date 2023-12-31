@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import TrackModel from "../models/track.model";
 import TrackJunctionModel from "../models/trackJunctionModel.model";
+import { parentPort } from "worker_threads";
 
 type createTrackBody = {
   parent_id?: number;
@@ -113,7 +114,9 @@ export const getTrackChildrenById = async (
   res: Response<{ tracks: TrackModel[] } | { error: any }>
 ) => {
   try {
-    const track = await TrackModel.findByPk(req.params.id);
+    const track = await TrackModel.findByPk(req.params.id, {
+      include: { model: TrackModel, as: "children" },
+    });
     if (!track) {
       return res.status(404).json({ error: "could not find track" });
     }
@@ -127,7 +130,9 @@ export const getTrackParentsById = async (
   res: Response<{ tracks: TrackModel[] } | { error: any }>
 ) => {
   try {
-    const track = await TrackModel.findByPk(req.params.id);
+    const track = await TrackModel.findByPk(req.params.id, {
+      include: { model: TrackModel, as: "parents" },
+    });
     if (!track) {
       return res.status(404).json({ error: "could not find track" });
     }
