@@ -1,19 +1,6 @@
 import { Table, Column, Model, HasMany, PrimaryKey, ForeignKey, AutoIncrement, HasOne, BelongsToMany, Unique, AllowNull } from "sequelize-typescript";
+import TrackJunctionModel from "./trackJunctionModel.model";
 
-@Table
-export class TrackJunctionModel extends Model {
-
-  @ForeignKey(()=>TrackModel)
-  @AllowNull(false)
-  @Column
-  parent_id: number;
-
-  @ForeignKey(()=>TrackModel)
-  @AllowNull(false)
-  @Column
-  child_id: number;
-
-}
 
 @Table
 export default class TrackModel extends Model {
