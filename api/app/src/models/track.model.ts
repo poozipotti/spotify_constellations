@@ -6,10 +6,10 @@ import TrackJunctionModel from "./trackJunctionModel.model";
 export default class TrackModel extends Model {
 
   @BelongsToMany(() => TrackModel,()=> TrackJunctionModel,'parent_id')
-  parents: TrackModel[];
+  children: TrackModel[];
 
   @BelongsToMany(() => TrackModel,()=> TrackJunctionModel,'child_id')
-  children: TrackModel[];
+  parents: TrackModel[];
 
 
   @Unique

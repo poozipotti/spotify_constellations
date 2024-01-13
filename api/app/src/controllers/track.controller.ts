@@ -72,7 +72,12 @@ export const getAllTracks = async (
   res: Response<{ tracks: TrackModel[] } | { error: any }>
 ) => {
   try {
-    const tracks = await TrackModel.findAll();
+    const tracks = await TrackModel.findAll({
+      include: [
+        { model: TrackModel, as: "children" },
+        { model: TrackModel, as: "parents" },
+      ],
+    });
     return res.status(200).json({ tracks });
   } catch (e) {
     return res.status(500).json({ error: normalizeError(e).message });
@@ -114,13 +119,11 @@ export const getTrackChildrenById = async (
   res: Response<{ tracks: TrackModel[] } | { error: any }>
 ) => {
   try {
-    const track = await TrackModel.findByPk(req.params.id, {
-      include: { model: TrackModel, as: "children" },
+    const tracks = await TrackJunctionModel.findAll({
+      where:  {parent_id: req.params.id},
+      include: 'child',
     });
-    if (!track) {
-      return res.status(404).json({ error: "could not find track" });
-    }
-    return res.status(200).json({ tracks: track?.children || [] });
+    return res.status(200).json({ tracks: tracks.map(track => track.child)});
   } catch (e) {
     return res.status(500).json({ error: normalizeError(e).message });
   }
@@ -130,13 +133,11 @@ export const getTrackParentsById = async (
   res: Response<{ tracks: TrackModel[] } | { error: any }>
 ) => {
   try {
-    const track = await TrackModel.findByPk(req.params.id, {
-      include: { model: TrackModel, as: "parents" },
+    const tracks = await TrackJunctionModel.findAll({
+      where:  {child_id: req.params.id},
+      include: 'parent',
     });
-    if (!track) {
-      return res.status(404).json({ error: "could not find track" });
-    }
-    return res.status(200).json({ tracks: track?.parents || [] });
+    return res.status(200).json({ tracks: tracks.map(track => track.parent)});
   } catch (e) {
     return res.status(500).json({ error: normalizeError(e).message });
   }
