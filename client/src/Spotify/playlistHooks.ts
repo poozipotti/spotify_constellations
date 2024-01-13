@@ -55,11 +55,11 @@ export function useGetPlaylist(
   return query;
 }
 
-export function useCreatePlaylist() {
+export function useCreatePlaylist(name:string) {
   const sdk = useSpotify();
   const query = useMutation(
-    ["create-playlist"],
-    async ({ name, userId }: { name: string; userId: string }) => {
+    ["create-playlist", name],
+    async ({ userId }: { userId: string }) => {
       return sdk.playlists.createPlaylist(userId, {
         name,
       });

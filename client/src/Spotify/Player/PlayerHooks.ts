@@ -26,6 +26,7 @@ export function usePlayPause() {
     {
       onSuccess: () => {
         queryClient.invalidateQueries("playbackState");
+        queryClient.invalidateQueries("user-queue");
       },
     }
   );
@@ -46,6 +47,7 @@ export function usePlayPlaylist() {
     {
       onSuccess: () => {
         queryClient.invalidateQueries("playbackState");
+        queryClient.invalidateQueries("user-queue");
       },
     }
   );
@@ -71,6 +73,7 @@ export function useTransitionTrackWhenDoneEffect() {
     if (context?.item.duration_ms && context?.progress_ms) {
       const songTransition = setTimeout(() => {
         queryClient.invalidateQueries("playbackState");
+        queryClient.invalidateQueries("user-queue");
       }, context.item.duration_ms - context.progress_ms);
       return () => {
         clearTimeout(songTransition);
@@ -93,6 +96,7 @@ export function useSkipSong() {
     {
       onSuccess: () => {
         queryClient.invalidateQueries("playbackState");
+        queryClient.invalidateQueries("user-queue");
       },
     }
   );
@@ -113,6 +117,7 @@ export function useSkipToPrevSong() {
     {
       onSuccess: () => {
         queryClient.invalidateQueries("playbackState");
+        queryClient.invalidateQueries("user-queue");
       },
     }
   );

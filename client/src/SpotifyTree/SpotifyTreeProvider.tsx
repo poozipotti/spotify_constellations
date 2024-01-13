@@ -1,24 +1,28 @@
 import { SpotifyPlayerProvider } from "@app/Spotify/Player/PlayerProvider";
-import React, { useCallback } from "react";
+import React from "react";
 import TrackModel from "@api/models/track.model";
 import {
   useCreateTrack,
-  useGetAllTracks,
-  useGetTrack,
   useGetTrackChildren,
+  useGetTrackBySpotifyId,
+  useGetTrackParents,
 } from "./apiHooks";
 import { TCreateTrackData } from "@app/WebSdk";
+import { useSpotifyPlayer } from "@app/Spotify/Player";
 
 interface tree {
-  setSelectedNextSong: (id: number) => void;
-  setCurrentTrack: React.Dispatch<React.SetStateAction<TrackModel | undefined>>;
-  addSuggestion: (track: TCreateTrackData) => void;
+  addSuggestion: {
+    isLoading: boolean;
+    mutate: (
+      track: TCreateTrackData,
+      options?: { onSuccess: () => void }
+    ) => void;
+  };
   state: {
-    prevSong: TrackModel | undefined;
-    nextSongs: TrackModel[];
-    rootNodes: TrackModel[];
+    parentTracks: TrackModel[];
+    childTracks: TrackModel[];
+    selectedChildTrack: TrackModel | undefined;
     currentTrack: TrackModel | undefined;
-    selectedNextSong: TrackModel | undefined;
     isLoading: boolean;
   };
 }
@@ -28,56 +32,44 @@ export const TreeContext = React.createContext<tree | undefined>(undefined);
 const SpotifyTreeProviderInternal: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
-  const [currentTrack, setCurrentTrack] = React.useState<
-    TrackModel | undefined
-  >();
-  const { data: allTracks } = useGetAllTracks();
-  const [selectedNextSong, _setSelectedNextSong] = React.useState<
-    TrackModel | undefined
-  >();
-  const { data: nextTracks } = useGetTrackChildren(currentTrack?.id);
-  const { data: prevTrack } = useGetTrack(currentTrack?.parent_id);
-  const { mutate: addSuggestion } = useCreateTrack();
-
-  const rootNodes = React.useMemo(
-    () => allTracks?.tracks.filter(({ parent_id }) => !parent_id),
-    [allTracks?.tracks]
+  const player = useSpotifyPlayer();
+  const currentTrackQuery = useGetTrackBySpotifyId(
+    player.state.currentTrack?.id
   );
-
-  const nextSongs = React.useMemo(
-    () => (nextTracks?.tracks.length ? nextTracks?.tracks : rootNodes),
-    [ nextTracks?.tracks, rootNodes]
+  const currentTrack = currentTrackQuery?.data?.track;
+  const selectedChildSongQuery = useGetTrackBySpotifyId(
+    player.state.nextTrack?.id
   );
-  const setSelectedNextSong = useCallback(
-    (id: number) => {
-      const nextSong = nextSongs?.find((track) => track.id === id);
-      if (!nextSong) {
-        throw new Error("could not find next song");
-      }
-
-      _setSelectedNextSong(nextSong);
-    },
-    [nextSongs]
-  );
+  const selectedChildTrack = selectedChildSongQuery?.data?.track;
+  const { data: childrenTracks } = useGetTrackChildren(currentTrack?.id);
+  const { data: parentTracks } = useGetTrackParents(currentTrack?.id);
+  const { mutate: addSuggestion, ...createTrackMutate } = useCreateTrack();
+  const isLoading =
+    currentTrackQuery.isLoading || selectedChildSongQuery.isLoading;
   const state = React.useMemo(
     () => ({
-      nextSongs: nextSongs || [],
-      rootNodes: rootNodes || [],
+      parentTracks: parentTracks?.tracks || [],
+      childTracks: childrenTracks?.tracks || [],
+      selectedChildTrack,
       currentTrack,
-      selectedNextSong,
-      prevSong: prevTrack?.track,
-      isLoading: false,
+      isLoading: isLoading,
     }),
-    [currentTrack, nextSongs, prevTrack?.track, rootNodes, selectedNextSong]
+    [childrenTracks, parentTracks, selectedChildTrack, currentTrack, isLoading]
   );
   return (
     <TreeContext.Provider
       value={{
         state,
-        setSelectedNextSong: setSelectedNextSong,
-        setCurrentTrack,
-        addSuggestion: (track: TCreateTrackData) => {
-          addSuggestion({ ...track, parent_id: currentTrack?.id });
+        addSuggestion: {
+          ...createTrackMutate,
+          mutate: (
+            track: TCreateTrackData,
+            options?: { onSuccess: () => void }
+          ) => {
+            if (!isLoading) {
+              addSuggestion({ ...track, parent_id: currentTrack?.id }, options);
+            }
+          },
         },
       }}
     >

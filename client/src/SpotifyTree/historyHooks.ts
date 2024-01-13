@@ -3,37 +3,38 @@ import { useGetUser } from "@app/Spotify/userhooks";
 import { useLocalStorage } from "@app/hooks";
 import { useEffect } from "react";
 
-export function useHistoryPlaylist() {
-  const { mutate: createPlaylist } = useCreatePlaylist();
+export function useHistoryPlaylist(
+  { canCreate }: { canCreate: boolean } = { canCreate: false }
+) {
+  const { mutate: createPlaylist, isLoading } = useCreatePlaylist(
+    "[quantum] history playlist"
+  );
   const { data: userData } = useGetUser();
   const [playlistId, setPlayListId] = useLocalStorage("history-playlist-id");
   const playlistQuery = useGetPlaylist(playlistId);
+
   useEffect(() => {
-    if (playlistQuery.data?.id && playlistId !== playlistQuery.data?.id) {
-      setPlayListId(playlistQuery.data?.id);
-    }
-  }, [playlistQuery.data?.id, playlistId, setPlayListId]);
-  useEffect(() => {
-    if (userData?.id && !playlistId) {
+    if (!playlistId && userData?.id && !isLoading && canCreate) {
       createPlaylist(
-        { name: "[quantum] history playlist", userId: userData?.id },
+        { userId: userData?.id },
         {
           onError: (error) => {
             console.error(error);
           },
           onSuccess: (data) => {
-            setPlayListId(data?.id);
+            console.log(data);
+            return setPlayListId(data?.id);
           },
         }
       );
     }
   }, [
-    playlistQuery.isIdle,
-    createPlaylist,
-    playlistQuery.isError,
     playlistId,
-    setPlayListId,
     userData?.id,
+    isLoading,
+    canCreate,
+    createPlaylist,
+    setPlayListId,
   ]);
   return playlistQuery;
 }

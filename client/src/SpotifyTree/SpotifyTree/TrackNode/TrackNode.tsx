@@ -1,7 +1,6 @@
 import React, { PropsWithChildren } from "react";
 import * as TrackVisualizer from "@app/SpotifyTree/SpotifyTree/TrackVisualizer";
 import { useGetSpotifyTrack } from "@app/Spotify/trackHooks";
-import { useSpotifyTree } from "@app/SpotifyTree/hooks";
 
 export const TrackNode: React.FC<
   PropsWithChildren<{
@@ -14,18 +13,13 @@ export const TrackNode: React.FC<
     isLoading: trackLoading,
     error: trackError,
   } = useGetSpotifyTrack(track.spotify_id);
-  const tree = useSpotifyTree();
   return (
     <div>
       <TrackVisualizer.AlbumContainer
         selected={selected}
         track={TrackData}
         isLoading={trackLoading}
-        onClick={() => {
-          if (track.id) {
-            tree?.setSelectedNextSong(track.id);
-          }
-        }}
+        onClick={() => {}}
       >
         {!!trackError && (
           <p className="text-orange-200 p-4 text-center w-full">

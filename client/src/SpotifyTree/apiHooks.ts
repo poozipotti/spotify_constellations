@@ -19,15 +19,23 @@ export function useGetTrack(id?: number) {
   );
   return queryData;
 }
-export function useGetTracksBySpotifyId(spotifyId?: string) {
+export function useGetTrackBySpotifyId(spotifyId?: string) {
   const queryData = useQuery(
     ["web-tracks", spotifyId],
     async () => {
       if (spotifyId) {
-        return webSdk.getTracksBySpotifyId(spotifyId);
+        return webSdk.getTrackBySpotifyId(spotifyId);
       }
     },
-    { enabled: !!spotifyId }
+    {
+      enabled: !!spotifyId,
+      retry: (count, error) => {
+        if ((error as webSdk.WebApiError).statusCode === 404) {
+          return false;
+        }
+        return count < 3;
+      },
+    }
   );
   return queryData;
 }
@@ -43,14 +51,29 @@ export function useGetTrackChildren(id?: number) {
   );
   return queryData;
 }
+export function useGetTrackParents(id?: number) {
+  const queryData = useQuery(
+    ["web-track-parents", id],
+    () => {
+      if (id) {
+        return webSdk.getTrackParents(id);
+      }
+    },
+    { enabled: !!id }
+  );
+  return queryData;
+}
 export function useCreateTrack() {
   const queryClient = useQueryClient();
   const queryData = useMutation(
     ["create-web-track"],
-    (track: webSdk.TCreateTrackData) => webSdk.createTrack(track),
+    (track: webSdk.TCreateTrackData & { parent_id?: number }) =>
+      webSdk.createTrack(track),
     {
       onSuccess: () => {
         queryClient.invalidateQueries("web-tracks");
+        queryClient.invalidateQueries("web-tracks-children");
+        queryClient.invalidateQueries("web-tracks-parents");
       },
     }
   );

@@ -2,9 +2,13 @@ import React, { PropsWithChildren } from "react";
 import * as TrackVisualizer from "@app/SpotifyTree/SpotifyTree/TrackVisualizer";
 import { useSpotifyPlayer } from "@app/Spotify/Player";
 import { Button } from "@core/Button";
+import { useSpotifyTree } from "@app/SpotifyTree/hooks";
 
 export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
   const player = useSpotifyPlayer();
+  const tree = useSpotifyTree();
+  const isSynced = !!(tree?.state.currentTrack && !tree?.state.isLoading);
+  const currentTrack = player.state?.currentTrack;
   return (
     <div>
       <TrackVisualizer.TrackTitle track={player.state?.currentTrack} />
@@ -18,8 +22,8 @@ export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
           }}
         >
           <TrackVisualizer.TrackVisualizer
-            track={player.state?.currentTrack}
-            duration={player.state?.currentTrack?.duration_ms}
+            track={currentTrack}
+            duration={currentTrack?.duration_ms}
             position={player.state?.progress_ms}
             isPaused={!player.state?.is_playing}
             nextTrack={player.state?.nextTrack}
@@ -28,6 +32,26 @@ export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
         </div>
         <NextButton />
       </div>
+      {!isSynced && (
+        <div className="flex flex-col items-center gap-4">
+          <p>song not found in tree</p>
+          <div className="flex gap-4">
+            <Button>Surprise Me</Button>
+            <Button
+              onClick={() => {
+                if (currentTrack && !tree?.addSuggestion.isLoading) {
+                  tree?.addSuggestion.mutate({
+                    name: currentTrack.name,
+                    spotify_id: currentTrack.id,
+                  });
+                }
+              }}
+            >
+              Add Song
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

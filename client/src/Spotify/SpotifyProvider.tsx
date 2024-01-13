@@ -31,14 +31,14 @@ export const SpotifyContext = React.createContext<
 >([sdk, undefined]);
 
 export const SpotifyProvider: React.FC<
-  React.PropsWithChildren<{ enabled: boolean }>
-> = ({ children, enabled }) => {
-  const { data: tokenData } = useGetToken(sdk);
+  React.PropsWithChildren
+> = ({ children}) => {
+  const { data: tokenData, isLoading: tokenDataLoading } = useGetToken(sdk);
   useEffect(() => {
-    if (!tokenData && enabled) {
+    if (!tokenData && !tokenDataLoading) {
       sdk.authenticate();
     }
-  }, [tokenData, enabled]);
+  }, [tokenData, tokenDataLoading]);
   return (
     <SpotifyContext.Provider value={[sdk, tokenData]}>
       <SpotifyTreeProvider>{children}</SpotifyTreeProvider>

@@ -102,10 +102,17 @@ export const SearchSong: React.FC = () => {
                     track={track}
                     size={"w-full md:w-max h-24 px-4 pointer"}
                     onClick={() => {
-                      tree?.addSuggestion({
-                        name: track.name,
-                        spotify_id: track.id,
-                      });
+                      tree?.addSuggestion.mutate(
+                        {
+                          name: track.name,
+                          spotify_id: track.id,
+                        },
+                        {
+                          onSuccess: () => {
+                            setIsOpen(false);
+                          },
+                        }
+                      );
                     }}
                   >
                     <TrackVisualizer.TrackTitle track={track} />
