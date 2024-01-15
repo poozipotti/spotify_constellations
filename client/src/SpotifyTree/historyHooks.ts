@@ -7,15 +7,14 @@ import {
 } from "@app/Spotify/playlistHooks";
 import { useGetUser } from "@app/Spotify/userhooks";
 import { useLocalStorage } from "@app/hooks";
-import { Track } from "@spotify/web-api-ts-sdk";
 import { useEffect, useMemo } from "react";
 import { useGetSpotifyTrack } from "@app/Spotify/trackHooks";
-import { useDebounce, useDebouncedCallback } from "use-debounce";
+import { useDebouncedCallback } from "use-debounce";
 
 export function useHistoryPlaylist(
   { canCreate }: { canCreate: boolean } = { canCreate: false },
 ) {
-  const { mutate: createPlaylist, isLoading } = useCreatePlaylist(
+  const { mutate: createPlaylist, isPending } = useCreatePlaylist(
     "[quantum] history playlist",
   );
   const { data: userData } = useGetUser();
@@ -23,7 +22,7 @@ export function useHistoryPlaylist(
   const playlistQuery = useGetPlaylist(playlistId);
 
   useEffect(() => {
-    if (!playlistId && userData?.id && !isLoading && canCreate) {
+    if (!playlistId && userData?.id && !isPending && canCreate) {
       createPlaylist(
         { userId: userData?.id },
         {
@@ -40,7 +39,7 @@ export function useHistoryPlaylist(
   }, [
     playlistId,
     userData?.id,
-    isLoading,
+    isPending,
     canCreate,
     createPlaylist,
     setPlayListId,
@@ -69,12 +68,12 @@ export function useSyncHistoryWebEffect(
   const spotifyFirstChild = useGetSpotifyTrack(currentTrack?.spotify_id);
   const spotifyselectedTrack = useGetSpotifyTrack(selectedTrack?.spotify_id);
 
-  const { mutate: addToPlaylist, isLoading: addToPlaylistIsLoading } =
+  const { mutate: addToPlaylist, isPending: addToPlaylistIsLoading } =
     useAddTracksToPlaylist();
   const addToPlaylistDebounce = useDebouncedCallback((data) => {
     addToPlaylist(data);
   }, 5000);
-  const { mutate: deleteFromPlaylist, isLoading: deleteFromPlaylistIsLoading } =
+  const { mutate: deleteFromPlaylist, isPending: deleteFromPlaylistIsLoading } =
     useAddTracksToPlaylist();
 
   useEffect(() => {

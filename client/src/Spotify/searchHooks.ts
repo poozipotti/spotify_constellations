@@ -22,12 +22,10 @@ export const useSearchTracks = () => {
     queryFn: () => {
       return (
         //this alias is because something seems to be broken in the spotify apk
-        (
-          spotify.search as (
-            q: string,
-            type: ["track"],
-          ) => Promise<SearchResults>
-        )(searchTerm, ["track"])
+        ((spotify.search as (
+          q: string,
+          type: ["track"],
+        ) => Promise<SearchResults>)(searchTerm, ["track"]))
       );
     },
 

@@ -73,17 +73,14 @@ export function useGetTrackParents(id?: number) {
 }
 export function useCreateTrack() {
   const queryClient = useQueryClient();
-  const queryData = useMutation(
-    ["create-web-track"],
-    (track: webSdk.TCreateTrackData & { parent_id?: number }) =>
+  const queryData = useMutation({
+    mutationFn: (track: webSdk.TCreateTrackData & { parent_id?: number }) =>
       webSdk.createTrack(track),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries("web-tracks");
-        queryClient.invalidateQueries("web-track-children");
-        queryClient.invalidateQueries("web-track-parents");
-      },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["web-tracks"] });
+      queryClient.invalidateQueries({ queryKey: ["web-track-children"] });
+      queryClient.invalidateQueries({ queryKey: ["web-track-parents"] });
     },
-  );
+  });
   return queryData;
 }

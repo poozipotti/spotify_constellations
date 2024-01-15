@@ -41,7 +41,7 @@ export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
           {!inTree && (
             <Button
               onClick={() => {
-                if (currentTrack && !tree?.addSuggestion.isLoading) {
+                if (currentTrack && !tree?.addSuggestion.isPending) {
                   tree?.addSuggestion.mutate({
                     name: currentTrack.name,
                     spotify_id: currentTrack.id,

@@ -13,7 +13,7 @@ import { useSyncHistoryWebEffect } from "./historyHooks";
 
 interface tree {
   addSuggestion: {
-    isLoading: boolean;
+    isPending: boolean;
     mutate: (
       track: TCreateTrackData,
       options?: { onSuccess: () => void },

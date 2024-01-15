@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSpotify } from "..";
 import { useEffect } from "react";
+import { PlaybackState } from "@spotify/web-api-ts-sdk";
 
 export function useGetSpotifyPlaybackState() {
   const sdk = useSpotify();
@@ -10,6 +11,7 @@ export function useGetSpotifyPlaybackState() {
     queryFn: () => {
       return sdk.player.getPlaybackState();
     },
+    staleTime: Infinity,
   });
   return queryData;
 }
@@ -18,22 +20,30 @@ export function usePlayPause() {
   const queryClient = useQueryClient();
   const { data: playbackState } = useGetSpotifyPlaybackState();
   const deviceId = playbackState?.device.id;
-  const queryData = useMutation(
-    ["playpause"],
-    async () => {
-      if (deviceId && !queryData?.isLoading) {
+  const queryData = useMutation({
+    mutationFn: async () => {
+      if (deviceId) {
         return playbackState?.is_playing
           ? sdk.player.pausePlayback(deviceId)
           : sdk.player.startResumePlayback(deviceId);
       }
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries("playbackState");
-        queryClient.invalidateQueries("user-queue");
-      },
+    onSuccess: () => {
+      queryClient.setQueryData(
+        ["playbackState"],
+        (oldPlaybackState: PlaybackState) => {
+          if (!oldPlaybackState) {
+            return undefined;
+          }
+          const newPlaybackState: PlaybackState = {
+            ...oldPlaybackState,
+            is_playing: !oldPlaybackState.is_playing,
+          };
+          return newPlaybackState;
+        }
+      );
     },
-  );
+  });
   return queryData;
 }
 export function usePlayPlaylist() {
@@ -41,19 +51,23 @@ export function usePlayPlaylist() {
   const queryClient = useQueryClient();
   const { data: playbackState } = useGetSpotifyPlaybackState();
   const deviceId = playbackState?.device.id;
-  const queryData = useMutation(
-    async ({ contextUri, offset }: { contextUri: string; offset?: object }) => {
-      if (deviceId && !queryData?.isLoading) {
+  const queryData = useMutation({
+    mutationFn: async ({
+      contextUri,
+      offset,
+    }: {
+      contextUri: string;
+      offset?: object;
+    }) => {
+      if (deviceId) {
         sdk.player.startResumePlayback(deviceId, contextUri, undefined, offset);
       }
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries("playbackState");
-        queryClient.invalidateQueries("user-queue");
-      },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["playbackState"] });
+      queryClient.invalidateQueries({ queryKey: ["user-queue"] });
     },
-  );
+  });
   return queryData;
 }
 export function useGetUserQueue() {
@@ -80,8 +94,8 @@ export function useTransitionTrackWhenDoneEffect() {
   useEffect(() => {
     if (context?.item.duration_ms && context?.progress_ms) {
       const songTransition = setTimeout(() => {
-        queryClient.invalidateQueries("playbackState");
-        queryClient.invalidateQueries("user-queue");
+        queryClient.invalidateQueries({ queryKey: ["playbackState"] });
+        queryClient.invalidateQueries({ queryKey: ["user-queue"] });
       }, context.item.duration_ms - context.progress_ms);
       return () => {
         clearTimeout(songTransition);
@@ -94,20 +108,17 @@ export function useSkipSong() {
   const queryClient = useQueryClient();
   const { data: playbackState } = useGetSpotifyPlaybackState();
   const deviceId = playbackState?.device.id;
-  const queryData = useMutation(
-    ["skip"],
-    async () => {
-      if (deviceId && !queryData?.isLoading) {
+  const queryData = useMutation({
+    mutationFn: async () => {
+      if (deviceId) {
         return sdk.player.skipToNext(deviceId);
       }
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries("playbackState");
-        queryClient.invalidateQueries("user-queue");
-      },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["playbackState"] });
+      queryClient.invalidateQueries({ queryKey: ["user-queue"] });
     },
-  );
+  });
   return queryData;
 }
 export function useSkipToPrevSong() {
@@ -115,20 +126,17 @@ export function useSkipToPrevSong() {
   const queryClient = useQueryClient();
   const { data: playbackState } = useGetSpotifyPlaybackState();
   const deviceId = playbackState?.device.id;
-  const queryData = useMutation(
-    ["skip"],
-    async () => {
-      if (deviceId && !queryData?.isLoading) {
+  const queryData = useMutation({
+    mutationFn: async () => {
+      if (deviceId) {
         return sdk.player.skipToPrevious(deviceId);
       }
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries("playbackState");
-        queryClient.invalidateQueries("user-queue");
-      },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["playbackState"] });
+      queryClient.invalidateQueries({ queryKey: ["user-queue"] });
     },
-  );
+  });
   return queryData;
 }
 export function useSetShuffle() {
@@ -136,19 +144,16 @@ export function useSetShuffle() {
   const queryClient = useQueryClient();
   const { data: playbackState } = useGetSpotifyPlaybackState();
   const deviceId = playbackState?.device.id;
-  const queryData = useMutation(
-    ["skip"],
-    async ({ shouldShuffle }: { shouldShuffle: boolean }) => {
-      if (deviceId && !queryData?.isLoading) {
+  const queryData = useMutation({
+    mutationFn: async ({ shouldShuffle }: { shouldShuffle: boolean }) => {
+      if (deviceId) {
         return sdk.player.togglePlaybackShuffle(shouldShuffle);
       }
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries("playbackState");
-        queryClient.invalidateQueries("user-queue");
-      },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["playbackState"] });
+      queryClient.invalidateQueries({ queryKey: ["user-queue"] });
     },
-  );
+  });
   return queryData;
 }

@@ -1,38 +1,6 @@
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSpotify } from ".";
 
-const PAGE_SIZE = 49;
-
-export function useGetPlaylistItems(playlistId?: string) {
-  const sdk = useSpotify();
-  const query = useInfiniteQuery(
-    ["playlist-items", playlistId],
-    ({ pageParam = 0 }) => {
-      if (!playlistId) {
-        throw new Error("no playlistId passed cannot get playlist");
-      }
-      return sdk.playlists.getPlaylistItems(
-        playlistId,
-        undefined,
-        undefined,
-        PAGE_SIZE,
-        pageParam,
-      );
-    },
-    {
-      enabled: !!playlistId,
-      getNextPageParam: (lastPage, allPages) =>
-        lastPage.next && allPages.length * PAGE_SIZE,
-    },
-  );
-
-  return query;
-}
 export function useGetPlaylistLastThreeTracks(playlistId?: string) {
   const sdk = useSpotify();
   const playlistQuery = useGetPlaylist(playlistId);
@@ -49,7 +17,7 @@ export function useGetPlaylistLastThreeTracks(playlistId?: string) {
         undefined,
         undefined,
         Math.min(totalItems, 3) as 0 | 1 | 2 | 3,
-        Math.max(totalItems - Math.min(totalItems, 3)),
+        Math.max(totalItems - Math.min(totalItems, 3))
       );
     },
 
@@ -61,7 +29,7 @@ export function useGetPlaylistLastThreeTracks(playlistId?: string) {
 
 export function useGetPlaylist(
   playlistId?: string,
-  options?: { onError: () => void },
+  options?: { onError: () => void }
 ) {
   const sdk = useSpotify();
   const query = useQuery({
@@ -83,21 +51,21 @@ export function useGetPlaylist(
 
 export function useCreatePlaylist(name: string) {
   const sdk = useSpotify();
-  const query = useMutation(
-    ["create-playlist", name],
-    async ({ userId }: { userId: string }) => {
+  const query = useMutation({
+    mutationKey: ["create-playlist", name],
+    mutationFn: async ({ userId }: { userId: string }) => {
       return sdk.playlists.createPlaylist(userId, {
         name,
       });
     },
-  );
+  });
   return query;
 }
 export function useAddTracksToPlaylist() {
   const sdk = useSpotify();
   const queryClient = useQueryClient();
-  const query = useMutation(
-    async ({
+  const query = useMutation({
+    mutationFn: async ({
       playlistId,
       tracks,
     }: {
@@ -106,24 +74,23 @@ export function useAddTracksToPlaylist() {
     }) => {
       return sdk.playlists.addItemsToPlaylist(
         playlistId,
-        tracks.map((track) => track.uri),
+        tracks.map((track) => track.uri)
       );
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries("playlist");
-        queryClient.invalidateQueries("playbackState");
-        queryClient.invalidateQueries("user-queue");
-      },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["playlist"] });
+      queryClient.invalidateQueries({ queryKey: ["playbackState"] });
+      queryClient.invalidateQueries({ queryKey: ["playlist-last-three"] });
+      queryClient.invalidateQueries({ queryKey: ["user-queue"] });
     },
-  );
+  });
   return query;
 }
 export function useDeleteTracksFromPlaylist() {
   const sdk = useSpotify();
   const queryClient = useQueryClient();
-  const query = useMutation(
-    async ({
+  const query = useMutation({
+    mutationFn: async ({
       playlistId,
       tracks,
     }: {
@@ -134,13 +101,12 @@ export function useDeleteTracksFromPlaylist() {
         tracks: tracks,
       });
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries("playlist");
-        queryClient.invalidateQueries("playbackState");
-        queryClient.invalidateQueries("user-queue");
-      },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["playlist"] });
+      queryClient.invalidateQueries({ queryKey: ["playbackState"] });
+      queryClient.invalidateQueries({ queryKey: ["playlist-last-three"] });
+      queryClient.invalidateQueries({ queryKey: ["user-queue"] });
     },
-  );
+  });
   return query;
 }
