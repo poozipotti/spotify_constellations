@@ -37,9 +37,10 @@ export function useGetPlaylistLastThreeTracks(playlistId?: string) {
   const sdk = useSpotify();
   const playlistQuery = useGetPlaylist(playlistId);
   const totalItems = playlistQuery?.data?.tracks.total;
-  const query = useQuery(
-    ["playlist-last-three", playlistId],
-    () => {
+  const query = useQuery({
+    queryKey: ["playlist-last-three", playlistId],
+
+    queryFn: () => {
       if (!playlistId || typeof totalItems === "undefined") {
         throw new Error("Error getting playlist state please refresh");
       }
@@ -51,10 +52,9 @@ export function useGetPlaylistLastThreeTracks(playlistId?: string) {
         Math.max(totalItems - Math.min(totalItems, 3))
       );
     },
-    {
-      enabled: !!playlistId && !!totalItems,
-    }
-  );
+
+    enabled: !!playlistId && !!totalItems
+  });
 
   return query;
 }
@@ -64,19 +64,19 @@ export function useGetPlaylist(
   options?: { onError: () => void }
 ) {
   const sdk = useSpotify();
-  const query = useQuery(
-    ["playlist", playlistId],
-    () => {
+  const query = useQuery({
+    queryKey: ["playlist", playlistId],
+
+    queryFn: () => {
       if (!playlistId) {
         throw new Error("no playlistId passed cannot get playlist");
       }
       return sdk.playlists.getPlaylist(playlistId);
     },
-    {
-      enabled: !!playlistId,
-      ...(options || {}),
-    }
-  );
+
+    enabled: !!playlistId,
+    ...(options || {})
+  });
 
   return query;
 }

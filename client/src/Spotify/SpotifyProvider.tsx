@@ -50,12 +50,14 @@ function useGetToken(
   sdk: SpotifyApi,
   options?: { cacheTime?: number; staleTime?: number; enabled?: boolean }
 ) {
-  const tokenQuery = useQuery(
-    ["auth-token"],
-    () => {
+  const tokenQuery = useQuery({
+    queryKey: ["auth-token"],
+
+    queryFn: () => {
       return sdk.getAccessToken();
     },
-    options
-  );
+
+    ...options
+  });
   return tokenQuery;
 }

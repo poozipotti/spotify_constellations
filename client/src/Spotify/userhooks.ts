@@ -3,8 +3,12 @@ import { useSpotify } from ".";
 
 export function useGetUser() {
   const sdk = useSpotify();
-  const query = useQuery(["current-user"], () => {
-    return sdk.currentUser.profile();
+  const query = useQuery({
+    queryKey: ["current-user"],
+
+    queryFn: () => {
+      return sdk.currentUser.profile();
+    }
   });
   return query;
 }

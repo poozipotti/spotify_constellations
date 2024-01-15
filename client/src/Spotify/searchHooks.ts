@@ -21,9 +21,10 @@ export const useSearchTracks = () => {
     artists: Page<Artist>;
     albums: Page<SimplifiedAlbum>;
   };
-  const searchQuery = useQuery(
-    ["songSearch", searchTerm],
-    () => {
+  const searchQuery = useQuery({
+    queryKey: ["songSearch", searchTerm],
+
+    queryFn: () => {
       return (
         //this alias is because something seems to be broken in the spotify apk
         ((spotify.search as (
@@ -32,8 +33,9 @@ export const useSearchTracks = () => {
         ) => Promise<SearchResults>)(searchTerm, ["track"]))
       );
     },
-    {enabled: searchTerm?.length > 0}
-  );
+
+    enabled: searchTerm?.length > 0
+  });
   return [searchQuery, debouncedSearchSetSearchTerm] as [
     typeof searchQuery,
     typeof debouncedSearchSetSearchTerm

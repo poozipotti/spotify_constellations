@@ -4,8 +4,12 @@ import { useEffect } from "react";
 
 export function useGetSpotifyPlaybackState() {
   const sdk = useSpotify();
-  const queryData = useQuery(["playbackState"], () => {
-    return sdk.player.getPlaybackState();
+  const queryData = useQuery({
+    queryKey: ["playbackState"],
+
+    queryFn: () => {
+      return sdk.player.getPlaybackState();
+    }
   });
   return queryData;
 }
@@ -54,8 +58,12 @@ export function usePlayPlaylist() {
 }
 export function useGetUserQueue() {
   const sdk = useSpotify();
-  const queryData = useQuery(["user-queue"], () => {
-    return sdk.player.getUsersQueue();
+  const queryData = useQuery({
+    queryKey: ["user-queue"],
+
+    queryFn: () => {
+      return sdk.player.getUsersQueue();
+    }
   });
   return queryData;
 }
