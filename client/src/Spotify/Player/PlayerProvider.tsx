@@ -9,16 +9,15 @@ import {
   useTransitionTrackWhenDoneEffect,
 } from "./PlayerHooks";
 import { Episode, PlaybackState, Track } from "@spotify/web-api-ts-sdk";
-import { useGetTrackBySpotifyId } from "@app/SpotifyTree/apiHooks";
 import { useHistoryPlaylist } from "@app/SpotifyTree/historyHooks";
-import { useIsTrackInHistoryPlaylist } from "@app/SpotifyTree/hooks";
-import { useAddTracksToPlaylist } from "../playlistHooks";
 import { useDebouncedCallback } from "use-debounce";
+import { useSyncHistoryPlaylist, useSyncHistoryPlaylistEffect } from "./PlayerHistoryHooks";
 
 export interface player {
   togglePlay: () => void;
   skipToNextSong: () => void;
   skipToPrevSong: () => void;
+  playHistoryPlaylist: () => void;
   isLoading: boolean;
   state: Partial<PlaybackState> & {
     nextTrack: Track | undefined;
@@ -30,6 +29,7 @@ export const PlayerContext = React.createContext<player>({
   togglePlay: () => {},
   skipToNextSong: () => {},
   skipToPrevSong: () => {},
+  playHistoryPlaylist: () => {},
   state: { nextTrack: undefined, currentTrack: undefined },
 });
 
@@ -43,13 +43,8 @@ export const SpotifyPlayerProvider: React.FC<React.PropsWithChildren> = ({
   const playbackStateQuery = useGetSpotifyPlaybackState();
   const currentTrack = asTrack(playbackStateQuery?.data?.item);
   const { data: nextTrackData } = useGetNextSong();
-  const currentTrackWebQuery = useGetTrackBySpotifyId(
-    playbackStateQuery?.data?.item.id
-  );
-  const historyPlaylistQuery = useHistoryPlaylist({canCreate:true});
+  const historyPlaylistQuery = useHistoryPlaylist({ canCreate: true });
   const playPlaylist = usePlayPlaylist();
-  const addTrack = useAddTracksToPlaylist();
-  const inHistoryPlaylist = useIsTrackInHistoryPlaylist(currentTrack);
   const playHistoryPlaylistDebounced = useDebouncedCallback(() => {
     if (historyPlaylistQuery.data?.uri) {
       playPlaylist.mutate({
@@ -57,57 +52,7 @@ export const SpotifyPlayerProvider: React.FC<React.PropsWithChildren> = ({
         offset: currentTrack,
       });
     }
-  }, 1000);
-  const addTrackToHistoryPlaylistDebounced = useDebouncedCallback(() => {
-    if (historyPlaylistQuery.data?.id && currentTrack) {
-      addTrack.mutate({
-        playlistId: historyPlaylistQuery.data?.id,
-        tracks: [currentTrack],
-      });
-    }
-  }, 1000);
-  useEffect(() => {
-    if (
-      currentTrackWebQuery.data?.track &&
-      historyPlaylistQuery?.data?.id &&
-      inHistoryPlaylist.data &&
-      historyPlaylistQuery?.data?.uri !==
-        playbackStateQuery.data?.context?.uri &&
-      !playPlaylist.isLoading &&
-      !playbackStateQuery.isLoading
-    ) {
-      playHistoryPlaylistDebounced();
-    }
-  }, [
-    playHistoryPlaylistDebounced,
-    currentTrackWebQuery.data?.track,
-    historyPlaylistQuery?.data,
-    inHistoryPlaylist.data,
-    playPlaylist,
-    playbackStateQuery.data?.context?.uri,
-    currentTrack,
-    playbackStateQuery.isLoading,
-  ]);
-  useEffect(() => {
-    if (
-      currentTrackWebQuery.data?.track &&
-      !inHistoryPlaylist.isLoading &&
-      !inHistoryPlaylist.data &&
-      historyPlaylistQuery.data?.id &&
-      currentTrack &&
-      !addTrack.isLoading &&
-      !playbackStateQuery.isLoading
-    ) {
-      addTrackToHistoryPlaylistDebounced();
-    }
-  }, [
-    currentTrack,
-    addTrack,
-    currentTrackWebQuery.data?.track,
-    inHistoryPlaylist,
-    historyPlaylistQuery,
-    playbackStateQuery.isLoading,
-  ]);
+  }, 500);
 
   const playPauseQuery = usePlayPause();
   const skipQuery = useSkipSong();
@@ -117,12 +62,19 @@ export const SpotifyPlayerProvider: React.FC<React.PropsWithChildren> = ({
     loading;
   });
 
+  useSyncHistoryPlaylistEffect({
+    ...playbackStateQuery.data,
+    nextTrack: asTrack(nextTrackData),
+    currentTrack,
+  });
+
   useTransitionTrackWhenDoneEffect();
   return (
     <PlayerContext.Provider
       value={{
         togglePlay: playPauseQuery.mutate,
         skipToNextSong: skipQuery.mutate,
+        playHistoryPlaylist: playHistoryPlaylistDebounced,
         skipToPrevSong: skipToPrevSong.mutate,
         isLoading,
         state: {

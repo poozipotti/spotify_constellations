@@ -3,12 +3,16 @@ import * as TrackVisualizer from "@app/SpotifyTree/SpotifyTree/TrackVisualizer";
 import { useSpotifyPlayer } from "@app/Spotify/Player";
 import { Button } from "@core/Button";
 import { useSpotifyTree } from "@app/SpotifyTree/hooks";
+import { useHistoryPlaylist } from "@app/SpotifyTree/historyHooks";
 
 export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
   const player = useSpotifyPlayer();
   const tree = useSpotifyTree();
-  const isSynced = !!(tree?.state.currentTrack && !tree?.state.isLoading);
+  const inTree = !!(tree?.state.currentTrack && !tree?.state.isLoading);
   const currentTrack = player.state?.currentTrack;
+  const historyPlaylist = useHistoryPlaylist();
+  const playingHistoryPlaylist =
+    player.state.context?.uri === historyPlaylist.data?.uri;
   return (
     <div>
       <TrackVisualizer.TrackTitle track={player.state?.currentTrack} />
@@ -32,11 +36,9 @@ export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
         </div>
         <NextButton />
       </div>
-      {!isSynced && (
+      {!(inTree && playingHistoryPlaylist) && (
         <div className="flex flex-col items-center gap-4">
-          <p>song not found in tree</p>
-          <div className="flex gap-4">
-            <Button>Surprise Me</Button>
+          {!inTree && (
             <Button
               onClick={() => {
                 if (currentTrack && !tree?.addSuggestion.isLoading) {
@@ -47,9 +49,18 @@ export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
                 }
               }}
             >
-              Add Song
+              Add Song To Spotify Quantum
             </Button>
-          </div>
+          )}
+          {!playingHistoryPlaylist && inTree && (
+            <Button
+              onClick={() => {
+                player.playHistoryPlaylist();
+              }}
+            >
+              Enter Spotify Quantum
+            </Button>
+          )}
         </div>
       )}
     </div>

@@ -18,7 +18,9 @@ interface tree {
       options?: { onSuccess: () => void }
     ) => void;
   };
+  setSelectedTrack: (newState:TrackModel)=>void
   state: {
+    selectedTrack?: TrackModel | undefined;
     parentTracks: TrackModel[];
     childTracks: TrackModel[];
     selectedChildTrack: TrackModel | undefined;
@@ -40,6 +42,9 @@ const SpotifyTreeProviderInternal: React.FC<React.PropsWithChildren> = ({
   const selectedChildSongQuery = useGetTrackBySpotifyId(
     player.state.nextTrack?.id
   );
+  const [selectedTrack, setSelectedTrack] = React.useState<TrackModel | undefined>(
+    undefined
+  );
   const selectedChildTrack = selectedChildSongQuery?.data?.track;
   const { data: childrenTracks } = useGetTrackChildren(currentTrack?.id);
   const { data: parentTracks } = useGetTrackParents(currentTrack?.id);
@@ -52,14 +57,16 @@ const SpotifyTreeProviderInternal: React.FC<React.PropsWithChildren> = ({
       childTracks: childrenTracks?.tracks || [],
       selectedChildTrack,
       currentTrack,
+      selectedTrack,
       isLoading: isLoading,
     }),
-    [childrenTracks, parentTracks, selectedChildTrack, currentTrack, isLoading]
+    [selectedTrack,childrenTracks, parentTracks, selectedChildTrack, currentTrack, isLoading]
   );
   return (
     <TreeContext.Provider
       value={{
         state,
+        setSelectedTrack,
         addSuggestion: {
           ...createTrackMutate,
           mutate: (

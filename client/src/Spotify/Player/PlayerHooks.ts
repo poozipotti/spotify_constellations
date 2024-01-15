@@ -38,7 +38,6 @@ export function usePlayPlaylist() {
   const { data: playbackState } = useGetSpotifyPlaybackState();
   const deviceId = playbackState?.device.id;
   const queryData = useMutation(
-    ["play song"],
     async ({ contextUri, offset }: { contextUri: string; offset?: object }) => {
       if (deviceId && !queryData?.isLoading) {
         sdk.player.startResumePlayback(deviceId, contextUri, undefined, offset);
@@ -64,6 +63,7 @@ export function useGetNextSong() {
   const queueQuery = useGetUserQueue();
   return { ...queueQuery, data: queueQuery.data?.queue[0] };
 }
+
 export function useTransitionTrackWhenDoneEffect() {
   const queryClient = useQueryClient();
   const playbackContext = useGetSpotifyPlaybackState();
@@ -112,6 +112,27 @@ export function useSkipToPrevSong() {
     async () => {
       if (deviceId && !queryData?.isLoading) {
         return sdk.player.skipToPrevious(deviceId);
+      }
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("playbackState");
+        queryClient.invalidateQueries("user-queue");
+      },
+    }
+  );
+  return queryData;
+}
+export function useSetShuffle() {
+  const sdk = useSpotify();
+  const queryClient = useQueryClient();
+  const { data: playbackState } = useGetSpotifyPlaybackState();
+  const deviceId = playbackState?.device.id;
+  const queryData = useMutation(
+    ["skip"],
+    async ({shouldShuffle}:{shouldShuffle:boolean}) => {
+      if (deviceId && !queryData?.isLoading) {
+        return sdk.player.togglePlaybackShuffle(shouldShuffle);
       }
     },
     {

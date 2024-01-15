@@ -5,6 +5,7 @@ import {
   useQueryClient,
 } from "react-query";
 import { useSpotify } from ".";
+import { Max } from "sequelize-typescript";
 
 const PAGE_SIZE = 49;
 
@@ -33,6 +34,32 @@ export function useGetPlaylistItems(playlistId?: string) {
 
   return query;
 }
+export function useGetPlaylistLastThreeTracks(playlistId?: string) {
+  const sdk = useSpotify();
+  const playlistQuery = useGetPlaylist(playlistId);
+  const totalItems = playlistQuery?.data?.tracks.total;
+  const query = useQuery(
+    ["playlist-last-three", playlistId],
+    () => {
+      if (!playlistId || typeof totalItems === "undefined") {
+        throw new Error("Error getting playlist state please refresh");
+      }
+      return sdk.playlists.getPlaylistItems(
+        playlistId,
+        undefined,
+        undefined,
+        Math.min(totalItems, 3) as 0 | 1 | 2 | 3,
+        Math.max(totalItems - Math.min(totalItems, 3))
+      );
+    },
+    {
+      enabled: !!playlistId && !!totalItems,
+    }
+  );
+
+  return query;
+}
+
 export function useGetPlaylist(
   playlistId?: string,
   options?: { onError: () => void }
@@ -55,7 +82,7 @@ export function useGetPlaylist(
   return query;
 }
 
-export function useCreatePlaylist(name:string) {
+export function useCreatePlaylist(name: string) {
   const sdk = useSpotify();
   const query = useMutation(
     ["create-playlist", name],
@@ -71,7 +98,6 @@ export function useAddTracksToPlaylist() {
   const sdk = useSpotify();
   const queryClient = useQueryClient();
   const query = useMutation(
-    ["create-playlist"],
     async ({
       playlistId,
       tracks,
@@ -83,6 +109,29 @@ export function useAddTracksToPlaylist() {
         playlistId,
         tracks.map((track) => track.uri)
       );
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("playlist");
+      },
+    }
+  );
+  return query;
+}
+export function useDeleteTracksFromPlaylist() {
+  const sdk = useSpotify();
+  const queryClient = useQueryClient();
+  const query = useMutation(
+    async ({
+      playlistId,
+      tracks,
+    }: {
+      playlistId: string;
+      tracks: { uri: string }[];
+    }) => {
+      return sdk.playlists.removeItemsFromPlaylist(playlistId, {
+        tracks: tracks,
+      });
     },
     {
       onSuccess: () => {

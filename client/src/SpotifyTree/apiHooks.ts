@@ -72,8 +72,8 @@ export function useCreateTrack() {
     {
       onSuccess: () => {
         queryClient.invalidateQueries("web-tracks");
-        queryClient.invalidateQueries("web-tracks-children");
-        queryClient.invalidateQueries("web-tracks-parents");
+        queryClient.invalidateQueries("web-track-children");
+        queryClient.invalidateQueries("web-track-parents");
       },
     }
   );
