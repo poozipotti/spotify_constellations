@@ -3,7 +3,7 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
-} from "react-query";
+} from '@tanstack/react-query';
 import { useSpotify } from ".";
 
 const PAGE_SIZE = 49;

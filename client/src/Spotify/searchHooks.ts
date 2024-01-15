@@ -5,7 +5,7 @@ import {
   SimplifiedAlbum,
   Track,
 } from "@spotify/web-api-ts-sdk";
-import { useQuery } from "react-query";
+import { useQuery } from '@tanstack/react-query';
 import { useDebouncedCallback } from "use-debounce";
 import {useSpotify} from ".";
 
@@ -26,12 +26,10 @@ export const useSearchTracks = () => {
     () => {
       return (
         //this alias is because something seems to be broken in the spotify apk
-        (
-          spotify.search as (
-            q: string,
-            type: ["track"]
-          ) => Promise<SearchResults>
-        )(searchTerm, ["track"])
+        ((spotify.search as (
+          q: string,
+          type: ["track"]
+        ) => Promise<SearchResults>)(searchTerm, ["track"]))
       );
     },
     {enabled: searchTerm?.length > 0}

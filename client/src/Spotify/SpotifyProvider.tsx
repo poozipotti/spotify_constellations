@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { AccessToken, SpotifyApi } from "@spotify/web-api-ts-sdk";
-import { useQuery } from "react-query";
+import { useQuery } from '@tanstack/react-query';
 import { SpotifyTreeProvider } from "@app/SpotifyTree/SpotifyTreeProvider";
 
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;

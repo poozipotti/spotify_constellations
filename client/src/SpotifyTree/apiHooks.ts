@@ -1,5 +1,5 @@
 import * as webSdk from "@app/WebSdk";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export function useGetAllTracks() {
   const queryData = useQuery(["web-tracks"], webSdk.getAllTracks);
