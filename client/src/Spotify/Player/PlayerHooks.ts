@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSpotify } from "..";
 import { useEffect } from "react";
-import { PlaybackState } from "@spotify/web-api-ts-sdk";
+import { PlaybackState, Playlist } from "@spotify/web-api-ts-sdk";
 
 export function useGetSpotifyPlaybackState() {
   const sdk = useSpotify();
@@ -70,7 +70,7 @@ export function usePlayPlaylist() {
   });
   return queryData;
 }
-export function useGetUserQueue() {
+export function useGetNextSong() {
   const sdk = useSpotify();
   const queryData = useQuery({
     queryKey: ["user-queue"],
@@ -79,11 +79,11 @@ export function useGetUserQueue() {
       return sdk.player.getUsersQueue();
     },
   });
-  return queryData;
-}
-export function useGetNextSong() {
-  const queueQuery = useGetUserQueue();
-  return { ...queueQuery, data: queueQuery.data?.queue[0] };
+  const currentSong = useGetSpotifyPlaybackState();
+  const hasNextSong =
+    currentSong && queryData.data?.queue[0]?.id !== currentSong.data?.item?.id;
+  const nextSong = hasNextSong ? queryData.data?.queue[0] : undefined;
+  return { ...queryData, data: nextSong };
 }
 
 export function useTransitionTrackWhenDoneEffect() {
@@ -107,10 +107,11 @@ export function useSkipSong() {
   const sdk = useSpotify();
   const queryClient = useQueryClient();
   const { data: playbackState } = useGetSpotifyPlaybackState();
+  const nextSong = useGetNextSong();
   const deviceId = playbackState?.device.id;
   const queryData = useMutation({
     mutationFn: async () => {
-      if (deviceId) {
+      if (deviceId && nextSong) {
         return sdk.player.skipToNext(deviceId);
       }
     },
