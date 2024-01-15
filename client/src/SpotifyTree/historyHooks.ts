@@ -13,10 +13,10 @@ import { useGetSpotifyTrack } from "@app/Spotify/trackHooks";
 import { useDebounce, useDebouncedCallback } from "use-debounce";
 
 export function useHistoryPlaylist(
-  { canCreate }: { canCreate: boolean } = { canCreate: false }
+  { canCreate }: { canCreate: boolean } = { canCreate: false },
 ) {
   const { mutate: createPlaylist, isLoading } = useCreatePlaylist(
-    "[quantum] history playlist"
+    "[quantum] history playlist",
   );
   const { data: userData } = useGetUser();
   const [playlistId, setPlayListId] = useLocalStorage("history-playlist-id");
@@ -34,7 +34,7 @@ export function useHistoryPlaylist(
             console.log(data);
             return setPlayListId(data?.id);
           },
-        }
+        },
       );
     }
   }, [
@@ -57,14 +57,14 @@ export function useHistoryLastThreeSongs() {
 export function useSyncHistoryWebEffect(
   childrenTracks?: TrackModel[],
   selectedTrack?: TrackModel,
-  currentTrack?: TrackModel
+  currentTrack?: TrackModel,
 ) {
   const historyPlaylistQuery = useHistoryPlaylist({ canCreate: true });
 
   const lastThreeSongsQuery = useHistoryLastThreeSongs();
   const lastThreeTracks = useMemo(
     () => lastThreeSongsQuery.data?.items,
-    [lastThreeSongsQuery.data]
+    [lastThreeSongsQuery.data],
   );
   const spotifyFirstChild = useGetSpotifyTrack(currentTrack?.spotify_id);
   const spotifyselectedTrack = useGetSpotifyTrack(selectedTrack?.spotify_id);

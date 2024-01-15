@@ -6,7 +6,7 @@ export const TrackNode: React.FC<
   PropsWithChildren<{
     track: { spotify_id: string; id?: number };
     selected: boolean;
-    onClick?: ()=>void;
+    onClick?: () => void;
   }>
 > = ({ track, selected, onClick }) => {
   const {

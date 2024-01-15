@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 import { useSpotify } from ".";
 
 export function useGetSpotifyTrack(id?: string) {
@@ -9,13 +9,13 @@ export function useGetSpotifyTrack(id?: string) {
     queryFn: () => {
       if (!id) {
         throw new Error(
-          "cannot get track if no id is provided!! (this query should not be enabled)"
+          "cannot get track if no id is provided!! (this query should not be enabled)",
         );
       }
       return sdk.tracks.get(id);
     },
 
-    enabled: !!id
+    enabled: !!id,
   });
   return queryData;
 }
@@ -27,13 +27,13 @@ export function useGetSpotifyTracks(ids?: string[]) {
     queryFn: () => {
       if (!ids) {
         throw new Error(
-          "cannot get track if no id is provided!! (this query should not be enabled)"
+          "cannot get track if no id is provided!! (this query should not be enabled)",
         );
       }
       return sdk.tracks.get(ids);
     },
 
-    enabled: !!ids?.length
+    enabled: !!ids?.length,
   });
   return queryData;
 }

@@ -111,7 +111,7 @@ export const SearchSong: React.FC = () => {
                           onSuccess: () => {
                             setIsOpen(false);
                           },
-                        }
+                        },
                       );
                     }}
                   >

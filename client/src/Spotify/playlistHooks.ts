@@ -3,7 +3,7 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
-} from '@tanstack/react-query';
+} from "@tanstack/react-query";
 import { useSpotify } from ".";
 
 const PAGE_SIZE = 49;
@@ -21,14 +21,14 @@ export function useGetPlaylistItems(playlistId?: string) {
         undefined,
         undefined,
         PAGE_SIZE,
-        pageParam
+        pageParam,
       );
     },
     {
       enabled: !!playlistId,
       getNextPageParam: (lastPage, allPages) =>
         lastPage.next && allPages.length * PAGE_SIZE,
-    }
+    },
   );
 
   return query;
@@ -49,11 +49,11 @@ export function useGetPlaylistLastThreeTracks(playlistId?: string) {
         undefined,
         undefined,
         Math.min(totalItems, 3) as 0 | 1 | 2 | 3,
-        Math.max(totalItems - Math.min(totalItems, 3))
+        Math.max(totalItems - Math.min(totalItems, 3)),
       );
     },
 
-    enabled: !!playlistId && !!totalItems
+    enabled: !!playlistId && !!totalItems,
   });
 
   return query;
@@ -61,7 +61,7 @@ export function useGetPlaylistLastThreeTracks(playlistId?: string) {
 
 export function useGetPlaylist(
   playlistId?: string,
-  options?: { onError: () => void }
+  options?: { onError: () => void },
 ) {
   const sdk = useSpotify();
   const query = useQuery({
@@ -75,7 +75,7 @@ export function useGetPlaylist(
     },
 
     enabled: !!playlistId,
-    ...(options || {})
+    ...(options || {}),
   });
 
   return query;
@@ -89,7 +89,7 @@ export function useCreatePlaylist(name: string) {
       return sdk.playlists.createPlaylist(userId, {
         name,
       });
-    }
+    },
   );
   return query;
 }
@@ -106,7 +106,7 @@ export function useAddTracksToPlaylist() {
     }) => {
       return sdk.playlists.addItemsToPlaylist(
         playlistId,
-        tracks.map((track) => track.uri)
+        tracks.map((track) => track.uri),
       );
     },
     {
@@ -115,7 +115,7 @@ export function useAddTracksToPlaylist() {
         queryClient.invalidateQueries("playbackState");
         queryClient.invalidateQueries("user-queue");
       },
-    }
+    },
   );
   return query;
 }
@@ -140,7 +140,7 @@ export function useDeleteTracksFromPlaylist() {
         queryClient.invalidateQueries("playbackState");
         queryClient.invalidateQueries("user-queue");
       },
-    }
+    },
   );
   return query;
 }

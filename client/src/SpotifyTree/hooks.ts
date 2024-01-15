@@ -16,9 +16,9 @@ export const useIsTrackInHistoryPlaylist = (track?: Track) => {
       !track || queryData.isLoading
         ? "loading"
         : !!historyPlaylistData?.tracks.items.find(
-            (playlistTrack) => playlistTrack.track.id === track.id
+            (playlistTrack) => playlistTrack.track.id === track.id,
           ),
-    [historyPlaylistData?.tracks.items, queryData.isLoading, track]
+    [historyPlaylistData?.tracks.items, queryData.isLoading, track],
   );
   return { ...queryData, data: inHistory };
 };

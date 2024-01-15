@@ -1,1 +1,1 @@
-export {SearchSong} from './SearchSong';
+export { SearchSong } from "./SearchSong";

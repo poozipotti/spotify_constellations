@@ -14,7 +14,9 @@ export const SpotifyTree: React.FC<PropsWithChildren> = () => {
             track={track}
             key={track.id}
             selected={tree.state.selectedTrack?.id === track.id}
-            onClick={()=>{tree.setSelectedTrack(track)}}
+            onClick={() => {
+              tree.setSelectedTrack(track);
+            }}
           />
         ))}
       </div>

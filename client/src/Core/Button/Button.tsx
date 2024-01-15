@@ -7,13 +7,13 @@ type props = {
 export const Button: React.FC<PropsWithChildren<props>> = ({
   children,
   onClick,
-  hideBorder
+  hideBorder,
 }) => {
   return (
     <button
       onClick={onClick}
       className={`
-        ${hideBorder ? '' : 'border border-primary-light p-2 px-6'}
+        ${hideBorder ? "" : "border border-primary-light p-2 px-6"}
         text-primary-light
         uppercase 
         

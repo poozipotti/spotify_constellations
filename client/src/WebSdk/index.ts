@@ -21,40 +21,40 @@ export async function getAllTracks(): Promise<{ tracks: TrackModel[] }> {
 export async function getTrack(id: number): Promise<{ track: TrackModel }> {
   const response = await fetch(`${BASE_API_HOSTNAME}/tracks/${id}`);
   if (!response.ok) {
-    throw new WebApiError(`could not get track ${id}`,response.status);
+    throw new WebApiError(`could not get track ${id}`, response.status);
   }
   return response.json();
 }
 export async function getTrackBySpotifyId(
-  id: string
+  id: string,
 ): Promise<{ track: TrackModel }> {
   const response = await fetch(`${BASE_API_HOSTNAME}/tracks/spotify/${id}`);
   if (!response.ok) {
-    throw new WebApiError(`could not get track ${id}`,response.status);
+    throw new WebApiError(`could not get track ${id}`, response.status);
   }
   return response.json();
 }
 export async function getTrackChildren(
-  id: number
+  id: number,
 ): Promise<{ tracks: TrackModel[] }> {
   const response = await fetch(`${BASE_API_HOSTNAME}/tracks/${id}/children`);
   if (!response.ok) {
-    throw new WebApiError("could not get track children",response.status);
+    throw new WebApiError("could not get track children", response.status);
   }
   return response.json();
 }
 export async function getTrackParents(
-  id: number
+  id: number,
 ): Promise<{ tracks: TrackModel[] }> {
   const response = await fetch(`${BASE_API_HOSTNAME}/tracks/${id}/parents`);
   if (!response.ok) {
-    throw new WebApiError("could not get track children",response.status);
+    throw new WebApiError("could not get track children", response.status);
   }
   return response.json();
 }
 
 export async function createTrack(
-  track: TCreateTrackData & { parent_id?: number }
+  track: TCreateTrackData & { parent_id?: number },
 ): Promise<{ track: TrackModel }> {
   const response = await fetch(`${BASE_API_HOSTNAME}/tracks`, {
     method: "POST",
@@ -64,7 +64,7 @@ export async function createTrack(
     body: JSON.stringify(track), // body data type must match "Content-Type" header
   });
   if (!response.ok) {
-    throw new WebApiError("could not create Track",response.status);
+    throw new WebApiError("could not create Track", response.status);
   }
   return response.json();
 }

@@ -6,7 +6,7 @@ export const useSpotifyPlayer = () => {
 
   if (!player) {
     throw new Error(
-      "cannot access spotify player make sure a spotify player provider is being used"
+      "cannot access spotify player make sure a spotify player provider is being used",
     );
   }
   return player;

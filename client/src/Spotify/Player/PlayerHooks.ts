@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSpotify } from "..";
 import { useEffect } from "react";
 
@@ -9,7 +9,7 @@ export function useGetSpotifyPlaybackState() {
 
     queryFn: () => {
       return sdk.player.getPlaybackState();
-    }
+    },
   });
   return queryData;
 }
@@ -32,7 +32,7 @@ export function usePlayPause() {
         queryClient.invalidateQueries("playbackState");
         queryClient.invalidateQueries("user-queue");
       },
-    }
+    },
   );
   return queryData;
 }
@@ -52,7 +52,7 @@ export function usePlayPlaylist() {
         queryClient.invalidateQueries("playbackState");
         queryClient.invalidateQueries("user-queue");
       },
-    }
+    },
   );
   return queryData;
 }
@@ -63,7 +63,7 @@ export function useGetUserQueue() {
 
     queryFn: () => {
       return sdk.player.getUsersQueue();
-    }
+    },
   });
   return queryData;
 }
@@ -106,7 +106,7 @@ export function useSkipSong() {
         queryClient.invalidateQueries("playbackState");
         queryClient.invalidateQueries("user-queue");
       },
-    }
+    },
   );
   return queryData;
 }
@@ -127,7 +127,7 @@ export function useSkipToPrevSong() {
         queryClient.invalidateQueries("playbackState");
         queryClient.invalidateQueries("user-queue");
       },
-    }
+    },
   );
   return queryData;
 }
@@ -138,7 +138,7 @@ export function useSetShuffle() {
   const deviceId = playbackState?.device.id;
   const queryData = useMutation(
     ["skip"],
-    async ({shouldShuffle}:{shouldShuffle:boolean}) => {
+    async ({ shouldShuffle }: { shouldShuffle: boolean }) => {
       if (deviceId && !queryData?.isLoading) {
         return sdk.player.togglePlaybackShuffle(shouldShuffle);
       }
@@ -148,7 +148,7 @@ export function useSetShuffle() {
         queryClient.invalidateQueries("playbackState");
         queryClient.invalidateQueries("user-queue");
       },
-    }
+    },
   );
   return queryData;
 }

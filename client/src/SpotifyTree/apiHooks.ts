@@ -1,10 +1,10 @@
 import * as webSdk from "@app/WebSdk";
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function useGetAllTracks() {
   const queryData = useQuery({
     queryKey: ["web-tracks"],
-    ...webSdk.getAllTracks
+    ...webSdk.getAllTracks,
   });
   return queryData;
 }
@@ -18,7 +18,7 @@ export function useGetTrack(id?: number) {
       }
     },
 
-    enabled: !!id
+    enabled: !!id,
   });
   return queryData;
 }
@@ -39,7 +39,7 @@ export function useGetTrackBySpotifyId(spotifyId?: string) {
         return false;
       }
       return count < 3;
-    }
+    },
   });
   return queryData;
 }
@@ -53,7 +53,7 @@ export function useGetTrackChildren(id?: number) {
       }
     },
 
-    enabled: !!id
+    enabled: !!id,
   });
   return queryData;
 }
@@ -67,7 +67,7 @@ export function useGetTrackParents(id?: number) {
       }
     },
 
-    enabled: !!id
+    enabled: !!id,
   });
   return queryData;
 }
@@ -83,7 +83,7 @@ export function useCreateTrack() {
         queryClient.invalidateQueries("web-track-children");
         queryClient.invalidateQueries("web-track-parents");
       },
-    }
+    },
   );
   return queryData;
 }

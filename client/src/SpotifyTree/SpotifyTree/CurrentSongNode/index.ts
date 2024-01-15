@@ -1,1 +1,1 @@
-export {CurrentSongNode} from './CurrentSongNode';
+export { CurrentSongNode } from "./CurrentSongNode";

@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import { AccessToken, SpotifyApi } from "@spotify/web-api-ts-sdk";
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 import { SpotifyTreeProvider } from "@app/SpotifyTree/SpotifyTreeProvider";
 
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
 if (!clientId) {
   throw new Error(
-    `No spotify client id provided in .env ${JSON.stringify(import.meta.env)}`
+    `No spotify client id provided in .env ${JSON.stringify(import.meta.env)}`,
   );
 }
 
@@ -23,16 +23,16 @@ const sdk = SpotifyApi.withUserAuthorization(
     "user-read-playback-state",
     "app-remote-control",
     "streaming",
-  ]
+  ],
 );
 
 export const SpotifyContext = React.createContext<
   [SpotifyApi, undefined | null | AccessToken]
 >([sdk, undefined]);
 
-export const SpotifyProvider: React.FC<
-  React.PropsWithChildren
-> = ({ children}) => {
+export const SpotifyProvider: React.FC<React.PropsWithChildren> = ({
+  children,
+}) => {
   const { data: tokenData, isLoading: tokenDataLoading } = useGetToken(sdk);
   useEffect(() => {
     if (!tokenData && !tokenDataLoading) {
@@ -48,7 +48,7 @@ export const SpotifyProvider: React.FC<
 
 function useGetToken(
   sdk: SpotifyApi,
-  options?: { cacheTime?: number; staleTime?: number; enabled?: boolean }
+  options?: { cacheTime?: number; staleTime?: number; enabled?: boolean },
 ) {
   const tokenQuery = useQuery({
     queryKey: ["auth-token"],
@@ -57,7 +57,7 @@ function useGetToken(
       return sdk.getAccessToken();
     },
 
-    ...options
+    ...options,
   });
   return tokenQuery;
 }

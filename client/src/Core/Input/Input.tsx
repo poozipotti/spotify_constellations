@@ -5,7 +5,7 @@ export const Input: React.FC<
     onChange: ChangeEventHandler<HTMLInputElement>;
     placeholder: string;
   }>
-> = ({ children, onChange,placeholder }) => {
+> = ({ children, onChange, placeholder }) => {
   return (
     <input
       className={`

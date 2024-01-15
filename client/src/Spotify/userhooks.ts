@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 import { useSpotify } from ".";
 
 export function useGetUser() {
@@ -8,7 +8,7 @@ export function useGetUser() {
 
     queryFn: () => {
       return sdk.currentUser.profile();
-    }
+    },
   });
   return query;
 }

@@ -1,1 +1,1 @@
-export {SpotifyTree} from './SpotifyTree';
+export { SpotifyTree } from "./SpotifyTree";
