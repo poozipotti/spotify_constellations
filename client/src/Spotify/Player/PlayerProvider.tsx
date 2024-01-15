@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   useGetNextSong,
   useGetSpotifyPlaybackState,
   usePlayPause,
   usePlayPlaylist,
+  useSetShuffle,
   useSkipSong,
   useSkipToPrevSong,
   useTransitionTrackWhenDoneEffect,
@@ -11,7 +12,6 @@ import {
 import { Episode, PlaybackState, Track } from "@spotify/web-api-ts-sdk";
 import { useHistoryPlaylist } from "@app/SpotifyTree/historyHooks";
 import { useDebouncedCallback } from "use-debounce";
-import { useSyncHistoryPlaylist, useSyncHistoryPlaylistEffect } from "./PlayerHistoryHooks";
 
 export interface player {
   togglePlay: () => void;
@@ -62,12 +62,12 @@ export const SpotifyPlayerProvider: React.FC<React.PropsWithChildren> = ({
     loading;
   });
 
-  useSyncHistoryPlaylistEffect({
-    ...playbackStateQuery.data,
-    nextTrack: asTrack(nextTrackData),
-    currentTrack,
-  });
-
+  const { mutate: setShuffle } = useSetShuffle();
+  React.useEffect(() => {
+    if (playbackStateQuery.data?.shuffle_state) {
+      setShuffle({ shouldShuffle: false });
+    }
+  }, [playbackStateQuery.data?.shuffle_state, setShuffle]);
   useTransitionTrackWhenDoneEffect();
   return (
     <PlayerContext.Provider

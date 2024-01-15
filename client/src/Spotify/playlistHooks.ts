@@ -5,7 +5,6 @@ import {
   useQueryClient,
 } from "react-query";
 import { useSpotify } from ".";
-import { Max } from "sequelize-typescript";
 
 const PAGE_SIZE = 49;
 
@@ -113,6 +112,8 @@ export function useAddTracksToPlaylist() {
     {
       onSuccess: () => {
         queryClient.invalidateQueries("playlist");
+        queryClient.invalidateQueries("playbackState");
+        queryClient.invalidateQueries("user-queue");
       },
     }
   );
@@ -136,6 +137,8 @@ export function useDeleteTracksFromPlaylist() {
     {
       onSuccess: () => {
         queryClient.invalidateQueries("playlist");
+        queryClient.invalidateQueries("playbackState");
+        queryClient.invalidateQueries("user-queue");
       },
     }
   );

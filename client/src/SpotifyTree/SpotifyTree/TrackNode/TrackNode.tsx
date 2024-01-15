@@ -6,8 +6,9 @@ export const TrackNode: React.FC<
   PropsWithChildren<{
     track: { spotify_id: string; id?: number };
     selected: boolean;
+    onClick?: ()=>void;
   }>
-> = ({ track, selected }) => {
+> = ({ track, selected, onClick }) => {
   const {
     data: TrackData,
     isLoading: trackLoading,
@@ -19,7 +20,7 @@ export const TrackNode: React.FC<
         selected={selected}
         track={TrackData}
         isLoading={trackLoading}
-        onClick={() => {}}
+        onClick={onClick}
       >
         {!!trackError && (
           <p className="text-orange-200 p-4 text-center w-full">
