@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSpotify } from "..";
 import { useEffect } from "react";
-import { PlaybackState, Playlist } from "@spotify/web-api-ts-sdk";
+import { PlaybackState } from "@spotify/web-api-ts-sdk";
 
 export function useGetSpotifyPlaybackState() {
   const sdk = useSpotify();

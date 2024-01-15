@@ -56,7 +56,7 @@ export function useHistoryLastThreeSongs() {
   return historyPlaylistQuery;
 }
 
-export function useSyncHistoryWebEffect(
+export function useSyncHistoryWebNextSongEffect(
   childrenTracks?: TrackModel[],
   selectedTrack?: TrackModel,
   currentTrack?: TrackModel
