@@ -18,26 +18,67 @@ add new songs to the spotify player as previous songs was very slow and felt sti
 > implemented yet. To be able to start Constellations make sure to have spotify running in the background
 > start playing a song.
 
+
+## Spotify Setup instructions
+
+This app requires you to setup an app an have a spotify client id [Instructions can be found here](https://developer.spotify.com/documentation/web-api/tutorials/getting-started)
+
 ## How to run locally
 
 clone this repo:
 
 ```bash
-git clone https://github.com/poozipotti/spotify_web.git
+git clone https://github.com/poozipotti/spotify_constellations.git
 
 ```
-
-### Client
-> This app consists of an express server and a react app which acts as a client to consume data from the server. 
-
-- Use `cd <path-to-repo>/spotify_web/api`
-  to navigate to the server folder
-
-- Open the [/api Readme](./api/README.md) and follow the instructions found there to start the server
 
 ### Api
 
 - Use `cd <path-to-repo>/spotify_web/client`
   to navigate to the react app folder
 
-- Open the [/client Readme](./client/README.md) and follow the instructions found there to start the react app
+- Copy the contents of example.env to .env before running any commands
+
+docker is required to run:
+
+```bash
+docker compose up --build
+```
+
+### Client
+
+Copy the contents of example.env to .env before running any commands, and add your spotify client id
+yarn is required to run.
+
+- Use `cd <path-to-repo>/spotify_web/api`
+  to navigate to the server folder
+
+- First install the node_modules.
+
+```bash
+yarn
+```
+
+- Next, run the development server
+
+
+```bash
+yarn dev
+```
+
+The website should be live at `localhost:3000`
+
+
+## Thank you Bezkoder
+
+The api for this app wasbased off of designs from [Bezkoder](https://www.bezkoder.com)
+from these articles specifically
+
+> [Dockerize Node.js Express and MySQL example - Docker Compose](https://www.bezkoder.com/docker-compose-nodejs-mysql/)
+> [Build Node.js Rest APIs with Express & MySQL](https://www.bezkoder.com/node-js-rest-api-express-mysql/)
+
+The main system changes I made are as follows
+
+- migrate to typescript and use sequilize-typescript as the main driver
+
+- use postgres instead of MySQL (I am just more familiar with it, no technical reason)
