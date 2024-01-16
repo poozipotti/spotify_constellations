@@ -1,12 +1,12 @@
 import React, { PropsWithChildren } from "react";
 import { CurrentTrackNode } from "./CurrentTrackNode";
-import { TrackNode } from "@app/SpotifyTree/SpotifyTree/TrackNode/TrackNode";
-import { useSpotifyTree } from "../hooks";
+import { TrackNode } from "@app/SpotifyConstellationGraph/SpotifyConstellationGraph/TrackNode/TrackNode";
+import { useSpotifyConstellationGraph } from "../hooks";
 import { useSpotifyPlayer } from "@app/Spotify/Player";
 import { useHistoryPlaylist } from "../historyHooks";
 
-export const SpotifyTree: React.FC<PropsWithChildren> = () => {
-  const tree = useSpotifyTree();
+export const SpotifyConstellationGraph: React.FC<PropsWithChildren> = () => {
+  const constellationGraph = useSpotifyConstellationGraph();
   const player = useSpotifyPlayer();
   const historyPlaylist = useHistoryPlaylist();
   const playingHistoryPlaylist =
@@ -16,13 +16,13 @@ export const SpotifyTree: React.FC<PropsWithChildren> = () => {
       <CurrentTrackNode />
       {playingHistoryPlaylist && (
         <div className="flex justify-center gap-6 w-screen overflow-auto">
-          {tree?.state.childTracks.map((track) => (
+          {constellationGraph?.state.childTracks.map((track) => (
             <TrackNode
               track={track}
               key={track.id}
-              selected={tree.state.selectedTrack?.id === track.id}
+              selected={constellationGraph.state.selectedTrack?.id === track.id}
               onClick={() => {
-                tree.setSelectedTrack(track);
+                constellationGraph.setSelectedTrack(track);
               }}
             />
           ))}

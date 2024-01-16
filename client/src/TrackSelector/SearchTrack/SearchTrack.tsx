@@ -2,15 +2,15 @@ import React from "react";
 import { useSearchTracks } from "@app/Spotify/searchHooks";
 import { Input } from "@core/Input";
 import { Loader } from "@core/Loader";
-import * as TrackVisualizer from "@app/SpotifyTree/SpotifyTree/TrackVisualizer";
-import { useSpotifyTree } from "@app/SpotifyTree/hooks";
+import * as TrackVisualizer from "@app/SpotifyConstellationGraph/SpotifyConstellationGraph/TrackVisualizer";
+import { useSpotifyConstellationGraph } from "@app/SpotifyConstellationGraph/hooks";
 
 export const SearchTrack: React.FC = () => {
   const [searchData, setSearchTerm] = useSearchTracks();
   const tracks = searchData.data?.tracks.items;
   const loading = searchData.isLoading;
   const [isOpen, setIsOpen] = React.useState(false);
-  const tree = useSpotifyTree();
+  const constellationGraph = useSpotifyConstellationGraph();
 
   return (
     <>
@@ -102,7 +102,7 @@ export const SearchTrack: React.FC = () => {
                     track={track}
                     size={"w-full md:w-max h-24 px-4 pointer"}
                     onClick={() => {
-                      tree?.addSuggestion.mutate(
+                      constellationGraph?.addSuggestion.mutate(
                         {
                           name: track.name,
                           spotify_id: track.id,

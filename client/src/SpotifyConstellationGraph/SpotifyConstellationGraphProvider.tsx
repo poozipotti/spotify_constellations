@@ -11,7 +11,7 @@ import { TCreateTrackData } from "@app/WebSdk";
 import { useSpotifyPlayer } from "@app/Spotify/Player";
 import { useSyncHistoryWebNextTrackEffect } from "./historyHooks";
 
-interface tree {
+interface constellationGraph {
   addSuggestion: {
     isPending: boolean;
     mutate: (
@@ -30,9 +30,9 @@ interface tree {
   };
 }
 
-export const TreeContext = React.createContext<tree | undefined>(undefined);
+export const ConstellationGraphContext = React.createContext<constellationGraph | undefined>(undefined);
 
-const SpotifyTreeProviderInternal: React.FC<React.PropsWithChildren> = ({
+const SpotifyConstellationGraphProviderInternal: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
   const player = useSpotifyPlayer();
@@ -83,7 +83,7 @@ const SpotifyTreeProviderInternal: React.FC<React.PropsWithChildren> = ({
     currentTrack
   );
   return (
-    <TreeContext.Provider
+    <ConstellationGraphContext.Provider
       value={{
         state,
         setSelectedTrack,
@@ -101,15 +101,15 @@ const SpotifyTreeProviderInternal: React.FC<React.PropsWithChildren> = ({
       }}
     >
       {children}
-    </TreeContext.Provider>
+    </ConstellationGraphContext.Provider>
   );
 };
-export const SpotifyTreeProvider: React.FC<React.PropsWithChildren> = ({
+export const SpotifyConstellationGraphProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
   return (
     <SpotifyPlayerProvider>
-      <SpotifyTreeProviderInternal>{children}</SpotifyTreeProviderInternal>
+      <SpotifyConstellationGraphProviderInternal>{children}</SpotifyConstellationGraphProviderInternal>
     </SpotifyPlayerProvider>
   );
 };

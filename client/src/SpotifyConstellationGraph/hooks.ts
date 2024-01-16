@@ -1,12 +1,12 @@
 import React from "react";
-import { TreeContext } from "@app/SpotifyTree/SpotifyTreeProvider";
+import { ConstellationGraphContext } from "@app/SpotifyConstellationGraph/SpotifyConstellationGraphProvider";
 import { useHistoryPlaylist } from "./historyHooks";
 import { Track } from "@spotify/web-api-ts-sdk";
 
-export const useSpotifyTree = () => {
-  const tree = React.useContext(TreeContext);
+export const useSpotifyConstellationGraph = () => {
+  const constellationGraph = React.useContext(ConstellationGraphContext);
 
-  return tree;
+  return constellationGraph;
 };
 
 export const useIsTrackInHistoryPlaylist = (track?: Track) => {

@@ -4,7 +4,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { SpotifyProvider } from "@app/Spotify/SpotifyProvider";
 import { SearchTrack } from "@app/TrackSelector/SearchTrack";
 import { Button } from "./Core/Button";
-import { SpotifyTree } from "./SpotifyTree";
+import { SpotifyConstellationGraph } from "./SpotifyConstellationGraph";
 
 const queryClient = new QueryClient();
 
@@ -26,7 +26,7 @@ const App: React.FC = () => {
         ) : (
           <SpotifyProvider>
             <div>
-              <SpotifyTree />
+              <SpotifyConstellationGraph />
             </div>
             <div className="flex flex-col justify-end self-end max-w-screen-lg mx-auto">
               <SearchTrack />

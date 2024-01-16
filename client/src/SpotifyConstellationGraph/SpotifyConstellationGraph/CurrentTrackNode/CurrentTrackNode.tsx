@@ -1,14 +1,14 @@
 import React, { PropsWithChildren } from "react";
-import * as TrackVisualizer from "@app/SpotifyTree/SpotifyTree/TrackVisualizer";
+import * as TrackVisualizer from "@app/SpotifyConstellationGraph/SpotifyConstellationGraph/TrackVisualizer";
 import { useSpotifyPlayer } from "@app/Spotify/Player";
 import { Button } from "@core/Button";
-import { useSpotifyTree } from "@app/SpotifyTree/hooks";
-import { useHistoryPlaylist } from "@app/SpotifyTree/historyHooks";
+import { useSpotifyConstellationGraph } from "@app/SpotifyConstellationGraph/hooks";
+import { useHistoryPlaylist } from "@app/SpotifyConstellationGraph/historyHooks";
 
 export const CurrentTrackNode: React.FC<PropsWithChildren> = () => {
   const player = useSpotifyPlayer();
-  const tree = useSpotifyTree();
-  const inTree = !!(tree?.state.currentTrack && !tree?.state.isLoading);
+  const constellationGraph = useSpotifyConstellationGraph();
+  const inConstellationGraph = !!(constellationGraph?.state.currentTrack && !constellationGraph?.state.isLoading);
   const currentTrack = player.state?.currentTrack;
   const historyPlaylist = useHistoryPlaylist();
   const playingHistoryPlaylist =
@@ -36,13 +36,13 @@ export const CurrentTrackNode: React.FC<PropsWithChildren> = () => {
         </div>
         <NextButton />
       </div>
-      {!(inTree && playingHistoryPlaylist) && (
-        <div className="flex flex-col items-center gap-4">
-          {!inTree && (
+      {!(inConstellationGraph && playingHistoryPlaylist) && (
+        <div className="flex flex-col items-center gap-4 p-t-4">
+          {!inConstellationGraph && (
             <Button
               onClick={() => {
-                if (currentTrack && !tree?.addSuggestion.isPending) {
-                  tree?.addSuggestion.mutate({
+                if (currentTrack && !constellationGraph?.addSuggestion.isPending) {
+                  constellationGraph?.addSuggestion.mutate({
                     name: currentTrack.name,
                     spotify_id: currentTrack.id,
                   });
@@ -52,7 +52,7 @@ export const CurrentTrackNode: React.FC<PropsWithChildren> = () => {
               Add Track To Spotify Constellation
             </Button>
           )}
-          {!playingHistoryPlaylist && inTree && (
+          {!playingHistoryPlaylist && inConstellationGraph && (
             <Button
               onClick={() => {
                 player.playHistoryPlaylist();
