@@ -16,7 +16,7 @@ export const CurrentTrackNode: React.FC<PropsWithChildren> = () => {
   const constellationGraph = useSpotifyConstellationGraph();
   const currentTrack = player.state?.currentTrack;
   const inConstellationGraph = !!(
-    currentTrack && !constellationGraph?.state.isLoading
+    constellationGraph?.state.currentTrack && !constellationGraph?.state.isLoading
   );
   const lastThreeTracks = useHistoryLastThreeTracks();
   const inLastThreeTracks = !!lastThreeTracks.data?.items.find(
@@ -30,6 +30,7 @@ export const CurrentTrackNode: React.FC<PropsWithChildren> = () => {
   const addToHistory = useAddTracksToHistoryPlaylist();
   const playHistory = usePlayHistoryPlaylist();
   const queryClient = useQueryClient();
+  console.log({inConstellationGraph,currentConst:constellationGraph?.state.currentTrack})
   return (
     <div>
       <TrackVisualizer.TrackTitle track={player.state?.currentTrack} />
