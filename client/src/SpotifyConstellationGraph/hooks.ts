@@ -1,6 +1,6 @@
 import React from "react";
 import { ConstellationGraphContext } from "@app/SpotifyConstellationGraph/SpotifyConstellationGraphProvider";
-import { useHistoryPlaylist } from "./historyHooks";
+import { useHistoryPlaylist } from "@app/HistoryPlaylist/historyPlaylistHooks";
 import { Track } from "@spotify/web-api-ts-sdk";
 
 export const useSpotifyConstellationGraph = () => {

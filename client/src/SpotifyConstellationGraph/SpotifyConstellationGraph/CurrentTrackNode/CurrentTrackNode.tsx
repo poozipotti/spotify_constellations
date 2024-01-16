@@ -3,7 +3,7 @@ import * as TrackVisualizer from "@app/SpotifyConstellationGraph/SpotifyConstell
 import { useSpotifyPlayer } from "@app/Spotify/Player";
 import { Button } from "@core/Button";
 import { useSpotifyConstellationGraph } from "@app/SpotifyConstellationGraph/hooks";
-import { useHistoryPlaylist } from "@app/SpotifyConstellationGraph/historyHooks";
+import { useHistoryPlaylist } from "@app/HistoryPlaylist/historyPlaylistHooks";
 
 export const CurrentTrackNode: React.FC<PropsWithChildren> = () => {
   const player = useSpotifyPlayer();

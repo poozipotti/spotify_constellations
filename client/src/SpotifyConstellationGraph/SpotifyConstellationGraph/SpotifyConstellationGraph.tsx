@@ -3,7 +3,7 @@ import { CurrentTrackNode } from "./CurrentTrackNode";
 import { TrackNode } from "@app/SpotifyConstellationGraph/SpotifyConstellationGraph/TrackNode/TrackNode";
 import { useSpotifyConstellationGraph } from "../hooks";
 import { useSpotifyPlayer } from "@app/Spotify/Player";
-import { useHistoryPlaylist } from "../historyHooks";
+import { useHistoryPlaylist } from "@app/HistoryPlaylist/historyPlaylistHooks";
 
 export const SpotifyConstellationGraph: React.FC<PropsWithChildren> = () => {
   const constellationGraph = useSpotifyConstellationGraph();

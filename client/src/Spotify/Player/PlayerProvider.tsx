@@ -10,7 +10,7 @@ import {
   useTransitionTrackWhenDoneEffect,
 } from "./PlayerHooks";
 import { Episode, PlaybackState, Track } from "@spotify/web-api-ts-sdk";
-import { useHistoryPlaylist } from "@app/SpotifyConstellationGraph/historyHooks";
+import { useHistoryPlaylist } from "@app/HistoryPlaylist/historyPlaylistHooks";
 import { useDebouncedCallback } from "use-debounce";
 
 export interface player {
