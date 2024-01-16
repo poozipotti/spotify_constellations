@@ -59,8 +59,7 @@ export const CurrentTrackNode: React.FC<PropsWithChildren> = () => {
           {(!inConstellationGraph || !inLastThreeTracks) && (
             <Button
               isLoading={
-                constellationGraph?.addChild.isPending ||
-                !currentTrack ||
+                constellationGraph?.addChild.isPending || !currentTrack ||
                 addToHistory.isPending
               }
               onClick={() => {
