@@ -27,11 +27,6 @@ git clone https://github.com/poozipotti/spotify_web.git
 
 ```
 
-## Spotify Setup instructions
-This app requires a spotify dev key [S]
-
-
-
 ### Client
 > This app consists of an express server and a react app which acts as a client to consume data from the server. To run the app locally,
 > the server must be started and running before the client can start or it will fail.
