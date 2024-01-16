@@ -3,21 +3,17 @@ import {
   useGetNextTrack,
   useGetSpotifyPlaybackState,
   usePlayPause,
-  usePlayPlaylist,
   useSetShuffle,
   useSkipTrack,
   useSkipToPrevTrack,
   useTransitionTrackWhenDoneEffect,
 } from "./PlayerHooks";
 import { Episode, PlaybackState, Track } from "@spotify/web-api-ts-sdk";
-import { useHistoryPlaylist } from "@app/HistoryPlaylist/historyPlaylistHooks";
-import { useDebouncedCallback } from "use-debounce";
 
 export interface player {
   togglePlay: () => void;
   skipToNextTrack: () => void;
   skipToPrevTrack: () => void;
-  playHistoryPlaylist: () => void;
   isLoading: boolean;
   state: Partial<PlaybackState> & {
     nextTrack: Track | undefined;
@@ -29,7 +25,6 @@ export const PlayerContext = React.createContext<player>({
   togglePlay: () => {},
   skipToNextTrack: () => {},
   skipToPrevTrack: () => {},
-  playHistoryPlaylist: () => {},
   state: { nextTrack: undefined, currentTrack: undefined },
 });
 
@@ -43,16 +38,6 @@ export const SpotifyPlayerProvider: React.FC<React.PropsWithChildren> = ({
   const playbackStateQuery = useGetSpotifyPlaybackState();
   const currentTrack = asTrack(playbackStateQuery?.data?.item);
   const { data: nextTrackData } = useGetNextTrack();
-  const historyPlaylistQuery = useHistoryPlaylist({ canCreate: true });
-  const playPlaylist = usePlayPlaylist();
-  const playHistoryPlaylistDebounced = useDebouncedCallback(() => {
-    if (historyPlaylistQuery.data?.uri) {
-      playPlaylist.mutate({
-        contextUri: historyPlaylistQuery.data.uri,
-        offset: currentTrack,
-      });
-    }
-  }, 500);
 
   const playPauseQuery = usePlayPause();
   const skipQuery = useSkipTrack();
@@ -74,7 +59,6 @@ export const SpotifyPlayerProvider: React.FC<React.PropsWithChildren> = ({
       value={{
         togglePlay: playPauseQuery.mutate,
         skipToNextTrack: skipQuery.mutate,
-        playHistoryPlaylist: playHistoryPlaylistDebounced,
         skipToPrevTrack: skipToPrevTrack.mutate,
         isLoading,
         state: {

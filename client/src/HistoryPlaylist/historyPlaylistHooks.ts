@@ -8,8 +8,7 @@ import {
 import { useGetUser } from "@app/Spotify/userhooks";
 import { useLocalStorage } from "@app/hooks";
 import { Track } from "@spotify/web-api-ts-sdk";
-import { useEffect, useState } from "react";
-import { useDebouncedCallback } from "use-debounce";
+import { useCallback, useEffect } from "react";
 
 export function useHistoryPlaylist(
   { canCreate }: { canCreate: boolean } = { canCreate: false }
@@ -55,67 +54,53 @@ export function useHistoryLastThreeTracks() {
   return historyPlaylistQuery;
 }
 
-export function usePlayHistoryPlaylist(currentTrack?: Track) {
-  const [needsToPlay, setNeedsToPlay] = useState(false);
-  const historyPlaylistQuery = useHistoryPlaylist({ canCreate: true });
+export function useAddTracksToHistoryPlaylist() {
+  const historyPlaylistQuery = useHistoryPlaylist();
   const playlistId = historyPlaylistQuery.data?.id;
-  const playlistUri = historyPlaylistQuery.data?.uri;
-  const lastThreeTracksQuery = useHistoryLastThreeTracks();
-  const isCurrentTrackInLastThreeTracks =
-    !!lastThreeTracksQuery.data?.items.find(
-      (playlistedTrack) => playlistedTrack.track.id === currentTrack?.id
-    );
   const { mutate: addToPlaylist, isPending: addToPlaylistIsLoading } =
     useAddTracksToPlaylist();
 
-  const playPlaylist = usePlayPlaylist();
-  const playHistoryPlaylistDebounced = useDebouncedCallback(() => {
-    setNeedsToPlay(true);
-  }, 500);
-  useEffect(() => {
-    if (
-      currentTrack &&
-      !isCurrentTrackInLastThreeTracks &&
-      needsToPlay &&
-      playlistId &&
-      !addToPlaylistIsLoading
-    ) {
-      addToPlaylist({
-        playlistId,
-        tracks: [currentTrack],
-      });
-    }
-  }, [
-    addToPlaylistIsLoading,
-    currentTrack,
-    isCurrentTrackInLastThreeTracks,
-    needsToPlay,
-    playlistId,
-  ]);
-  useEffect(() => {
-    if (
-      needsToPlay &&
-      playlistUri &&
-      isCurrentTrackInLastThreeTracks &&
-      historyPlaylistQuery.data?.tracks.total
-    )
-      playPlaylist.mutate(
-        {
-          contextUri: playlistUri,
-        },
-        {
-          onSuccess: () => {
-            setNeedsToPlay(false);
+  const addTracksToHistoryPlaylist = useCallback(
+    (
+      track: Track | undefined,
+      options?: Parameters<typeof addToPlaylist>[1]
+    ) => {
+      if (track && playlistId && !addToPlaylistIsLoading) {
+        return addToPlaylist(
+          {
+            playlistId,
+            tracks: [track],
           },
-        }
-      );
-  }, [
-    historyPlaylistQuery.data?.tracks.total,
-    needsToPlay,
-    currentTrack,
-    history,
-    isCurrentTrackInLastThreeTracks,
-    playlistUri,
-  ]);
-  return playHistoryPlaylistDebounced;
+          options
+        );
+      }
+    },
+    [addToPlaylist, addToPlaylistIsLoading, playlistId]
+  );
+  return addTracksToHistoryPlaylist;
+}
+export function usePlayHistoryPlaylist() {
+  const historyPlaylistQuery = useHistoryPlaylist();
+  const playPlaylistQuery = usePlayPlaylist();
+  const playPlaylist = useCallback(
+    (
+      track: Track | undefined,
+      options?: Parameters<typeof playPlaylistQuery.mutate>[1]
+    ) => {
+      if (historyPlaylistQuery.data?.uri) {
+        const mutationData = track?.uri
+          ? {
+              contextUri: historyPlaylistQuery.data?.uri,
+              offset: { uri: track.uri },
+            }
+          : {
+              contextUri: historyPlaylistQuery.data?.uri,
+            };
+            console.log(mutationData)
+        return playPlaylistQuery.mutate(mutationData, options);
+      }
+    },
+    [historyPlaylistQuery.data?.uri]
+  );
+  return playPlaylist;
 }

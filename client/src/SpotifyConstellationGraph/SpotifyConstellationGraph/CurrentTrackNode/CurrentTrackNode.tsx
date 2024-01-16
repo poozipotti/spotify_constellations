@@ -3,16 +3,33 @@ import * as TrackVisualizer from "@app/SpotifyConstellationGraph/SpotifyConstell
 import { useSpotifyPlayer } from "@app/Spotify/Player";
 import { Button } from "@core/Button";
 import { useSpotifyConstellationGraph } from "@app/SpotifyConstellationGraph/hooks";
-import { useHistoryPlaylist } from "@app/HistoryPlaylist/historyPlaylistHooks";
+import {
+  useAddTracksToHistoryPlaylist,
+  useHistoryLastThreeTracks,
+  useHistoryPlaylist,
+  usePlayHistoryPlaylist,
+} from "@app/HistoryPlaylist/historyPlaylistHooks";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const CurrentTrackNode: React.FC<PropsWithChildren> = () => {
   const player = useSpotifyPlayer();
   const constellationGraph = useSpotifyConstellationGraph();
-  const inConstellationGraph = !!(constellationGraph?.state.currentTrack && !constellationGraph?.state.isLoading);
   const currentTrack = player.state?.currentTrack;
-  const historyPlaylist = useHistoryPlaylist();
+  const inConstellationGraph = !!(
+    currentTrack && !constellationGraph?.state.isLoading
+  );
+  const lastThreeTracks = useHistoryLastThreeTracks();
+  const inLastThreeTracks = !!lastThreeTracks.data?.items.find(
+    (PlaylistedTrack) =>
+      currentTrack && PlaylistedTrack?.track.id === currentTrack?.id
+  );
+
+  const historyPlaylist = useHistoryPlaylist({ canCreate: true });
   const playingHistoryPlaylist =
     player.state.context?.uri === historyPlaylist.data?.uri;
+  const addToHistory = useAddTracksToHistoryPlaylist();
+  const playHistory = usePlayHistoryPlaylist();
+  const queryClient = useQueryClient();
   return (
     <div>
       <TrackVisualizer.TrackTitle track={player.state?.currentTrack} />
@@ -38,10 +55,17 @@ export const CurrentTrackNode: React.FC<PropsWithChildren> = () => {
       </div>
       {!(inConstellationGraph && playingHistoryPlaylist) && (
         <div className="flex flex-col items-center gap-4 p-t-4">
-          {!inConstellationGraph && (
+          {(!inConstellationGraph || !inLastThreeTracks) && (
             <Button
               onClick={() => {
-                if (currentTrack && !constellationGraph?.addChild.isPending) {
+                if (currentTrack && !inLastThreeTracks) {
+                  addToHistory(currentTrack);
+                }
+                if (
+                  currentTrack &&
+                  !constellationGraph?.addChild.isPending &&
+                  !inConstellationGraph
+                ) {
                   constellationGraph?.addChild.mutate({
                     name: currentTrack.name,
                     spotify_id: currentTrack.id,
@@ -52,15 +76,26 @@ export const CurrentTrackNode: React.FC<PropsWithChildren> = () => {
               Add Track To Spotify Constellation
             </Button>
           )}
-          {!playingHistoryPlaylist && inConstellationGraph && (
-            <Button
-              onClick={() => {
-                player.playHistoryPlaylist();
-              }}
-            >
-              Enter Spotify constellation
-            </Button>
-          )}
+          {!playingHistoryPlaylist &&
+            inConstellationGraph &&
+            inLastThreeTracks && (
+              <Button
+                onClick={() => {
+                  playHistory(currentTrack, {
+                    onSuccess: () => {
+                      queryClient.invalidateQueries({
+                        queryKey: ["playbackState"],
+                      });
+                      queryClient.invalidateQueries({
+                        queryKey: ["user-queue"],
+                      });
+                    },
+                  });
+                }}
+              >
+                Enter Spotify Constellation
+              </Button>
+            )}
         </div>
       )}
     </div>

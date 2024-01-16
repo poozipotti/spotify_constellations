@@ -130,7 +130,7 @@ export function useSyncHistoryWebEffectAddTracks(
   selectedTrack?: TrackModel,
   currentTrack?: TrackModel
 ) {
-  const historyPlaylistQuery = useHistoryPlaylist({ canCreate: true });
+  const historyPlaylistQuery = useHistoryPlaylist();
 
   const lastThreeTracksQuery = useHistoryLastThreeTracks();
   const lastThreeTracks = useMemo(

@@ -57,7 +57,7 @@ export function usePlayPlaylist() {
       offset,
     }: {
       contextUri: string;
-      offset?: object;
+      offset?: {uri:string, position?:number};
     }) => {
       if (deviceId) {
         sdk.player.startResumePlayback(deviceId, contextUri, undefined, offset);
