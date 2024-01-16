@@ -15,6 +15,9 @@ The system synchronizes the choices the user makes while traversing the constell
 This became necessary because it was the only method I could find that allowed for smooth playback. 
 It also has the benefit of allowing users to save their progress and return to it later.
 
+The bulk of my work so far has been finding a stable way to synchronize the app state to spotify, once this is stable enough much more time 
+will be spent on ease of navigation and new features. 
+
 > Spotify Constellations is still in an unfinished state and does not have a player implemented yet. 
 > To be able to start Constellations make sure to have spotify running in the background start playing a song.
 
