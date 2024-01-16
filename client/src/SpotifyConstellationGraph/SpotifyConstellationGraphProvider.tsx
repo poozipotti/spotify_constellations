@@ -12,7 +12,7 @@ import { useSpotifyPlayer } from "@app/Spotify/Player";
 import { useSyncHistoryWebNextTrackEffect } from "./historyHooks";
 
 interface constellationGraph {
-  addSuggestion: {
+  addChild: {
     isPending: boolean;
     mutate: (
       track: TCreateTrackData,
@@ -46,7 +46,7 @@ const SpotifyConstellationGraphProviderInternal: React.FC<React.PropsWithChildre
   const selectedChildTrack = selectedChildTrackQuery?.data?.track;
   const { data: childrenTracks } = useGetTrackChildren(currentTrack?.id);
   const { data: parentTracks } = useGetTrackParents(currentTrack?.id);
-  const { mutate: addSuggestion, ...createTrackMutate } = useCreateTrack();
+  const { mutate: addChild, ...createTrackMutate } = useCreateTrack();
   const [selectedTrackId, setSelectedTrackId] = React.useState<
     string | undefined
   >(undefined);
@@ -87,14 +87,14 @@ const SpotifyConstellationGraphProviderInternal: React.FC<React.PropsWithChildre
       value={{
         state,
         setSelectedTrack,
-        addSuggestion: {
+        addChild: {
           ...createTrackMutate,
           mutate: (
             track: TCreateTrackData,
             options?: { onSuccess: () => void }
           ) => {
             if (!isLoading) {
-              addSuggestion({ ...track, parent_id: currentTrack?.id }, options);
+              addChild({ ...track, parent_id: currentTrack?.id }, options);
             }
           },
         },

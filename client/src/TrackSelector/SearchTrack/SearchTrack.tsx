@@ -102,7 +102,7 @@ export const SearchTrack: React.FC = () => {
                     track={track}
                     size={"w-full md:w-max h-24 px-4 pointer"}
                     onClick={() => {
-                      constellationGraph?.addSuggestion.mutate(
+                      constellationGraph?.addChild.mutate(
                         {
                           name: track.name,
                           spotify_id: track.id,

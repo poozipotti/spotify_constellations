@@ -41,8 +41,8 @@ export const CurrentTrackNode: React.FC<PropsWithChildren> = () => {
           {!inConstellationGraph && (
             <Button
               onClick={() => {
-                if (currentTrack && !constellationGraph?.addSuggestion.isPending) {
-                  constellationGraph?.addSuggestion.mutate({
+                if (currentTrack && !constellationGraph?.addChild.isPending) {
+                  constellationGraph?.addChild.mutate({
                     name: currentTrack.name,
                     spotify_id: currentTrack.id,
                   });
