@@ -15,8 +15,6 @@ git clone https://github.com/poozipotti/spotify_web.git
 
 ```
 ### TODO Spotify Setup instructions
-this is a todo section because I need to lookup the spotify auth instructions again and add them to the 
-readme. 
 
 
 

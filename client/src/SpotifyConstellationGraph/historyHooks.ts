@@ -87,7 +87,7 @@ export function useSyncHistoryWebEffectDeleteTracks(
   );
   const lastTrack = useMemo(
     () =>
-      lastThreeTracks
+      lastThreeTracks?.length
         ? (lastThreeTracks[lastThreeTracks?.length - 1].track as Track)
         : undefined,
     [lastThreeTracks]

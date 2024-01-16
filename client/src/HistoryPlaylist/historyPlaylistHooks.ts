@@ -57,15 +57,14 @@ export function useHistoryLastThreeTracks() {
 export function useAddTracksToHistoryPlaylist() {
   const historyPlaylistQuery = useHistoryPlaylist();
   const playlistId = historyPlaylistQuery.data?.id;
-  const { mutate: addToPlaylist, isPending: addToPlaylistIsLoading } =
-    useAddTracksToPlaylist();
+  const { mutate: addToPlaylist, ...mtnData } = useAddTracksToPlaylist();
 
   const addTracksToHistoryPlaylist = useCallback(
     (
       track: Track | undefined,
       options?: Parameters<typeof addToPlaylist>[1]
     ) => {
-      if (track && playlistId && !addToPlaylistIsLoading) {
+      if (track && playlistId && !mtnData.isPending) {
         return addToPlaylist(
           {
             playlistId,
@@ -75,9 +74,9 @@ export function useAddTracksToHistoryPlaylist() {
         );
       }
     },
-    [addToPlaylist, addToPlaylistIsLoading, playlistId]
+    [addToPlaylist, mtnData.isPending, playlistId]
   );
-  return addTracksToHistoryPlaylist;
+  return { ...mtnData, mutate: addTracksToHistoryPlaylist };
 }
 export function usePlayHistoryPlaylist() {
   const historyPlaylistQuery = useHistoryPlaylist();
@@ -96,11 +95,11 @@ export function usePlayHistoryPlaylist() {
           : {
               contextUri: historyPlaylistQuery.data?.uri,
             };
-            console.log(mutationData)
+        console.log(mutationData);
         return playPlaylistQuery.mutate(mutationData, options);
       }
     },
     [historyPlaylistQuery.data?.uri]
   );
-  return playPlaylist;
+  return { ...playPlaylistQuery, mutate: playPlaylist };
 }

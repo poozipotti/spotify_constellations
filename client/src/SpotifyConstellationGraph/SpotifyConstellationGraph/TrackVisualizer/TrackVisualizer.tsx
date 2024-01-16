@@ -31,7 +31,7 @@ export const TrackArtists: React.FC<Partial<Pick<Props, "track">>> = ({
   );
 };
 export const TrackVisualizer: React.FC<PropsWithChildren<Partial<Props>>> = (
-  props = {},
+  props = {}
 ) => {
   const {
     track,
@@ -45,7 +45,7 @@ export const TrackVisualizer: React.FC<PropsWithChildren<Partial<Props>>> = (
   } = props;
   if (children && nextTrack) {
     throw new Error(
-      "cannot pass children and show progress in TrackVisualizer",
+      "cannot pass children and show progress in TrackVisualizer"
     );
   }
   return (

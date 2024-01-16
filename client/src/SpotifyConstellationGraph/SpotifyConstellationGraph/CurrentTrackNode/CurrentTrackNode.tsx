@@ -16,7 +16,8 @@ export const CurrentTrackNode: React.FC<PropsWithChildren> = () => {
   const constellationGraph = useSpotifyConstellationGraph();
   const currentTrack = player.state?.currentTrack;
   const inConstellationGraph = !!(
-    constellationGraph?.state.currentTrack && !constellationGraph?.state.isLoading
+    constellationGraph?.state.currentTrack &&
+    !constellationGraph?.state.isLoading
   );
   const lastThreeTracks = useHistoryLastThreeTracks();
   const inLastThreeTracks = !!lastThreeTracks.data?.items.find(
@@ -30,7 +31,6 @@ export const CurrentTrackNode: React.FC<PropsWithChildren> = () => {
   const addToHistory = useAddTracksToHistoryPlaylist();
   const playHistory = usePlayHistoryPlaylist();
   const queryClient = useQueryClient();
-  console.log({inConstellationGraph,currentConst:constellationGraph?.state.currentTrack})
   return (
     <div>
       <TrackVisualizer.TrackTitle track={player.state?.currentTrack} />
@@ -58,9 +58,14 @@ export const CurrentTrackNode: React.FC<PropsWithChildren> = () => {
         <div className="flex flex-col items-center gap-4 p-t-4">
           {(!inConstellationGraph || !inLastThreeTracks) && (
             <Button
+              isLoading={
+                constellationGraph?.addChild.isPending ||
+                !currentTrack ||
+                addToHistory.isPending
+              }
               onClick={() => {
                 if (currentTrack && !inLastThreeTracks) {
-                  addToHistory(currentTrack);
+                  addToHistory.mutate(currentTrack);
                 }
                 if (
                   currentTrack &&
@@ -81,14 +86,15 @@ export const CurrentTrackNode: React.FC<PropsWithChildren> = () => {
             inConstellationGraph &&
             inLastThreeTracks && (
               <Button
+                isLoading={player.isLoading || playHistory.isPending}
                 onClick={() => {
-                  playHistory(currentTrack, {
+                  playHistory.mutate(currentTrack, {
                     onSuccess: () => {
                       queryClient.invalidateQueries({
-                        queryKey: ["playbackState"],
-                      });
-                      queryClient.invalidateQueries({
                         queryKey: ["user-queue"],
+                      });
+                      return queryClient.invalidateQueries({
+                        queryKey: ["playbackState"],
                       });
                     },
                   });
