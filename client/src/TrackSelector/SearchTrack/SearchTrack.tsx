@@ -5,7 +5,7 @@ import { Loader } from "@core/Loader";
 import * as TrackVisualizer from "@app/SpotifyTree/SpotifyTree/TrackVisualizer";
 import { useSpotifyTree } from "@app/SpotifyTree/hooks";
 
-export const SearchSong: React.FC = () => {
+export const SearchTrack: React.FC = () => {
   const [searchData, setSearchTerm] = useSearchTracks();
   const tracks = searchData.data?.tracks.items;
   const loading = searchData.isLoading;

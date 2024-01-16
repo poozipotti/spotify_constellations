@@ -1,12 +1,12 @@
 import React from "react";
 import {
-  useGetNextSong,
+  useGetNextTrack,
   useGetSpotifyPlaybackState,
   usePlayPause,
   usePlayPlaylist,
   useSetShuffle,
-  useSkipSong,
-  useSkipToPrevSong,
+  useSkipTrack,
+  useSkipToPrevTrack,
   useTransitionTrackWhenDoneEffect,
 } from "./PlayerHooks";
 import { Episode, PlaybackState, Track } from "@spotify/web-api-ts-sdk";
@@ -15,8 +15,8 @@ import { useDebouncedCallback } from "use-debounce";
 
 export interface player {
   togglePlay: () => void;
-  skipToNextSong: () => void;
-  skipToPrevSong: () => void;
+  skipToNextTrack: () => void;
+  skipToPrevTrack: () => void;
   playHistoryPlaylist: () => void;
   isLoading: boolean;
   state: Partial<PlaybackState> & {
@@ -27,8 +27,8 @@ export interface player {
 export const PlayerContext = React.createContext<player>({
   isLoading: true,
   togglePlay: () => {},
-  skipToNextSong: () => {},
-  skipToPrevSong: () => {},
+  skipToNextTrack: () => {},
+  skipToPrevTrack: () => {},
   playHistoryPlaylist: () => {},
   state: { nextTrack: undefined, currentTrack: undefined },
 });
@@ -42,7 +42,7 @@ export const SpotifyPlayerProvider: React.FC<React.PropsWithChildren> = ({
 }) => {
   const playbackStateQuery = useGetSpotifyPlaybackState();
   const currentTrack = asTrack(playbackStateQuery?.data?.item);
-  const { data: nextTrackData } = useGetNextSong();
+  const { data: nextTrackData } = useGetNextTrack();
   const historyPlaylistQuery = useHistoryPlaylist({ canCreate: true });
   const playPlaylist = usePlayPlaylist();
   const playHistoryPlaylistDebounced = useDebouncedCallback(() => {
@@ -55,8 +55,8 @@ export const SpotifyPlayerProvider: React.FC<React.PropsWithChildren> = ({
   }, 500);
 
   const playPauseQuery = usePlayPause();
-  const skipQuery = useSkipSong();
-  const skipToPrevSong = useSkipToPrevSong();
+  const skipQuery = useSkipTrack();
+  const skipToPrevTrack = useSkipToPrevTrack();
 
   const isLoading = !![playbackStateQuery].find((loading) => {
     loading;
@@ -73,9 +73,9 @@ export const SpotifyPlayerProvider: React.FC<React.PropsWithChildren> = ({
     <PlayerContext.Provider
       value={{
         togglePlay: playPauseQuery.mutate,
-        skipToNextSong: skipQuery.mutate,
+        skipToNextTrack: skipQuery.mutate,
         playHistoryPlaylist: playHistoryPlaylistDebounced,
-        skipToPrevSong: skipToPrevSong.mutate,
+        skipToPrevTrack: skipToPrevTrack.mutate,
         isLoading,
         state: {
           ...playbackStateQuery.data,

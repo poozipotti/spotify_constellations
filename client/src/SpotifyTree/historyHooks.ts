@@ -50,13 +50,13 @@ export function useHistoryPlaylist(
   return playlistQuery;
 }
 
-export function useHistoryLastThreeSongs() {
+export function useHistoryLastThreeTracks() {
   const [playlistId] = useLocalStorage("history-playlist-id");
   const historyPlaylistQuery = useGetPlaylistLastThreeTracks(playlistId);
   return historyPlaylistQuery;
 }
 
-export function useSyncHistoryWebNextSongEffect(
+export function useSyncHistoryWebNextTrackEffect(
   childrenTracks?: TrackModel[],
   selectedTrack?: TrackModel,
   currentTrack?: TrackModel
@@ -80,10 +80,10 @@ export function useSyncHistoryWebEffectDeleteTracks(
 ) {
   const historyPlaylistQuery = useHistoryPlaylist();
 
-  const lastThreeSongsQuery = useHistoryLastThreeSongs();
+  const lastThreeTracksQuery = useHistoryLastThreeTracks();
   const lastThreeTracks = useMemo(
-    () => lastThreeSongsQuery.data?.items,
-    [lastThreeSongsQuery.data]
+    () => lastThreeTracksQuery.data?.items,
+    [lastThreeTracksQuery.data]
   );
   const lastTrack = useMemo(
     () =>
@@ -132,10 +132,10 @@ export function useSyncHistoryWebEffectAddTracks(
 ) {
   const historyPlaylistQuery = useHistoryPlaylist({ canCreate: true });
 
-  const lastThreeSongsQuery = useHistoryLastThreeSongs();
+  const lastThreeTracksQuery = useHistoryLastThreeTracks();
   const lastThreeTracks = useMemo(
-    () => lastThreeSongsQuery.data?.items,
-    [lastThreeSongsQuery.data]
+    () => lastThreeTracksQuery.data?.items,
+    [lastThreeTracksQuery.data]
   );
   const spotifyCurrentTrack = useGetSpotifyTrack(currentTrack?.spotify_id);
   const spotifyselectedTrack = useGetSpotifyTrack(selectedTrack?.spotify_id);

@@ -17,7 +17,7 @@ export const useSearchTracks = () => {
     albums: Page<SimplifiedAlbum>;
   };
   const searchQuery = useQuery({
-    queryKey: ["songSearch", searchTerm],
+    queryKey: ["trackSearch", searchTerm],
 
     queryFn: () => {
       return (

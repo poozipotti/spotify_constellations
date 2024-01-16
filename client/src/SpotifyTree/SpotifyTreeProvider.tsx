@@ -9,7 +9,7 @@ import {
 } from "./apiHooks";
 import { TCreateTrackData } from "@app/WebSdk";
 import { useSpotifyPlayer } from "@app/Spotify/Player";
-import { useSyncHistoryWebNextSongEffect } from "./historyHooks";
+import { useSyncHistoryWebNextTrackEffect } from "./historyHooks";
 
 interface tree {
   addSuggestion: {
@@ -40,10 +40,10 @@ const SpotifyTreeProviderInternal: React.FC<React.PropsWithChildren> = ({
     player.state.currentTrack?.id
   );
   const currentTrack = currentTrackQuery?.data?.track;
-  const selectedChildSongQuery = useGetTrackBySpotifyId(
+  const selectedChildTrackQuery = useGetTrackBySpotifyId(
     player.state.nextTrack?.id
   );
-  const selectedChildTrack = selectedChildSongQuery?.data?.track;
+  const selectedChildTrack = selectedChildTrackQuery?.data?.track;
   const { data: childrenTracks } = useGetTrackChildren(currentTrack?.id);
   const { data: parentTracks } = useGetTrackParents(currentTrack?.id);
   const { mutate: addSuggestion, ...createTrackMutate } = useCreateTrack();
@@ -58,7 +58,7 @@ const SpotifyTreeProviderInternal: React.FC<React.PropsWithChildren> = ({
     []
   );
   const isLoading =
-    currentTrackQuery.isLoading || selectedChildSongQuery.isLoading;
+    currentTrackQuery.isLoading || selectedChildTrackQuery.isLoading;
   const state = React.useMemo(
     () => ({
       parentTracks: parentTracks?.tracks || [],
@@ -77,7 +77,7 @@ const SpotifyTreeProviderInternal: React.FC<React.PropsWithChildren> = ({
       isLoading,
     ]
   );
-  useSyncHistoryWebNextSongEffect(
+  useSyncHistoryWebNextTrackEffect(
     childrenTracks?.tracks,
     selectedTrack,
     currentTrack

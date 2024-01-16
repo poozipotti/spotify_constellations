@@ -5,7 +5,7 @@ import { Button } from "@core/Button";
 import { useSpotifyTree } from "@app/SpotifyTree/hooks";
 import { useHistoryPlaylist } from "@app/SpotifyTree/historyHooks";
 
-export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
+export const CurrentTrackNode: React.FC<PropsWithChildren> = () => {
   const player = useSpotifyPlayer();
   const tree = useSpotifyTree();
   const inTree = !!(tree?.state.currentTrack && !tree?.state.isLoading);
@@ -49,7 +49,7 @@ export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
                 }
               }}
             >
-              Add Song To Spotify Quantum
+              Add Track To Spotify Constellation
             </Button>
           )}
           {!playingHistoryPlaylist && inTree && (
@@ -58,7 +58,7 @@ export const CurrentSongNode: React.FC<PropsWithChildren> = () => {
                 player.playHistoryPlaylist();
               }}
             >
-              Enter Spotify Quantum
+              Enter Spotify constellation
             </Button>
           )}
         </div>
@@ -73,7 +73,7 @@ const NextButton: React.FC = () => {
     <Button
       hideBorder
       onClick={() => {
-        player.skipToNextSong();
+        player.skipToNextTrack();
       }}
     >
       <svg
@@ -95,7 +95,7 @@ const PrevButton: React.FC = () => {
     <Button
       hideBorder
       onClick={() => {
-        player.skipToPrevSong();
+        player.skipToPrevTrack();
       }}
     >
       <svg

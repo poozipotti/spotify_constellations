@@ -2,7 +2,7 @@ import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { SpotifyProvider } from "@app/Spotify/SpotifyProvider";
-import { SearchSong } from "@app/SongSelector/SearchSong";
+import { SearchTrack } from "@app/TrackSelector/SearchTrack";
 import { Button } from "./Core/Button";
 import { SpotifyTree } from "./SpotifyTree";
 
@@ -29,7 +29,7 @@ const App: React.FC = () => {
               <SpotifyTree />
             </div>
             <div className="flex flex-col justify-end self-end max-w-screen-lg mx-auto">
-              <SearchSong />
+              <SearchTrack />
             </div>
           </SpotifyProvider>
         )}

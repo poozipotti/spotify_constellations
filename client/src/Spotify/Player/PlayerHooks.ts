@@ -70,7 +70,7 @@ export function usePlayPlaylist() {
   });
   return queryData;
 }
-export function useGetNextSong() {
+export function useGetNextTrack() {
   const sdk = useSpotify();
   const queryData = useQuery({
     queryKey: ["user-queue"],
@@ -79,11 +79,11 @@ export function useGetNextSong() {
       return sdk.player.getUsersQueue();
     },
   });
-  const currentSong = useGetSpotifyPlaybackState();
-  const hasNextSong =
-    currentSong && queryData.data?.queue[0]?.id !== currentSong.data?.item?.id;
-  const nextSong = hasNextSong ? queryData.data?.queue[0] : undefined;
-  return { ...queryData, data: nextSong };
+  const currentTrack = useGetSpotifyPlaybackState();
+  const hasNextTrack =
+    currentTrack && queryData.data?.queue[0]?.id !== currentTrack.data?.item?.id;
+  const nextTrack = hasNextTrack ? queryData.data?.queue[0] : undefined;
+  return { ...queryData, data: nextTrack };
 }
 
 export function useTransitionTrackWhenDoneEffect() {
@@ -93,25 +93,25 @@ export function useTransitionTrackWhenDoneEffect() {
 
   useEffect(() => {
     if (context?.item.duration_ms && context?.progress_ms) {
-      const songTransition = setTimeout(() => {
+      const trackTransition = setTimeout(() => {
         queryClient.invalidateQueries({ queryKey: ["playbackState"] });
         queryClient.invalidateQueries({ queryKey: ["user-queue"] });
       }, context.item.duration_ms - context.progress_ms);
       return () => {
-        clearTimeout(songTransition);
+        clearTimeout(trackTransition);
       };
     }
   }, [context?.item.duration_ms, context?.progress_ms, queryClient]);
 }
-export function useSkipSong() {
+export function useSkipTrack() {
   const sdk = useSpotify();
   const queryClient = useQueryClient();
   const { data: playbackState } = useGetSpotifyPlaybackState();
-  const nextSong = useGetNextSong();
+  const nextTrack = useGetNextTrack();
   const deviceId = playbackState?.device.id;
   const queryData = useMutation({
     mutationFn: async () => {
-      if (deviceId && nextSong) {
+      if (deviceId && nextTrack) {
         return sdk.player.skipToNext(deviceId);
       }
     },
@@ -122,7 +122,7 @@ export function useSkipSong() {
   });
   return queryData;
 }
-export function useSkipToPrevSong() {
+export function useSkipToPrevTrack() {
   const sdk = useSpotify();
   const queryClient = useQueryClient();
   const { data: playbackState } = useGetSpotifyPlaybackState();
