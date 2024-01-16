@@ -14,7 +14,7 @@ export function useHistoryPlaylist(
   { canCreate }: { canCreate: boolean } = { canCreate: false }
 ) {
   const { mutate: createPlaylist, isPending } = useCreatePlaylist(
-    "[quantum] history playlist"
+    "[constellations] history playlist"
   );
   const { data: userData } = useGetUser();
   const [playlistId, setPlayListId] = useLocalStorage("history-playlist-id");
