@@ -1,5 +1,5 @@
 # Spotify Web 🕸️🕷️
-[Constellations](./Consteallations_Small.webp)
+![Constellations](./Consteallations_Small.webp)
 
 ## What is it?
 
