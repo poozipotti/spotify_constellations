@@ -2,9 +2,6 @@
 
 ## What is it?
 
-Spotify Constellations is a project made to connect people through music.
-
-
 This project was started to see if I could find an interesting way to explore the spotify api. I found spotify jam feature really intriguing, especially 
 the push and pull of different peoples tastes colliding. If someone changed the entire vibe, would it stick, or not?
 
