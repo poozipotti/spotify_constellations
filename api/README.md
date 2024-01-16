@@ -21,14 +21,11 @@ The main system changes I made are as follows
 ## Run the System
 Copy the contents of example.env to .env before running any commands
 
-We can easily run the whole with only a single command:
+docker is required to run:
+
 ```bash
 docker compose up --build
 ```
 
-The services can be run on the background with command:
-```bash
-docker compose up -d
-```
 
 

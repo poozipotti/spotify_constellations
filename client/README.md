@@ -1,30 +1,22 @@
-# React + TypeScript + Vite
+## Spotify Setup instructions
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This app requires you to setup an app an have a spotify client id [Instructions can be found here](https://developer.spotify.com/documentation/web-api/tutorials/getting-started)
 
-Currently, two official plugins are available:
+## Run the System
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Copy the contents of example.env to .env before running any commands, and add your spotify client id
+yarn is required to run.
 
-## Expanding the ESLint configuration
+First install the node_modules.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+```bash
+yarn
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+then run the development server
+
+```bash
+yarn dev
+```
+
+The website should be live at `localhost:3000`
