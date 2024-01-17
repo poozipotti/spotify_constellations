@@ -1,3 +1,4 @@
+import { useSpotifyPlayer } from "@app/Spotify/Player";
 import { usePlayPlaylist } from "@app/Spotify/Player/PlayerHooks";
 import {
   useAddTracksToPlaylist,
@@ -6,9 +7,10 @@ import {
   useGetPlaylistLastThreeTracks,
 } from "@app/Spotify/playlistHooks";
 import { useGetUser } from "@app/Spotify/userhooks";
+import { useSpotifyConstellationGraph } from "@app/SpotifyConstellationGraph/hooks";
 import { useLocalStorage } from "@app/hooks";
 import { Track } from "@spotify/web-api-ts-sdk";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 
 export function useHistoryPlaylist(
   { canCreate }: { canCreate: boolean } = { canCreate: false }
@@ -102,4 +104,35 @@ export function usePlayHistoryPlaylist() {
     [historyPlaylistQuery.data?.uri]
   );
   return { ...playPlaylistQuery, mutate: playPlaylist };
+}
+export function useGetHistorySyncStatus() {
+  const player = useSpotifyPlayer();
+  const constellationGraph = useSpotifyConstellationGraph();
+  const currentTrack = player.state?.currentTrack;
+  const isCurrentSongInConstellationGraph = !!(
+    constellationGraph?.state.currentTrack &&
+    !constellationGraph?.state.isLoading
+  );
+  const lastThreeTracks = useHistoryLastThreeTracks();
+  const isCurrentSongInLastThreeTracks = !!lastThreeTracks.data?.items.find(
+    (PlaylistedTrack) =>
+      currentTrack && PlaylistedTrack?.track.id === currentTrack?.id
+  );
+
+  const historyPlaylist = useHistoryPlaylist({ canCreate: true });
+  const isCurrentlyPlayingHistoryPlaylist =
+    player.state.context?.uri === historyPlaylist.data?.uri;
+  const data = useMemo(
+    () => ({
+      isCurrentSongInConstellationGraph,
+      isCurrentSongInLastThreeTracks,
+      isCurrentlyPlayingHistoryPlaylist,
+    }),
+    [
+      isCurrentSongInConstellationGraph,
+      isCurrentSongInLastThreeTracks,
+      isCurrentlyPlayingHistoryPlaylist,
+    ]
+  );
+  return data;
 }
