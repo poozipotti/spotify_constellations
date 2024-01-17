@@ -17,10 +17,11 @@ export const SpotifyConstellationGraph: React.FC<PropsWithChildren> = () => {
     }
   },[constellationGraph])
   return (
-    <div className="flex flex-col gap-12">
+    <div className="flex flex-col gap-12 items-center">
       <CurrentTrackNode />
       {playingHistoryPlaylist && (
-        <div className="flex justify-center gap-6 w-screen overflow-auto">
+        <div className="w-screen overflow-auto">
+          <div className="flex justify-center gap-6 px-6 box-content w-max">
           {constellationGraph?.state.childTracks.map((track) => (
             <TrackNode
               track={track}
@@ -31,6 +32,7 @@ export const SpotifyConstellationGraph: React.FC<PropsWithChildren> = () => {
               }}
             />
           ))}
+          </div>
         </div>
       )}
     </div>
