@@ -2,9 +2,9 @@ import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { SpotifyProvider } from "@app/Spotify/SpotifyProvider";
-import { SearchTrack } from "@app/TrackSelector/SearchTrack";
 import { Button } from "./Core/Button";
 import { SpotifyConstellationGraph } from "./SpotifyConstellationGraph";
+import {TrackSelector} from "@app/TrackSelector";
 
 const queryClient = new QueryClient();
 
@@ -29,7 +29,7 @@ const App: React.FC = () => {
               <SpotifyConstellationGraph />
             </div>
             <div className="flex flex-col justify-end self-end max-w-screen-lg mx-auto">
-              <SearchTrack />
+              <TrackSelector />
             </div>
           </SpotifyProvider>
         )}

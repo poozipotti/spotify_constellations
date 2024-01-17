@@ -1,0 +1,1 @@
+export {SearchTray} from './SearchTray';
