@@ -1,9 +1,9 @@
 import React from "react";
-import { Artist, Page, SimplifiedAlbum, Track } from "@spotify/web-api-ts-sdk";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useDebouncedCallback } from "use-debounce";
 import { useSpotify } from ".";
 
+const SEARCH_PAGE_SIZE = 25;
 export const useSearchTracks = () => {
   const spotify = useSpotify();
   const [searchTerm, setSearchTerm] = React.useState("");
@@ -11,28 +11,26 @@ export const useSearchTracks = () => {
     setSearchTerm(searchTerm);
   }, 1000);
 
-  type SearchResults = {
-    tracks: Page<Track>;
-    artists: Page<Artist>;
-    albums: Page<SimplifiedAlbum>;
-  };
-  const searchQuery = useQuery({
+  const searchQuery = useInfiniteQuery({
     queryKey: ["trackSearch", searchTerm],
-
-    queryFn: () => {
-      return (
-        //this alias is because something seems to be broken in the spotify apk
-        ((spotify.search as (
-          q: string,
-          type: ["track"],
-        ) => Promise<SearchResults>)(searchTerm, ["track"]))
+    queryFn: ({pageParam}) => {
+      return spotify.search(
+        searchTerm,
+        ["track"],
+        undefined,
+        SEARCH_PAGE_SIZE,
+        pageParam
       );
     },
-
     enabled: searchTerm?.length > 0,
+    initialPageParam: 0,
+    getNextPageParam: (lastPage,pages) =>
+      lastPage.tracks.next
+        ? pages.length * lastPage.tracks.limit
+        : undefined,
   });
   return [searchQuery, debouncedSearchSetSearchTerm] as [
     typeof searchQuery,
-    typeof debouncedSearchSetSearchTerm,
+    typeof debouncedSearchSetSearchTerm
   ];
 };

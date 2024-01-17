@@ -1,18 +1,17 @@
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, PropsWithRef, forwardRef } from "react";
 
 type props = {
   onClick?: () => void;
   hideBorder?: boolean;
   isLoading?: boolean;
 };
-export const Button: React.FC<PropsWithChildren<props>> = ({
-  children,
-  onClick,
-  hideBorder,
-  isLoading,
-}) => {
+export const Button = forwardRef<
+  HTMLButtonElement,
+  PropsWithChildren<props>
+>(({ children, onClick, hideBorder, isLoading }, ref) => {
   return (
     <button
+      ref={ref}
       onClick={onClick}
       disabled={isLoading}
       className={`
@@ -31,4 +30,4 @@ export const Button: React.FC<PropsWithChildren<props>> = ({
       )}
     </button>
   );
-};
+});

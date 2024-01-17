@@ -7,8 +7,7 @@ export const TrackSelector: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   return (
     <SearchTray isOpen={isOpen} setIsOpen={setIsOpen}>
-      <Tabs className="h-full"
-      >
+      <Tabs className="h-full">
         <TabList className="border-primary-light border-b">
           <Tab
             className="inline-block p-4 cursor-pointer"
@@ -29,17 +28,17 @@ export const TrackSelector: React.FC = () => {
             Playlists
           </Tab>
         </TabList>
-        <TabPanel className="p-6">
+        <TabPanel className="p-6 h-full">
           <TrackSelectorTabs.SearchAllTracks
             onSuccess={() => {
               setIsOpen(false);
             }}
           />
         </TabPanel>
-        <TabPanel>
+        <TabPanel className="p-6 h-full">
           <p>todo</p>
         </TabPanel>
-        <TabPanel>
+        <TabPanel className="p-6 h-full">
           <p>todo</p>
         </TabPanel>
       </Tabs>
