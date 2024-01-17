@@ -20,7 +20,7 @@ export const SpotifyConstellationGraph: React.FC<PropsWithChildren> = () => {
     <div className="flex flex-col gap-12 items-center">
       <CurrentTrackNode />
       {playingHistoryPlaylist && (
-        <div className="w-screen overflow-auto">
+        <div className="w-screen overflow-auto flex justify-center">
           <div className="flex justify-center gap-6 px-6 box-content w-max">
           {constellationGraph?.state.childTracks.map((track) => (
             <TrackNode
