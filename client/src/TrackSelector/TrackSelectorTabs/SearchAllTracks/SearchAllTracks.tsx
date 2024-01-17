@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { useSearchTracks } from "@app/Spotify/searchHooks";
 import { Input } from "@core/Input";
 import { Loader } from "@core/Loader";
@@ -18,13 +18,14 @@ export const SearchAllTracks: React.FC<{ onSuccess?: () => void }> = ({
   const isLoadingButtonOnScreen = useOnScreen(loadingButtonRef);
   useEffect(() => {
     if (isLoadingButtonOnScreen) {
-      console.log('next page')
+      console.log("next page");
       searchData?.fetchNextPage();
     }
   }, [isLoadingButtonOnScreen]);
 
   return (
     <>
+      <h2 className="text-xl font-bold uppercase">Search:</h2>
       <Input
         onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="remind you of anything?"

@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useSpotify } from ".";
 
 export function useGetSpotifyTrack(id?: string) {
@@ -9,7 +9,7 @@ export function useGetSpotifyTrack(id?: string) {
     queryFn: () => {
       if (!id) {
         throw new Error(
-          "cannot get track if no id is provided!! (this query should not be enabled)",
+          "cannot get track if no id is provided!! (this query should not be enabled)"
         );
       }
       return sdk.tracks.get(id);
@@ -27,7 +27,7 @@ export function useGetSpotifyTracks(ids?: string[]) {
     queryFn: () => {
       if (!ids) {
         throw new Error(
-          "cannot get track if no id is provided!! (this query should not be enabled)",
+          "cannot get track if no id is provided!! (this query should not be enabled)"
         );
       }
       return sdk.tracks.get(ids);
@@ -38,3 +38,18 @@ export function useGetSpotifyTracks(ids?: string[]) {
   return queryData;
 }
 
+const TRACK_PAGE_SIZE = 25;
+export const useGetSpotifySavedTracks = () => {
+  const spotify = useSpotify();
+
+  const searchQuery = useInfiniteQuery({
+    queryKey: ["saved_tracks"],
+    queryFn: ({ pageParam }) => {
+      return spotify.currentUser.tracks.savedTracks(TRACK_PAGE_SIZE, pageParam);
+    },
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, pages) =>
+      lastPage.next ? pages.length * lastPage.limit : undefined,
+  });
+  return searchQuery;
+};
