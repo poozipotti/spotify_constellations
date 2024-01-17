@@ -4,8 +4,9 @@ export const Input: React.FC<
   PropsWithChildren<{
     onChange: ChangeEventHandler<HTMLInputElement>;
     placeholder: string;
+    stretch?: boolean;
   }>
-> = ({ children, onChange, placeholder }) => {
+> = ({ children, onChange, placeholder, stretch }) => {
   return (
     <input
       className={`
@@ -16,6 +17,7 @@ export const Input: React.FC<
         p-2
         z-10
         drop-shadow-md
+        ${stretch ? "w-full" : ""}
       `}
       onChange={onChange}
       placeholder={placeholder}

@@ -18,6 +18,7 @@ export const SearchAllTracks: React.FC<{ onSuccess?: () => void }> = ({
       <Input
         onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="remind you of anything?"
+        stretch
       />
       <Loader isLoading={loading} className="h-full w-full">
         <div className="overflow-auto gap-12 flex flex-wrap pb-24 justify-center px-2 h-full w-full ">

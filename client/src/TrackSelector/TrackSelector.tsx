@@ -1,21 +1,48 @@
 import React from "react";
 import { SearchTray } from "@app/TrackSelector/SearchTray";
 import * as TrackSelectorTabs from "./TrackSelectorTabs";
-import { useGetHistorySyncStatus } from "@app/HistoryPlaylist/historyPlaylistHooks";
+import { Tab, TabList, TabPanel, Tabs } from "@core/Tabs";
 
 export const TrackSelector: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState(false);
-  const { isCurrentlyPlayingHistoryPlaylist } = useGetHistorySyncStatus();
-  if (!isCurrentlyPlayingHistoryPlaylist) {
-    return null;
-  }
   return (
     <SearchTray isOpen={isOpen} setIsOpen={setIsOpen}>
-      <TrackSelectorTabs.SearchAllTracks
-        onSuccess={() => {
-          setIsOpen(false);
-        }}
-      />
+      <Tabs className="h-full"
+      >
+        <TabList className="border-primary-light border-b">
+          <Tab
+            className="inline-block p-4 cursor-pointer"
+            selectedClassName="border border-primary-light inline-block p-2 border-b-0 drop-shadow-lg"
+          >
+            All Tracks
+          </Tab>
+          <Tab
+            className="inline-block p-4 cursor-pointer"
+            selectedClassName="border border-primary-light inline-block p-2 border-b-0 drop-shadow-lg"
+          >
+            Liked Songs
+          </Tab>
+          <Tab
+            className="inline-block p-4 cursor-pointer"
+            selectedClassName="border border-primary-light inline-block p-2 border-b-0 drop-shadow-lg"
+          >
+            Playlists
+          </Tab>
+        </TabList>
+        <TabPanel className="p-6">
+          <TrackSelectorTabs.SearchAllTracks
+            onSuccess={() => {
+              setIsOpen(false);
+            }}
+          />
+        </TabPanel>
+        <TabPanel>
+          <p>todo</p>
+        </TabPanel>
+        <TabPanel>
+          <p>todo</p>
+        </TabPanel>
+      </Tabs>
     </SearchTray>
   );
 };
