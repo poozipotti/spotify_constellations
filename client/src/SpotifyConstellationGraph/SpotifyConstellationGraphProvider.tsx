@@ -9,7 +9,7 @@ import {
 } from "./apiHooks";
 import { TCreateTrackData } from "@app/WebSdk";
 import { useSpotifyPlayer } from "@app/Spotify/Player";
-import { useSyncHistoryWebNextTrackEffect } from "./historyHooks";
+import { useSyncHistoryWebNextTrackEffect } from "@app/SpotifyConstellationGraph/constellationGraphHistoryHooks";
 
 interface constellationGraph {
   addChild: {
@@ -78,7 +78,6 @@ const SpotifyConstellationGraphProviderInternal: React.FC<React.PropsWithChildre
     ]
   );
   useSyncHistoryWebNextTrackEffect(
-    childrenTracks?.tracks,
     selectedTrack,
     currentTrack
   );

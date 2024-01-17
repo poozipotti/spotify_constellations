@@ -104,7 +104,7 @@ const ProgressTracker: React.FC<PropsWithChildren<Props>> = ({
           backgroundSize: `11rem 11rem`,
           animationName: "grow",
           animationPlayState: isPaused ? "paused" : "running",
-          animationTimingFunction: "ease-out",
+          animationTimingFunction: "cubic-bezier(.77,.26,.77,.6)",
           animationDuration: `${durationSeconds + 5}s`,
           animationDelay: `-${positionSeconds}s`,
         }}

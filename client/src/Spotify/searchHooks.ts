@@ -1,5 +1,5 @@
 import React from "react";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { useDebouncedCallback } from "use-debounce";
 import { useSpotify } from ".";
 

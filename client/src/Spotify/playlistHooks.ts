@@ -84,7 +84,7 @@ export function useAddTracksToPlaylist() {
         tracks.map((track) => track.uri)
       );
     },
-    onSuccess: (data, variables) => {
+    onSuccess: (_data, variables) => {
       const newTracksFormatted = variables.tracks.map(formatTrackForPlaylist);
       queryClient.setQueryData(
         ["playlist", variables.playlistId],
@@ -139,7 +139,7 @@ export function useDeleteTracksFromPlaylist() {
         tracks: tracks,
       });
     },
-    onSuccess: (data, variables) => {
+    onSuccess: (_data, variables) => {
       const isDeletedTrack = (track: PlaylistedTrack) =>
         variables.tracks.find(
           (deletedTrack) => track.track.id === deletedTrack.id

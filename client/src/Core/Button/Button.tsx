@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, forwardRef } from "react";
+import { PropsWithChildren, forwardRef } from "react";
 
 type props = {
   onClick?: () => void;

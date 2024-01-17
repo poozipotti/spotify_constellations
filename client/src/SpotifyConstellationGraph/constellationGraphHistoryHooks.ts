@@ -11,21 +11,22 @@ import {
   useHistoryPlaylist,
 } from "@app/HistoryPlaylist/historyPlaylistHooks";
 
+
 export function useSyncHistoryWebNextTrackEffect(
-  childrenTracks?: TrackModel[],
   selectedTrack?: TrackModel,
   currentTrack?: TrackModel
 ) {
-  useSyncHistoryWebEffectAddTracks(childrenTracks, selectedTrack, currentTrack);
+  useSyncHistoryWebEffectAddTracks(
+    selectedTrack,
+    currentTrack
+  );
   useSyncHistoryWebEffectDeleteTracks(
-    childrenTracks,
     selectedTrack,
     currentTrack
   );
 }
 
 export function useSyncHistoryWebEffectDeleteTracks(
-  childrenTracks?: TrackModel[],
   selectedTrack?: TrackModel,
   currentTrack?: TrackModel
 ) {
@@ -38,7 +39,7 @@ export function useSyncHistoryWebEffectDeleteTracks(
   );
   const lastTrack = useMemo(
     () =>
-      lastThreeTracks
+      lastThreeTracks?.length
         ? (lastThreeTracks[lastThreeTracks?.length - 1].track as Track)
         : undefined,
     [lastThreeTracks]
@@ -77,7 +78,6 @@ export function useSyncHistoryWebEffectDeleteTracks(
   ]);
 }
 export function useSyncHistoryWebEffectAddTracks(
-  childrenTracks?: TrackModel[],
   selectedTrack?: TrackModel,
   currentTrack?: TrackModel
 ) {
@@ -99,7 +99,7 @@ export function useSyncHistoryWebEffectAddTracks(
   useEffect(() => {
     if (
       spotifyCurrentTrack.data &&
-      lastThreeTracks &&
+      lastThreeTracks?.length &&
       spotifyselectedTrack.data &&
       playlistId &&
       !addToPlaylistIsLoading &&
@@ -122,6 +122,7 @@ export function useSyncHistoryWebEffectAddTracks(
     historyPlaylistQuery.data?.id,
     spotifyCurrentTrack,
     addToPlaylistIsLoading,
+    playlistId
   ]);
 }
 
