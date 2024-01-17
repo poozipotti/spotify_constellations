@@ -8,7 +8,7 @@ import {
   usePlayHistoryPlaylist,
 } from "@app/HistoryPlaylist/historyPlaylistHooks";
 import { useQueryClient } from "@tanstack/react-query";
-import {useSpotifyConstellationGraph} from "@app/SpotifyConstellationGraph/hooks";
+import { useSpotifyConstellationGraph } from "@app/SpotifyConstellationGraph/hooks";
 
 export const CurrentTrackNode: React.FC<PropsWithChildren> = () => {
   const {
@@ -45,9 +45,12 @@ export const CurrentTrackNode: React.FC<PropsWithChildren> = () => {
         </div>
         <NextButton />
       </div>
-      {!(isCurrentSongInConstellationGraph && isCurrentlyPlayingHistoryPlaylist) && (
+      {!(
+        isCurrentSongInConstellationGraph && isCurrentlyPlayingHistoryPlaylist
+      ) && (
         <div className="flex flex-col items-center gap-4 p-t-4">
-          {(!isCurrentSongInConstellationGraph || !isCurrentSongInLastThreeTracks) && (
+          {(!isCurrentSongInConstellationGraph ||
+            !isCurrentSongInLastThreeTracks) && (
             <Button
               isLoading={
                 constellationGraph?.addChild.isPending ||
