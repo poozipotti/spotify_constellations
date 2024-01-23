@@ -4,9 +4,10 @@ type props = {
   onClick?: () => void;
   hideBorder?: boolean;
   isLoading?: boolean;
+  hidden?: boolean;
 };
 export const Button = forwardRef<HTMLButtonElement, PropsWithChildren<props>>(
-  ({ children, onClick, hideBorder, isLoading }, ref) => {
+  ({ hidden, children, onClick, hideBorder, isLoading }, ref) => {
     return (
       <button
         ref={ref}
@@ -14,6 +15,7 @@ export const Button = forwardRef<HTMLButtonElement, PropsWithChildren<props>>(
         disabled={isLoading}
         className={`
         ${hideBorder ? "" : "border border-primary-light p-2 px-6"}
+        ${hidden ? "hidden" : ""}
         text-primary-light
         uppercase 
         
