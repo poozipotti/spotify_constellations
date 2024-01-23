@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@core/Button";
-import { useOnScreen } from "@app/hooks";
 import {
   useGetPlaylistItems,
   useGetSpotifySavedPlaylists,
@@ -39,13 +38,6 @@ export const PlaylistTrackList: React.FC<{
     .filter((item) => "track" in item.track)
     .map((playlistedTrack) => playlistedTrack.track as Track);
   const loading = playlistData.isLoading;
-  const loadingButtonRef = React.createRef<HTMLButtonElement>();
-  const isLoadingButtonOnScreen = useOnScreen(loadingButtonRef);
-  useEffect(() => {
-    if (isLoadingButtonOnScreen) {
-      playlistData?.fetchNextPage();
-    }
-  }, [isLoadingButtonOnScreen]);
 
   return (
     <ItemSelectionList
@@ -66,13 +58,6 @@ export const PlaylistList: React.FC<{
   const searchData = useGetSpotifySavedPlaylists();
   const playlists = searchData.data?.pages.flatMap((data) => data.items);
   const loading = searchData.isLoading;
-  const loadingButtonRef = React.createRef<HTMLButtonElement>();
-  const isLoadingButtonOnScreen = useOnScreen(loadingButtonRef);
-  useEffect(() => {
-    if (isLoadingButtonOnScreen) {
-      searchData?.fetchNextPage();
-    }
-  }, [isLoadingButtonOnScreen]);
 
   return (
     <ItemSelectionList
