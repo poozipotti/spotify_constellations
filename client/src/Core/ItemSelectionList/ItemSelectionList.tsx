@@ -5,13 +5,24 @@ import { Button } from "@core/Button";
 import { Loader } from "@core/Loader";
 import { Image, SimplifiedPlaylist, Track } from "@spotify/web-api-ts-sdk";
 
-export const SelectionContainer: React.FC<{
-  onClick?: (track: Track | SimplifiedPlaylist) => void;
+export const ItemSelectionList: React.FC<{
+  trackData?: { tracks?: Track[]; onClick?: (track: Track) => void };
+  playlistData?: {
+    playlists?: SimplifiedPlaylist[];
+    onClick?: (playlist: SimplifiedPlaylist) => void;
+  };
   fetchNextPage?: () => void;
-  itemData: Track[] | SimplifiedPlaylist[];
   isLoading: boolean;
+  isFetching: boolean;
   title: string;
-}> = ({ onClick, fetchNextPage, itemData, isLoading, title }) => {
+}> = ({
+  fetchNextPage,
+  trackData,
+  playlistData,
+  isLoading,
+  title,
+  isFetching,
+}) => {
   const loadingButtonRef = React.createRef<HTMLButtonElement>();
   const isLoadingButtonOnScreen = useOnScreen(loadingButtonRef);
   React.useEffect(() => {
@@ -19,58 +30,58 @@ export const SelectionContainer: React.FC<{
       fetchNextPage();
     }
   }, [isLoadingButtonOnScreen]);
-  const asTracks =
-    itemData?.length && "track" in itemData[0] && (itemData as Track[]);
-  const asPlaylists =
-    itemData?.length &&
-    "snapshot_id" in itemData[0] &&
-    (itemData as SimplifiedPlaylist[]);
+  if (trackData?.tracks && playlistData?.playlists) {
+    throw new Error(
+      "cannot pass both playlists and tracks to item selection List"
+    );
+  }
+  const hasItems = trackData?.tracks?.length || playlistData?.playlists?.length;
   return (
     <>
       <h2 className="text-xl font-bold uppercase">{title}:</h2>
       <Loader isLoading={isLoading} className="h-full w-full">
-        <div className="overflow-auto gap-12 flex flex-wrap pb-24 justify-center px-2 h-full w-full ">
-          {!itemData?.length && !isLoading ? (
+        <div className="overflow-auto gap-12 flex flex-wrap pb-24 justify-center px-2 h-full w-full">
+          {!hasItems && !isLoading ? (
             <div className="p-4">
               <p>no results!</p>
             </div>
           ) : undefined}
-          {asTracks &&
-            asTracks?.map((track) => {
-              return (
-                <TrackSelectorTrack
-                  track={track}
-                  key={track.id}
-                  onClick={() => {
-                    onClick && onClick(track);
-                  }}
-                />
-              );
-            })}
-          {asPlaylists &&
-            asPlaylists?.map((playlist) => {
-              return (
-                <TrackSelectorPlaylist
-                  playlist={playlist}
-                  key={playlist.id}
-                  onClick={() => {
-                    onClick && onClick(playlist);
-                  }}
-                />
-              );
-            })}
+          {trackData?.tracks?.map((track) => {
+            return (
+              <TrackSelectorTrack
+                track={track}
+                key={track.id}
+                onClick={() => {
+                  trackData.onClick && trackData.onClick(track);
+                }}
+              />
+            );
+          })}
+          {playlistData?.playlists?.map((playlist) => {
+            return (
+              <TrackSelectorPlaylist
+                playlist={playlist}
+                key={playlist.id}
+                onClick={() => {
+                  playlistData.onClick && playlistData.onClick(playlist);
+                }}
+              />
+            );
+          })}
 
-          {itemData?.length && fetchNextPage && (
-            <Button
-              ref={loadingButtonRef}
-              onClick={() => {
-                fetchNextPage();
-              }}
-              isLoading={isLoading}
-            >
-              load more tracks
-            </Button>
-          )}
+          <div className="w-full flex justify-center h-24">
+            {hasItems && fetchNextPage && (
+              <Button
+                ref={loadingButtonRef}
+                onClick={() => {
+                  fetchNextPage();
+                }}
+                isLoading={isLoading || isFetching}
+              >
+                load more tracks
+              </Button>
+            )}
+          </div>
         </div>
       </Loader>
     </>
