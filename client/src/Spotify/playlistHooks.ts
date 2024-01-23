@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSpotify } from ".";
 import {
   Page,
@@ -201,3 +201,19 @@ const formatTrackForPlaylist = (track: Track): PlaylistedTrack => ({
     href: "",
   },
 });
+
+const SAVED_PLAYLISTS_PAGE_SIZE = 25;
+export const useGetSpotifySavedPlaylists = () => {
+  const spotify = useSpotify();
+
+  const searchQuery = useInfiniteQuery({
+    queryKey: ["saved_playlists"],
+    queryFn: ({ pageParam }) => {
+      return spotify.currentUser.playlists.playlists(SAVED_PLAYLISTS_PAGE_SIZE, pageParam);
+    },
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, pages) =>
+      lastPage.next ? pages.length * lastPage.limit : undefined,
+  });
+  return searchQuery;
+};
