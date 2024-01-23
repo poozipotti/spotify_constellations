@@ -8,7 +8,7 @@ import { SimplifiedPlaylist, Track } from "@spotify/web-api-ts-sdk";
 import { ItemSelectionList } from "@core/ItemSelectionList/ItemSelectionList";
 import { useSpotifyConstellationGraph } from "@app/SpotifyConstellationGraph/hooks";
 
-export const SavedPlaylistTracks: React.FC<{ onSuccess?: () => void }> = () => {
+export const SavedPlaylistTracks: React.FC<{ onSuccess?: () => void }> = ({onSuccess}) => {
   const [selectedPlaylist, setSelectedPlaylist] = useState<
     undefined | Omit<SimplifiedPlaylist, "tracks">
   >();
@@ -21,7 +21,7 @@ export const SavedPlaylistTracks: React.FC<{ onSuccess?: () => void }> = () => {
       >
         close
       </Button>
-      <PlaylistTrackList playlist={selectedPlaylist} />
+      <PlaylistTrackList playlist={selectedPlaylist} onSuccess={onSuccess}/>
     </>
   ) : (
     <PlaylistList
