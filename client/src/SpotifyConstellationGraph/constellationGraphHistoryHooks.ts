@@ -62,7 +62,6 @@ export function useSyncHistoryWebEffectDeleteTracks(
       const playlistId = historyPlaylistQuery.data?.id;
 
       if (playlistId && shouldDeleteLastTrack && !deleteFromPlaylistIsLoading) {
-        console.log("deleting");
         deleteFromPlaylist({
           playlistId,
           tracks: [lastTrack],
@@ -109,7 +108,6 @@ export function useSyncHistoryWebEffectAddTracks(
         lastThreeTracks[lastThreeTracks.length - 1].track.id ===
         spotifyCurrentTrack.data.id;
       if (canAddTrack) {
-        console.log("adding");
         addToPlaylist({
           playlistId,
           tracks: [spotifyselectedTrack.data],

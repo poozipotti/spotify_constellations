@@ -32,7 +32,6 @@ export const SavedTracks: React.FC<{ onSuccess?: () => void }> = ({
             </div>
           ) : undefined}
           {tracks?.map(({ track }) => {
-            console.log(track)
             return (
               <TrackSelectorTrack
                 track={track}

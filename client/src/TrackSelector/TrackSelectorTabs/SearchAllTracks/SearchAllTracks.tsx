@@ -18,7 +18,6 @@ export const SearchAllTracks: React.FC<{ onSuccess?: () => void }> = ({
   const isLoadingButtonOnScreen = useOnScreen(loadingButtonRef);
   useEffect(() => {
     if (isLoadingButtonOnScreen) {
-      console.log("next page");
       searchData?.fetchNextPage();
     }
   }, [isLoadingButtonOnScreen]);

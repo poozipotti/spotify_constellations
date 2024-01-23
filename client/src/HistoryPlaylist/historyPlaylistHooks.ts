@@ -33,7 +33,6 @@ export function useHistoryPlaylist(
             console.error(error);
           },
           onSuccess: (data) => {
-            console.log(data);
             return setPlayListId(data?.id);
           },
         }
@@ -97,7 +96,6 @@ export function usePlayHistoryPlaylist() {
           : {
               contextUri: historyPlaylistQuery.data?.uri,
             };
-        console.log(mutationData);
         return playPlaylistQuery.mutate(mutationData, options);
       }
     },
