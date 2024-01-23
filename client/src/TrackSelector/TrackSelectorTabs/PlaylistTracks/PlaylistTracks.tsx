@@ -7,7 +7,7 @@ import { SimplifiedPlaylist } from "@spotify/web-api-ts-sdk";
 import { PlaylistTrackList } from "../SavedPlaylistTracks/SavedPlaylistTracks";
 import { Button } from "@core/Button";
 
-export const PlaylistTracks: React.FC<{ onSuccess?: () => void }> = () => {
+export const PlaylistTracks: React.FC<{ onSuccess?: () => void }> = (props) => {
   const [selectedPlaylist, setSelectedPlaylist] = useState<
     undefined | Omit<SimplifiedPlaylist, "tracks">
   >();
@@ -20,7 +20,10 @@ export const PlaylistTracks: React.FC<{ onSuccess?: () => void }> = () => {
       >
         close
       </Button>
-      <PlaylistTrackList playlist={selectedPlaylist} />
+      <PlaylistTrackList
+        playlist={selectedPlaylist}
+        onSuccess={props.onSuccess}
+      />
     </>
   ) : (
     <PlaylistList onClick={(playlist) => setSelectedPlaylist(playlist)} />

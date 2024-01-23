@@ -6,6 +6,7 @@ import {
 } from "@app/Spotify/playlistHooks";
 import { SimplifiedPlaylist, Track } from "@spotify/web-api-ts-sdk";
 import { ItemSelectionList } from "@core/ItemSelectionList/ItemSelectionList";
+import { useSpotifyConstellationGraph } from "@app/SpotifyConstellationGraph/hooks";
 
 export const SavedPlaylistTracks: React.FC<{ onSuccess?: () => void }> = () => {
   const [selectedPlaylist, setSelectedPlaylist] = useState<
@@ -31,17 +32,34 @@ export const SavedPlaylistTracks: React.FC<{ onSuccess?: () => void }> = () => {
 
 export const PlaylistTrackList: React.FC<{
   playlist: Omit<SimplifiedPlaylist, "tracks">;
-}> = ({ playlist }) => {
+  onSuccess?: () => void;
+}> = ({ playlist, onSuccess }) => {
   const playlistData = useGetPlaylistItems(playlist.id);
   const playlists: Track[] | undefined = playlistData.data?.pages
     .flatMap((data) => data.items)
     .filter((item) => "track" in item.track)
     .map((playlistedTrack) => playlistedTrack.track as Track);
   const loading = playlistData.isLoading;
+  const constellationGraph = useSpotifyConstellationGraph();
 
   return (
     <ItemSelectionList
-      trackData={{ tracks: playlists }}
+      trackData={{
+        tracks: playlists,
+        onClick: (track) => {
+          constellationGraph?.addChild.mutate(
+            {
+              name: track.name,
+              spotify_id: track.id,
+            },
+            {
+              onSuccess: () => {
+                onSuccess && onSuccess();
+              },
+            }
+          );
+        },
+      }}
       isLoading={loading}
       isFetching={playlistData.isFetching}
       fetchNextPage={
