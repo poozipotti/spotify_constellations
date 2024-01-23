@@ -2,7 +2,8 @@ import { Track } from "@spotify/web-api-ts-sdk";
 import React, { PropsWithChildren } from "react";
 
 type Props = {
-  track: Track;
+  track: { name: string; artists: { name: string }[] };
+  imageUrl?: string;
   nextTrack?: Track;
   duration: number;
   position: number;
@@ -41,6 +42,7 @@ export const TrackVisualizer: React.FC<PropsWithChildren<Partial<Props>>> = (
     nextTrack,
     children,
     isLoading,
+    imageUrl,
     size,
   } = props;
   if (children && nextTrack) {
@@ -49,10 +51,16 @@ export const TrackVisualizer: React.FC<PropsWithChildren<Partial<Props>>> = (
     );
   }
   return (
-    <AlbumContainer track={nextTrack} isLoading={isLoading} size={size}>
+    <AlbumContainer
+      track={nextTrack}
+      isLoading={isLoading}
+      size={size}
+      imageUrl={nextTrack?.album.images[0]?.url}
+    >
       {children}
       {track && (
         <ProgressTracker
+          imageUrl={imageUrl || ""}
           track={track}
           duration={duration || 0}
           position={position || 0}
@@ -65,9 +73,9 @@ export const TrackVisualizer: React.FC<PropsWithChildren<Partial<Props>>> = (
 
 const ProgressTracker: React.FC<PropsWithChildren<Props>> = ({
   duration,
-  track,
   position,
   isPaused,
+  imageUrl,
 }) => {
   const durationSeconds = Math.ceil(duration / 1000);
   const positionSeconds = position
@@ -100,7 +108,7 @@ const ProgressTracker: React.FC<PropsWithChildren<Props>> = ({
         `}
         key={duration || 0}
         style={{
-          backgroundImage: `url(${track.album.images[0].url})`,
+          backgroundImage: `url(${imageUrl})`,
           backgroundSize: `11rem 11rem`,
           animationName: "grow",
           animationPlayState: isPaused ? "paused" : "running",
@@ -114,12 +122,12 @@ const ProgressTracker: React.FC<PropsWithChildren<Props>> = ({
 };
 export const AlbumContainer: React.FC<
   PropsWithChildren<
-    Partial<Pick<Props, "track" | "isLoading" | "size">> & {
+    Partial<Pick<Props, "track" | "isLoading" | "size" | "imageUrl">> & {
       onClick?: () => void;
       selected?: boolean;
     }
   >
-> = ({ track, isLoading, children, size, onClick, selected }) => {
+> = ({ imageUrl, track, isLoading, children, size, onClick, selected }) => {
   return (
     <div
       className={`
@@ -138,7 +146,7 @@ export const AlbumContainer: React.FC<
         track && {
           backgroundImage: isLoading
             ? undefined
-            : `linear-gradient(0deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${track?.album.images[0].url})`,
+            : `linear-gradient(0deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(${imageUrl})`,
         }
       }
     >

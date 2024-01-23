@@ -21,6 +21,7 @@ export const TrackNode: React.FC<
         track={TrackData}
         isLoading={trackLoading}
         onClick={onClick}
+        imageUrl={TrackData?.album.images[0]?.url}
       >
         {!!trackError && (
           <p className="text-orange-200 p-4 text-center w-full">

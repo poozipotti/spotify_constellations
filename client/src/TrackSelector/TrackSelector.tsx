@@ -21,6 +21,12 @@ export const TrackSelector: React.FC = () => {
           >
             Liked Songs
           </Tab>
+          <Tab
+            className="inline-block p-4 cursor-pointer"
+            selectedClassName="border border-primary-light inline-block p-2 border-b-0 drop-shadow-lg"
+          >
+           Playlists 
+          </Tab>
         </TabList>
         <TabPanel selectedClassName="h-full p-6 block">
           <TrackSelectorTabs.SearchAllTracks
@@ -31,6 +37,13 @@ export const TrackSelector: React.FC = () => {
         </TabPanel>
         <TabPanel selectedClassName="h-full p-6 block">
           <TrackSelectorTabs.SavedTracks
+            onSuccess={() => {
+              setIsOpen(false);
+            }}
+          />
+        </TabPanel>
+        <TabPanel selectedClassName="h-full p-6 block">
+          <TrackSelectorTabs.PlaylistTracks
             onSuccess={() => {
               setIsOpen(false);
             }}

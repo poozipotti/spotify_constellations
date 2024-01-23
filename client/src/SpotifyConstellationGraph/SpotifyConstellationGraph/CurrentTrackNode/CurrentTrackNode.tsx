@@ -36,6 +36,7 @@ export const CurrentTrackNode: React.FC<PropsWithChildren> = () => {
         >
           <TrackVisualizer.TrackVisualizer
             track={currentTrack}
+            imageUrl={currentTrack?.album.images[0].url}
             duration={currentTrack?.duration_ms}
             position={player.state?.progress_ms}
             isPaused={!player.state?.is_playing}
