@@ -9,7 +9,7 @@ import { ItemSelectionList } from "@core/ItemSelectionList/ItemSelectionList";
 
 export const SavedPlaylistTracks: React.FC<{ onSuccess?: () => void }> = () => {
   const [selectedPlaylist, setSelectedPlaylist] = useState<
-    undefined | SimplifiedPlaylist
+    undefined | Omit<SimplifiedPlaylist, "tracks">
   >();
   return selectedPlaylist ? (
     <>
@@ -30,7 +30,7 @@ export const SavedPlaylistTracks: React.FC<{ onSuccess?: () => void }> = () => {
 };
 
 export const PlaylistTrackList: React.FC<{
-  playlist: SimplifiedPlaylist;
+  playlist: Omit<SimplifiedPlaylist, "tracks">;
 }> = ({ playlist }) => {
   const playlistData = useGetPlaylistItems(playlist.id);
   const playlists: Track[] | undefined = playlistData.data?.pages

@@ -8,8 +8,8 @@ import { Image, SimplifiedPlaylist, Track } from "@spotify/web-api-ts-sdk";
 export const ItemSelectionList: React.FC<{
   trackData?: { tracks?: Track[]; onClick?: (track: Track) => void };
   playlistData?: {
-    playlists?: SimplifiedPlaylist[];
-    onClick?: (playlist: SimplifiedPlaylist) => void;
+    playlists?: Omit<SimplifiedPlaylist, "tracks">[];
+    onClick?: (playlist: Omit<SimplifiedPlaylist, "tracks">) => void;
   };
   fetchNextPage?: () => void;
   isLoading: boolean;
