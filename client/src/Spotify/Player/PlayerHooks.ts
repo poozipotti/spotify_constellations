@@ -57,7 +57,7 @@ export function usePlayPlaylist() {
       offset,
     }: {
       contextUri: string;
-      offset?: {uri:string, position?:number};
+      offset?: { uri: string; position?: number };
     }) => {
       if (deviceId) {
         sdk.player.startResumePlayback(deviceId, contextUri, undefined, offset);
@@ -81,7 +81,8 @@ export function useGetNextTrack() {
   });
   const currentTrack = useGetSpotifyPlaybackState();
   const hasNextTrack =
-    currentTrack && queryData.data?.queue[0]?.id !== currentTrack.data?.item?.id;
+    currentTrack &&
+    queryData.data?.queue[0]?.id !== currentTrack.data?.item?.id;
   const nextTrack = hasNextTrack ? queryData.data?.queue[0] : undefined;
   return { ...queryData, data: nextTrack };
 }
@@ -149,6 +150,24 @@ export function useSetShuffle() {
     mutationFn: async ({ shouldShuffle }: { shouldShuffle: boolean }) => {
       if (deviceId) {
         return sdk.player.togglePlaybackShuffle(shouldShuffle);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["playbackState"] });
+      queryClient.invalidateQueries({ queryKey: ["user-queue"] });
+    },
+  });
+  return queryData;
+}
+export function useSetRepeat() {
+  const sdk = useSpotify();
+  const queryClient = useQueryClient();
+  const { data: playbackState } = useGetSpotifyPlaybackState();
+  const deviceId = playbackState?.device.id;
+  const queryData = useMutation({
+    mutationFn: async ({ repeat }: { repeat: "track" | "context" | "off" }) => {
+      if (deviceId) {
+        return sdk.player.setRepeatMode(repeat);
       }
     },
     onSuccess: () => {

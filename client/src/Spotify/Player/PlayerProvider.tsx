@@ -7,6 +7,7 @@ import {
   useSkipTrack,
   useSkipToPrevTrack,
   useTransitionTrackWhenDoneEffect,
+  useSetRepeat,
 } from "./PlayerHooks";
 import { Episode, PlaybackState, Track } from "@spotify/web-api-ts-sdk";
 
@@ -53,6 +54,16 @@ export const SpotifyPlayerProvider: React.FC<React.PropsWithChildren> = ({
       setShuffle({ shouldShuffle: false });
     }
   }, [playbackStateQuery.data?.shuffle_state, setShuffle]);
+
+  const { mutate: setRepeat } = useSetRepeat();
+  React.useEffect(() => {
+    if (playbackStateQuery.data?.repeat_state !== 'off') {
+      setRepeat({ repeat: 'off' });
+    }
+  }, [playbackStateQuery.data?.repeat_state,setRepeat]);
+
+
+
   useTransitionTrackWhenDoneEffect();
   return (
     <PlayerContext.Provider
