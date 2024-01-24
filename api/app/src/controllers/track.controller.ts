@@ -18,44 +18,77 @@ const normalizeError = (e: unknown) => {
   console.error(e);
   return { message: errorMsg };
 };
-export const createTrack = async (
-  req: Request<{}, { track: TrackModel }, createTrackBody>,
-  res: Response<{ track: TrackModel } | { error: any }>
+const createTrackHelper = async (
+  trackData: createTrackBody
+): Promise<{
+  error?: { message: string; status: number };
+  data?: TrackModel;
+}> => {
+  const oldTrack = await TrackModel.findOne({
+    where: { spotify_id: trackData.spotify_id },
+  });
+  if (oldTrack && !trackData.parent_id) {
+    return {
+      error: {
+        message: "no operation, track already in db and no parent_id found",
+        status: 304,
+      },
+    };
+  }
+  const newTrack = !oldTrack && (await createTrackModel(trackData));
+  const track = oldTrack || newTrack;
+  if (!track) {
+    return { error: { message: "no track created", status: 500 } };
+  }
+  if (trackData.parent_id === track.id) {
+    return { error: { message: "cannot lookup to self", status: 300 } };
+  }
+  if (trackData.parent_id) {
+    await TrackJunctionModel.create({
+      parent_id: trackData.parent_id,
+      child_id: track.id,
+    });
+    track.reload();
+  }
+  return { data: track };
+};
+
+export const createTracks = async (
+  req: Request<{}, { tracks: TrackModel[] }, { tracks: createTrackBody[] }>,
+  res: Response<{ tracks: TrackModel[] } | { error: any }>
 ) => {
   try {
-    const oldTrack = await TrackModel.findOne({
-      where: { spotify_id: req.body.spotify_id },
-    });
-    if (oldTrack && !req.body.parent_id) {
-      return res.status(304).json({
-        error: new Error(
-          "no operation, track already in db and no parent_id found"
-        ),
+    const {
+      retData,
+      errors,
+    }: {
+      retData: TrackModel[];
+      errors: { message: string; status: number }[];
+    } = { retData: [], errors: [] };
+    for (let i = 0; i < req.body.tracks.length; i++) {
+      const track = req.body.tracks[i];
+      const prevTrack = i > 0 ? req.body.tracks[i - 1] : undefined;
+      const prevTrackData = prevTrack && await TrackModel.findOne({
+        where: { spotify_id: prevTrack?.spotify_id },
       });
-    }
-    const newTrack =
-      !oldTrack &&
-      (await createTrackModel({
-        spotify_id: req.body.spotify_id,
-        name: req.body.name,
-        parent_id: req.body.parent_id,
-      }));
-    const track = oldTrack || newTrack;
-    if (!track) {
-      return res.status(500).json({ error: "no track created" });
-    }
-    if (req.body.parent_id) {
-      if (req.body.parent_id === track.id) {
-        throw new Error("parent_id cannot equal child_id");
+
+      const { data, error } = await createTrackHelper({
+        name: track.name,
+        spotify_id: track.spotify_id,
+        parent_id: track.parent_id || prevTrackData?.id,
+      });
+      if (data) {
+        retData.push(data);
       }
-      await TrackJunctionModel.create({
-        parent_id: req.body.parent_id,
-        child_id: track.id,
-      });
+      if (error) {
+        errors.push(error);
+      }
     }
 
-    track.reload();
-    return res.status(201).json({ track });
+    if (retData?.length) {
+      return res.status(201).json({ tracks: retData });
+    }
+    return res.status(500).json({ error: errors });
   } catch (e) {
     return res.status(500).json({ error: normalizeError(e).message });
   }
@@ -120,10 +153,10 @@ export const getTrackChildrenById = async (
 ) => {
   try {
     const tracks = await TrackJunctionModel.findAll({
-      where:  {parent_id: req.params.id},
-      include: 'child',
+      where: { parent_id: req.params.id },
+      include: "child",
     });
-    return res.status(200).json({ tracks: tracks.map(track => track.child)});
+    return res.status(200).json({ tracks: tracks.map((track) => track.child) });
   } catch (e) {
     return res.status(500).json({ error: normalizeError(e).message });
   }
@@ -134,10 +167,12 @@ export const getTrackParentsById = async (
 ) => {
   try {
     const tracks = await TrackJunctionModel.findAll({
-      where:  {child_id: req.params.id},
-      include: 'parent',
+      where: { child_id: req.params.id },
+      include: "parent",
     });
-    return res.status(200).json({ tracks: tracks.map(track => track.parent)});
+    return res
+      .status(200)
+      .json({ tracks: tracks.map((track) => track.parent) });
   } catch (e) {
     return res.status(500).json({ error: normalizeError(e).message });
   }

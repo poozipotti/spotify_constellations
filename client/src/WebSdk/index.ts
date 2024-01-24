@@ -61,7 +61,23 @@ export async function createTrack(
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(track), // body data type must match "Content-Type" header
+    body: JSON.stringify({tracks:[track]}), // body data type must match "Content-Type" header
+  });
+  if (!response.ok) {
+    throw new WebApiError("could not create Track", response.status);
+  }
+  return response.json();
+}
+
+export async function createTracks(
+  tracks: (TCreateTrackData & { parent_id?: number })[],
+): Promise<{ track: TrackModel }> {
+  const response = await fetch(`${BASE_API_HOSTNAME}/tracks`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({tracks}), // body data type must match "Content-Type" header
   });
   if (!response.ok) {
     throw new WebApiError("could not create Track", response.status);

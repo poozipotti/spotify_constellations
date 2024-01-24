@@ -8,7 +8,7 @@ const routes = (app: express.Application) => {
   router.get("/:id", trackController.getTrackById);
   router.get("/spotify/:spotifyId", trackController.getTracksBySpotifyId);
   router.get("", trackController.getAllTracks);
-  router.post("", trackController.createTrack);
+  router.post("", trackController.createTracks);
   app.use(path, router);
 };
 export default routes;
