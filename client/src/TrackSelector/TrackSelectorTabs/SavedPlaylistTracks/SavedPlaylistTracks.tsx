@@ -7,8 +7,11 @@ import {
 import { SimplifiedPlaylist, Track } from "@spotify/web-api-ts-sdk";
 import { ItemSelectionList } from "@core/ItemSelectionList/ItemSelectionList";
 import { useSpotifyConstellationGraph } from "@app/SpotifyConstellationGraph/hooks";
+import { useCreateTracks } from "@app/SpotifyConstellationGraph/apiHooks";
 
-export const SavedPlaylistTracks: React.FC<{ onSuccess?: () => void }> = ({onSuccess}) => {
+export const SavedPlaylistTracks: React.FC<{ onSuccess?: () => void }> = ({
+  onSuccess,
+}) => {
   const [selectedPlaylist, setSelectedPlaylist] = useState<
     undefined | Omit<SimplifiedPlaylist, "tracks">
   >();
@@ -21,7 +24,7 @@ export const SavedPlaylistTracks: React.FC<{ onSuccess?: () => void }> = ({onSuc
       >
         close
       </Button>
-      <PlaylistTrackList playlist={selectedPlaylist} onSuccess={onSuccess}/>
+      <PlaylistTrackList playlist={selectedPlaylist} onSuccess={onSuccess} />
     </>
   ) : (
     <PlaylistList
@@ -35,38 +38,61 @@ export const PlaylistTrackList: React.FC<{
   onSuccess?: () => void;
 }> = ({ playlist, onSuccess }) => {
   const playlistData = useGetPlaylistItems(playlist.id);
-  const playlists: Track[] | undefined = playlistData.data?.pages
+  const tracks: Track[] | undefined = playlistData.data?.pages
     .flatMap((data) => data.items)
     .filter((item) => "track" in item.track)
     .map((playlistedTrack) => playlistedTrack.track as Track);
+  const createTracks = useCreateTracks();
   const loading = playlistData.isLoading;
   const constellationGraph = useSpotifyConstellationGraph();
 
   return (
-    <ItemSelectionList
-      trackData={{
-        tracks: playlists,
-        onClick: (track) => {
-          constellationGraph?.addChild.mutate(
-            {
-              name: track.name,
-              spotify_id: track.id,
-            },
-            {
-              onSuccess: () => {
-                onSuccess && onSuccess();
+    <>
+      {tracks && (
+        <Button
+          isLoading={createTracks.isPending}
+          onClick={() => {
+            createTracks.mutate(
+              tracks.map((track) => ({
+                name: track.name,
+                spotify_id: track.id,
+              })),
+              {
+                onSuccess: () => {
+                  onSuccess && onSuccess();
+                },
+              }
+            );
+          }}
+        >
+          Import
+        </Button>
+      )}
+      <ItemSelectionList
+        trackData={{
+          tracks: tracks,
+          onClick: (track) => {
+            constellationGraph?.addChild.mutate(
+              {
+                name: track.name,
+                spotify_id: track.id,
               },
-            }
-          );
-        },
-      }}
-      isLoading={loading}
-      isFetching={playlistData.isFetching}
-      fetchNextPage={
-        playlistData.hasNextPage ? playlistData.fetchNextPage : undefined
-      }
-      title={playlist.name}
-    />
+              {
+                onSuccess: () => {
+                  onSuccess && onSuccess();
+                },
+              }
+            );
+          },
+        }}
+        isLoading={loading}
+        isFetching={playlistData.isFetching}
+        fetchNextPage={
+          playlistData.hasNextPage ? playlistData.fetchNextPage : undefined
+        }
+        title={playlist.name}
+      />
+    </>
   );
 };
 export const PlaylistList: React.FC<{
