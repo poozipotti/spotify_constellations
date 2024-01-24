@@ -2,20 +2,20 @@ import { SpotifyPlayerProvider } from "@app/Spotify/Player/PlayerProvider";
 import React from "react";
 import TrackModel from "@api/models/track.model";
 import {
-  useCreateTrack,
   useGetTrackChildren,
   useGetTrackBySpotifyId,
   useGetTrackParents,
+  useCreateTracks,
 } from "./apiHooks";
 import { TCreateTrackData } from "@app/WebSdk";
 import { useSpotifyPlayer } from "@app/Spotify/Player";
 import { useSyncHistoryWebNextTrackEffect } from "@app/SpotifyConstellationGraph/constellationGraphHistoryHooks";
 
 interface constellationGraph {
-  addChild: {
+  addChildren: {
     isPending: boolean;
     mutate: (
-      track: TCreateTrackData,
+      tracks: TCreateTrackData[] | TCreateTrackData,
       options?: { onSuccess: () => void }
     ) => void;
   };
@@ -30,11 +30,13 @@ interface constellationGraph {
   };
 }
 
-export const ConstellationGraphContext = React.createContext<constellationGraph | undefined>(undefined);
+export const ConstellationGraphContext = React.createContext<
+  constellationGraph | undefined
+>(undefined);
 
-const SpotifyConstellationGraphProviderInternal: React.FC<React.PropsWithChildren> = ({
-  children,
-}) => {
+const SpotifyConstellationGraphProviderInternal: React.FC<
+  React.PropsWithChildren
+> = ({ children }) => {
   const player = useSpotifyPlayer();
   const currentTrackQuery = useGetTrackBySpotifyId(
     player.state.currentTrack?.id
@@ -46,7 +48,7 @@ const SpotifyConstellationGraphProviderInternal: React.FC<React.PropsWithChildre
   const selectedChildTrack = selectedChildTrackQuery?.data?.track;
   const { data: childrenTracks } = useGetTrackChildren(currentTrack?.id);
   const { data: parentTracks } = useGetTrackParents(currentTrack?.id);
-  const { mutate: addChild, ...createTrackMutate } = useCreateTrack();
+  const { mutate: addChildren, ...createTrackMutate } = useCreateTracks();
   const [selectedTrackId, setSelectedTrackId] = React.useState<
     string | undefined
   >(undefined);
@@ -77,23 +79,32 @@ const SpotifyConstellationGraphProviderInternal: React.FC<React.PropsWithChildre
       isLoading,
     ]
   );
-  useSyncHistoryWebNextTrackEffect(
-    selectedTrack,
-    currentTrack
-  );
+  useSyncHistoryWebNextTrackEffect(selectedTrack, currentTrack);
   return (
     <ConstellationGraphContext.Provider
       value={{
         state,
         setSelectedTrack,
-        addChild: {
+        addChildren: {
           ...createTrackMutate,
           mutate: (
-            track: TCreateTrackData,
+            tracks: TCreateTrackData[] | TCreateTrackData,
             options?: { onSuccess: () => void }
           ) => {
             if (!isLoading) {
-              addChild({ ...track, parent_id: currentTrack?.id }, options);
+              if ("length" in tracks) {
+                return addChildren(
+                  [
+                    { parent_id: currentTrack?.id, ...tracks[0] },
+                    ...tracks.slice(1),
+                  ],
+                  options
+                );
+              }
+              return addChildren(
+                [{ ...tracks, parent_id: currentTrack?.id }],
+                options
+              );
             }
           },
         },
@@ -103,12 +114,14 @@ const SpotifyConstellationGraphProviderInternal: React.FC<React.PropsWithChildre
     </ConstellationGraphContext.Provider>
   );
 };
-export const SpotifyConstellationGraphProvider: React.FC<React.PropsWithChildren> = ({
-  children,
-}) => {
+export const SpotifyConstellationGraphProvider: React.FC<
+  React.PropsWithChildren
+> = ({ children }) => {
   return (
     <SpotifyPlayerProvider>
-      <SpotifyConstellationGraphProviderInternal>{children}</SpotifyConstellationGraphProviderInternal>
+      <SpotifyConstellationGraphProviderInternal>
+        {children}
+      </SpotifyConstellationGraphProviderInternal>
     </SpotifyPlayerProvider>
   );
 };

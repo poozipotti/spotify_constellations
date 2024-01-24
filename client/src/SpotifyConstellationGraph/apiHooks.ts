@@ -71,19 +71,6 @@ export function useGetTrackParents(id?: number) {
   });
   return queryData;
 }
-export function useCreateTrack() {
-  const queryClient = useQueryClient();
-  const queryData = useMutation({
-    mutationFn: (track: webSdk.TCreateTrackData & { parent_id?: number }) =>
-      webSdk.createTrack(track),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["web-tracks"] });
-      queryClient.invalidateQueries({ queryKey: ["web-track-children"] });
-      queryClient.invalidateQueries({ queryKey: ["web-track-parents"] });
-    },
-  });
-  return queryData;
-}
 export function useCreateTracks() {
   const queryClient = useQueryClient();
   const queryData = useMutation({

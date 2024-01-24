@@ -54,7 +54,7 @@ export const CurrentTrackNode: React.FC<PropsWithChildren> = () => {
             !isCurrentSongInLastThreeTracks) && (
             <Button
               isLoading={
-                constellationGraph?.addChild.isPending ||
+                constellationGraph?.addChildren.isPending ||
                 !currentTrack ||
                 addToHistory.isPending
               }
@@ -64,10 +64,10 @@ export const CurrentTrackNode: React.FC<PropsWithChildren> = () => {
                 }
                 if (
                   currentTrack &&
-                  !constellationGraph?.addChild.isPending &&
+                  !constellationGraph?.addChildren.isPending &&
                   !isCurrentSongInConstellationGraph
                 ) {
-                  constellationGraph?.addChild.mutate({
+                  constellationGraph?.addChildren.mutate({
                     name: currentTrack.name,
                     spotify_id: currentTrack.id,
                   });

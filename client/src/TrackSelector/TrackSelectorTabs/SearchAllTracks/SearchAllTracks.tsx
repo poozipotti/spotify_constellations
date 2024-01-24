@@ -32,7 +32,7 @@ export const SearchAllTracks: React.FC<{ onSuccess?: () => void }> = ({
         trackData={{
           tracks: tracks,
           onClick: (track) => {
-            constellationGraph?.addChild.mutate(
+            constellationGraph?.addChildren.mutate(
               {
                 name: track.name,
                 spotify_id: track.id,

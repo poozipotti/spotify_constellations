@@ -24,7 +24,7 @@ export const TrackArtists: React.FC<Partial<Pick<Props, "track">>> = ({
   return (
     <div className="flex justify-center flex-wrap gap-4">
       {track?.artists.map((artist) => (
-        <p className="text-center" key={artist.uri}>
+        <p className="text-center" key={artist.name}>
           {artist.name}
         </p>
       ))}
