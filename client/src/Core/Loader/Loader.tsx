@@ -2,7 +2,7 @@ import React, { ReactNode } from "react";
 
 export const Loader: React.FC<{
   isLoading: boolean;
-  children: ReactNode;
+  children?: ReactNode;
   className?: string;
 }> = ({ children, isLoading, className }) => {
   if (isLoading) {

@@ -5,19 +5,28 @@ type props = {
   hideBorder?: boolean;
   isLoading?: boolean;
   hidden?: boolean;
+  disabled?: boolean;
 };
 export const Button = forwardRef<HTMLButtonElement, PropsWithChildren<props>>(
-  ({ hidden, children, onClick, hideBorder, isLoading }, ref) => {
+  ({ disabled, hidden, children, onClick, hideBorder, isLoading }, ref) => {
     return (
       <button
         ref={ref}
         onClick={onClick}
-        disabled={isLoading}
+        disabled={isLoading || disabled}
         className={`
-        ${hideBorder ? "" : "border border-primary-light p-2 px-6"}
+        ${
+          hideBorder
+            ? ""
+            : disabled
+            ? "border border-gray-800 p-2 px-6"
+            : "border border-primary-light p-2 px-6"
+        }
+
         ${hidden ? "hidden" : ""}
-        text-primary-light
+        ${disabled ? "text-gray-800" : "text-primary-light"}
         uppercase 
+        ${disabled ? "" : "drop-shadow-lg"}
         
       `}
       >

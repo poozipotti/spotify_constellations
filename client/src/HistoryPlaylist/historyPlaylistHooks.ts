@@ -7,6 +7,7 @@ import {
   useGetPlaylistLastThreeTracks,
 } from "@app/Spotify/playlistHooks";
 import { useGetUser } from "@app/Spotify/userhooks";
+import { useGetTrackBySpotifyId } from "@app/SpotifyConstellationGraph/apiHooks";
 import { useSpotifyConstellationGraph } from "@app/SpotifyConstellationGraph/hooks";
 import { useLocalStorage } from "@app/hooks";
 import { Track } from "@spotify/web-api-ts-sdk";
@@ -53,6 +54,16 @@ export function useHistoryLastThreeTracks() {
   const [playlistId] = useLocalStorage("history-playlist-id");
   const historyPlaylistQuery = useGetPlaylistLastThreeTracks(playlistId);
   return historyPlaylistQuery;
+}
+export function useHistoryLastTrack() {
+  const lastThreeTracks = useHistoryLastThreeTracks();
+  const lastThreeTracksLength = lastThreeTracks?.data?.items?.length || 0;
+  const lastTrack = lastThreeTracksLength
+    ? lastThreeTracks.data?.items[lastThreeTracksLength - 1].track
+    : undefined;
+  const lastTrackFormatted: Track | undefined =
+    lastTrack && "track" in lastTrack ? (lastTrack as Track) : undefined;
+  return { ...lastThreeTracks, data: lastTrackFormatted };
 }
 
 export function useAddTracksToHistoryPlaylist() {
@@ -103,32 +114,29 @@ export function usePlayHistoryPlaylist() {
   );
   return { ...playPlaylistQuery, mutate: playPlaylist };
 }
-export function useGetHistorySyncStatus() {
+export function useGetHistorySyncStatus(track?: Track) {
   const player = useSpotifyPlayer();
-  const constellationGraph = useSpotifyConstellationGraph();
-  const currentTrack = player.state?.currentTrack;
-  const isCurrentSongInConstellationGraph = !!(
-    constellationGraph?.state.currentTrack &&
-    !constellationGraph?.state.isLoading
-  );
   const lastThreeTracks = useHistoryLastThreeTracks();
-  const isCurrentSongInLastThreeTracks = !!lastThreeTracks.data?.items.find(
-    (PlaylistedTrack) =>
-      currentTrack && PlaylistedTrack?.track.id === currentTrack?.id
+  const webTrack = useGetTrackBySpotifyId(track?.id);
+
+  const isTrackInConstellationGraph = !!webTrack;
+  const isTrackInLastThreeTracks = !!lastThreeTracks.data?.items.find(
+    (PlaylistedTrack) => track && PlaylistedTrack?.track.id === track?.id
   );
 
-  const historyPlaylist = useHistoryPlaylist({ canCreate: true });
+  const historyPlaylist = useHistoryPlaylist();
   const isCurrentlyPlayingHistoryPlaylist =
     player.state.context?.uri === historyPlaylist.data?.uri;
+
   const data = useMemo(
     () => ({
-      isCurrentSongInConstellationGraph,
-      isCurrentSongInLastThreeTracks,
+      isTrackInConstellationGraph,
+      isTrackInLastThreeTracks,
       isCurrentlyPlayingHistoryPlaylist,
     }),
     [
-      isCurrentSongInConstellationGraph,
-      isCurrentSongInLastThreeTracks,
+      isTrackInConstellationGraph,
+      isTrackInLastThreeTracks,
       isCurrentlyPlayingHistoryPlaylist,
     ]
   );

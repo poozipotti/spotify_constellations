@@ -9,6 +9,7 @@ import {
 } from "@app/HistoryPlaylist/historyPlaylistHooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSpotifyConstellationGraph } from "@app/SpotifyConstellationGraph/hooks";
+import { HistoryPlaylistStatus } from "@app/HistoryPlaylist/HistoryPlaylistStatus.tsx";
 
 export const CurrentTrackNode: React.FC<PropsWithChildren> = () => {
   const {
@@ -46,60 +47,6 @@ export const CurrentTrackNode: React.FC<PropsWithChildren> = () => {
         </div>
         <NextButton />
       </div>
-      {!(
-        isCurrentSongInConstellationGraph && isCurrentlyPlayingHistoryPlaylist
-      ) && (
-        <div className="flex flex-col items-center gap-4 p-t-4">
-          {(!isCurrentSongInConstellationGraph ||
-            !isCurrentSongInLastThreeTracks) && (
-            <Button
-              isLoading={
-                constellationGraph?.addChildren.isPending ||
-                !currentTrack ||
-                addToHistory.isPending
-              }
-              onClick={() => {
-                if (currentTrack && !isCurrentSongInLastThreeTracks) {
-                  addToHistory.mutate(currentTrack);
-                }
-                if (
-                  currentTrack &&
-                  !constellationGraph?.addChildren.isPending &&
-                  !isCurrentSongInConstellationGraph
-                ) {
-                  constellationGraph?.addChildren.mutate({
-                    name: currentTrack.name,
-                    spotify_id: currentTrack.id,
-                  });
-                }
-              }}
-            >
-              Add Track To Spotify Constellation
-            </Button>
-          )}
-          {!isCurrentlyPlayingHistoryPlaylist &&
-            isCurrentSongInConstellationGraph &&
-            isCurrentSongInLastThreeTracks && (
-              <Button
-                isLoading={player.isLoading || playHistory.isPending}
-                onClick={() => {
-                  playHistory.mutate(currentTrack, {
-                    onSuccess: () => {
-                      queryClient.invalidateQueries({
-                        queryKey: ["user-queue"],
-                      });
-                      return queryClient.invalidateQueries({
-                        queryKey: ["playbackState"],
-                      });
-                    },
-                  });
-                }}
-              >
-                Enter Spotify Constellation
-              </Button>
-            )}
-        </div>
-      )}
     </div>
   );
 };
