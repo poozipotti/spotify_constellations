@@ -4,6 +4,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { SpotifyProvider } from "@app/Spotify/SpotifyProvider";
 import { Button } from "./Core/Button";
 import { SpotifyConstellationGraph } from "./SpotifyConstellationGraph";
+import {HistoryPlaylistStatus} from "@app/HistoryPlaylist/HistoryPlaylistStatus.tsx";
 import {TrackSelector} from "@app/TrackSelector";
 
 const queryClient = new QueryClient();
@@ -25,7 +26,8 @@ const App: React.FC = () => {
           />
         ) : (
           <SpotifyProvider>
-            <div>
+            <div className="flex flex-col gap-8">
+              <HistoryPlaylistStatus />
               <SpotifyConstellationGraph />
             </div>
             <div className="flex flex-col justify-end self-end max-w-screen-lg mx-auto">

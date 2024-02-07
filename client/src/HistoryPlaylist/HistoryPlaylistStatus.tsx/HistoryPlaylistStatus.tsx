@@ -12,7 +12,6 @@ import { Button } from "@core/Button";
 import { useSpotifyConstellationGraph } from "@app/SpotifyConstellationGraph/hooks";
 import { useSpotifyPlayer } from "@app/Spotify/Player";
 import { useQueryClient } from "@tanstack/react-query";
-import { useDebounce } from "use-debounce";
 import { useEditPlaylist } from "@app/Spotify/playlistHooks";
 
 export const HistoryPlaylistStatus: React.FC<PropsWithChildren> = () => {
@@ -24,58 +23,74 @@ export const HistoryPlaylistStatus: React.FC<PropsWithChildren> = () => {
   const [historyPlaylistName, setHistoryPlaylistName] = useState<
     string | undefined
   >(undefined);
-  const [debouncedHistoryPlaylistName] = useDebounce(historyPlaylistName, 300);
   const { mutate: mutateChangeHistoryPlaylistName } = useEditPlaylist();
   useEffect(() => {
-    if (!historyPlaylistName && name) {
+    if (!editingName && historyPlaylistName !== name) {
       setHistoryPlaylistName(name);
     }
-  }, [historyPlaylistName, name]);
-
-  useEffect(() => {
-    if (
-      debouncedHistoryPlaylistName &&
-      debouncedHistoryPlaylistName !== name &&
-      historyPlaylist.data &&
-      !historyPlaylist.isLoading
-    ) {
-      mutateChangeHistoryPlaylistName({
-        playlistId: historyPlaylist.data?.id,
-        details: { name: `[constellations] ${debouncedHistoryPlaylistName}` },
-      });
+  }, [historyPlaylistName, name, editingName]);
+  const saveNameChange = () => {
+    if (historyPlaylist.data?.id) {
+      mutateChangeHistoryPlaylistName(
+        {
+          playlistId: historyPlaylist.data?.id,
+          details: {
+            name: `[constellations] ${historyPlaylistName}`,
+          },
+        },
+        {
+          onSuccess: () => {
+            setEditingName(false);
+          },
+        }
+      );
     }
-  }, [
-    debouncedHistoryPlaylistName,
-    historyPlaylist.data,
-    historyPlaylist.isLoading,
-    name,
-  ]);
+  };
 
   return (
     <div>
-      <p>
-        current Constellation playlist{" "}
-        {isCurrentlyPlayingHistoryPlaylist ? "(playing)" : "(not-playing)"}:
-      </p>
       <Loader isLoading={historyPlaylist.isLoading}>
-        <div className="flex gap-2 justify-stretch">
+        <div className="flex gap-2 justify-around items-center flex-wrap ">
           {editingName ? (
-            <Input
-              secondary={!isCurrentlyPlayingHistoryPlaylist}
-              value={historyPlaylistName}
-              stretch={isCurrentlyPlayingHistoryPlaylist}
-              onChange={(e) => {
-                setHistoryPlaylistName(e.target.value);
-              }}
-            />
+            <>
+              <div className="flex gap-1">
+                <Input
+                  secondary={!isCurrentlyPlayingHistoryPlaylist}
+                  value={historyPlaylistName}
+                  onChange={(e) => {
+                    setHistoryPlaylistName(e.target.value);
+                  }}
+                />
+                <Button
+                  onClick={() => {
+                    saveNameChange();
+                  }}
+                >
+                  save
+                </Button>
+                <Button
+                  onClick={() => {
+                    alert("not implemented!");
+                    setEditingName(false);
+                  }}
+                >
+                  save as new
+                </Button>
+              </div>
+            </>
           ) : (
-            <Button
-              onClick={() => {
-                setEditingName(true);
-              }}
-            >
-              {historyPlaylist.data?.name}
-            </Button>
+            <div className="flex gap-1 items-center">
+              <p className="text-bold text-primary-light text-lg">
+                {historyPlaylist.data?.name}
+              </p>
+              <Button
+                onClick={() => {
+                  setEditingName(true);
+                }}
+              >
+                edit
+              </Button>
+            </div>
           )}
           {isCurrentlyPlayingHistoryPlaylist ? undefined : (
             <>

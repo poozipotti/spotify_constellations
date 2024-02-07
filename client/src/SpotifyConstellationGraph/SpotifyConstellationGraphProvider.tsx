@@ -91,6 +91,9 @@ const SpotifyConstellationGraphProviderInternal: React.FC<
             tracks: TCreateTrackData[] | TCreateTrackData,
             options?: { onSuccess: () => void }
           ) => {
+            if(!currentTrack){
+              throw new Error('no track playing cant add')
+            }
             if (!isLoading) {
               if ("length" in tracks) {
                 return addChildren(

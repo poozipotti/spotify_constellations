@@ -4,7 +4,6 @@ import { TrackNode } from "@app/SpotifyConstellationGraph/SpotifyConstellationGr
 import { useSpotifyConstellationGraph } from "../hooks";
 import { useSpotifyPlayer } from "@app/Spotify/Player";
 import { useHistoryPlaylist } from "@app/HistoryPlaylist/historyPlaylistHooks";
-import {HistoryPlaylistStatus} from "@app/HistoryPlaylist/HistoryPlaylistStatus.tsx";
 
 export const SpotifyConstellationGraph: React.FC<PropsWithChildren> = () => {
   const constellationGraph = useSpotifyConstellationGraph();
@@ -25,7 +24,6 @@ export const SpotifyConstellationGraph: React.FC<PropsWithChildren> = () => {
   return (
     <div className="flex flex-col gap-12 items-center">
       <CurrentTrackNode />
-      <HistoryPlaylistStatus />
       {playingHistoryPlaylist && (
         <div className="w-screen overflow-auto flex justify-center">
           <div className="flex justify-center gap-6 px-6 box-content w-max">

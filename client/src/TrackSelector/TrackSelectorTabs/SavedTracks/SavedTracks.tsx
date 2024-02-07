@@ -3,6 +3,7 @@ import { useSpotifyConstellationGraph } from "@app/SpotifyConstellationGraph/hoo
 import { useOnScreen } from "@app/hooks";
 import { useGetSpotifySavedTracks } from "@app/Spotify/trackHooks";
 import { ItemSelectionList } from "@core/ItemSelectionList/ItemSelectionList";
+import {useSpotifyPlayer} from "@app/Spotify/Player";
 
 export const SavedTracks: React.FC<{ onSuccess?: () => void }> = ({
   onSuccess,
@@ -15,6 +16,7 @@ export const SavedTracks: React.FC<{ onSuccess?: () => void }> = ({
   const constellationGraph = useSpotifyConstellationGraph();
   const loadingButtonRef = React.createRef<HTMLButtonElement>();
   const isLoadingButtonOnScreen = useOnScreen(loadingButtonRef);
+  const player = useSpotifyPlayer();
   useEffect(() => {
     if (isLoadingButtonOnScreen) {
       trackData?.fetchNextPage();
