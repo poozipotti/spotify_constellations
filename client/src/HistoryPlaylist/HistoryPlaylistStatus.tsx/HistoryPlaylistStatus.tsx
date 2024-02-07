@@ -136,14 +136,14 @@ const AddNewSong: React.FC = () => {
   );
 };
 const ResumeHistoryFromEnd: React.FC = () => {
-  const { data: lastTrackData, isLoading: lastTrackLoading } =
-    useHistoryLastTrack();
+  const player = useSpotifyPlayer();
+  const currentTrack = player.state.currentTrack;
   const {
     isTrackInConstellationGraph,
     isTrackInLastThreeTracks,
     isCurrentlyPlayingHistoryPlaylist,
     isLoading: syncIsLoading,
-  } = useGetHistorySyncStatus(lastTrackData);
+  } = useGetHistorySyncStatus(currentTrack);
 
   const canResume =
     isTrackInLastThreeTracks &&
@@ -156,10 +156,10 @@ const ResumeHistoryFromEnd: React.FC = () => {
   return (
     <Button
       disabled={!canResume}
-      isLoading={syncIsLoading || lastTrackLoading || playHistory.isPending}
+      isLoading={syncIsLoading || player.isLoading || playHistory.isPending}
       onClick={() => {
         if (canResume) {
-          playHistory.mutate(lastTrackData, {
+          playHistory.mutate(currentTrack, {
             onSuccess: () => {
               queryClient.invalidateQueries({
                 queryKey: ["user-queue"],
