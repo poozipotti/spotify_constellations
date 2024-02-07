@@ -9,6 +9,8 @@ export const Input: React.FC<
     value?: string;
     defaultValue?: string;
     secondary?: boolean;
+    hideBorder?: boolean;
+    hideSpacing?: boolean;
   }>
 > = ({
   defaultValue,
@@ -19,16 +21,20 @@ export const Input: React.FC<
   placeholder,
   stretch,
   secondary,
+  hideBorder,
+  hideSpacing,
 }) => {
   return (
     <input
       defaultValue={defaultValue}
       className={`
-        border ${secondary ? "border-foreground" : " border-primary-light"}
+        cursor-pointer
+        ${hideBorder ? "" : "border"} 
+        ${secondary ? "border-foreground" : " border-primary-light"}
         bg-transparent
         ${secondary ? "text-foreground" : " text-primary-light"}
         placeholder:text-gray-300
-        p-2
+        ${hideSpacing ? "" : "p-2"}
         z-10
         ${secondary ? "" : "drop-shadow-md"}
         ${stretch ? "w-full" : ""}
