@@ -12,20 +12,44 @@ import { Button } from "@core/Button";
 import { useSpotifyConstellationGraph } from "@app/SpotifyConstellationGraph/hooks";
 import { useSpotifyPlayer } from "@app/Spotify/Player";
 import { useQueryClient } from "@tanstack/react-query";
+import { useDebounce } from "use-debounce";
+import { useEditPlaylist } from "@app/Spotify/playlistHooks";
 
 export const HistoryPlaylistStatus: React.FC<PropsWithChildren> = () => {
   const { isCurrentlyPlayingHistoryPlaylist } = useGetHistorySyncStatus();
   const historyPlaylist = useHistoryPlaylist();
-  const name = historyPlaylist?.data?.name.split("]")[1];
+  const name =
+    historyPlaylist?.data?.name.split("]")[1] ?? historyPlaylist?.data?.name;
   const [editingName, setEditingName] = useState(false);
   const [historyPlaylistName, setHistoryPlaylistName] = useState<
     string | undefined
   >(undefined);
+  const [debouncedHistoryPlaylistName] = useDebounce(historyPlaylistName, 300);
+  const { mutate: mutateChangeHistoryPlaylistName } = useEditPlaylist();
   useEffect(() => {
     if (!historyPlaylistName && name) {
       setHistoryPlaylistName(name);
     }
-  }, [name, historyPlaylistName]);
+  }, [historyPlaylistName, name]);
+
+  useEffect(() => {
+    if (
+      debouncedHistoryPlaylistName &&
+      debouncedHistoryPlaylistName !== name &&
+      historyPlaylist.data &&
+      !historyPlaylist.isLoading
+    ) {
+      mutateChangeHistoryPlaylistName({
+        playlistId: historyPlaylist.data?.id,
+        details: { name: `[constellations] ${debouncedHistoryPlaylistName}` },
+      });
+    }
+  }, [
+    debouncedHistoryPlaylistName,
+    historyPlaylist.data,
+    historyPlaylist.isLoading,
+    name,
+  ]);
 
   return (
     <div>
@@ -33,12 +57,12 @@ export const HistoryPlaylistStatus: React.FC<PropsWithChildren> = () => {
         current Constellation playlist{" "}
         {isCurrentlyPlayingHistoryPlaylist ? "(playing)" : "(not-playing)"}:
       </p>
-      <Loader isLoading={!name}>
+      <Loader isLoading={historyPlaylist.isLoading}>
         <div className="flex gap-2 justify-stretch">
           {editingName ? (
             <Input
               secondary={!isCurrentlyPlayingHistoryPlaylist}
-              defaultValue={name}
+              value={historyPlaylistName}
               stretch={isCurrentlyPlayingHistoryPlaylist}
               onChange={(e) => {
                 setHistoryPlaylistName(e.target.value);
@@ -50,7 +74,7 @@ export const HistoryPlaylistStatus: React.FC<PropsWithChildren> = () => {
                 setEditingName(true);
               }}
             >
-              {historyPlaylistName}
+              {historyPlaylist.data?.name}
             </Button>
           )}
           {isCurrentlyPlayingHistoryPlaylist ? undefined : (

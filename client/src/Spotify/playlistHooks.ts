@@ -73,6 +73,27 @@ export function useCreatePlaylist(name: string) {
   });
   return query;
 }
+export function useEditPlaylist() {
+  const sdk = useSpotify();
+  const queryClient = useQueryClient();
+  const query = useMutation({
+    mutationFn: async ({
+      playlistId,
+      details,
+    }: {
+      playlistId: string;
+      details: { name: string };
+    }) => {
+      return sdk.playlists.changePlaylistDetails(playlistId, details);
+    },
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["playlist", variables.playlistId],
+      });
+    },
+  });
+  return query;
+}
 export function useAddTracksToPlaylist() {
   const sdk = useSpotify();
   const queryClient = useQueryClient();
