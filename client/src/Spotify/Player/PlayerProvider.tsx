@@ -44,9 +44,7 @@ export const SpotifyPlayerProvider: React.FC<React.PropsWithChildren> = ({
   const skipQuery = useSkipTrack();
   const skipToPrevTrack = useSkipToPrevTrack();
 
-  const isLoading = !![playbackStateQuery].find((loading) => {
-    loading;
-  });
+  const isLoading = playbackStateQuery.isLoading;
 
   const { mutate: setShuffle } = useSetShuffle();
   React.useEffect(() => {

@@ -24,6 +24,7 @@ const useSearchItems = (type: ItemTypes) => {
 
   const searchQuery = useInfiniteQuery({
     queryKey: ["search", type, searchTerm],
+    staleTime: Infinity,
     queryFn: ({ pageParam }) => {
       return spotify.search(
         searchTerm,

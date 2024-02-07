@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 export function useGetAllTracks() {
   const queryData = useQuery({
     queryKey: ["web-tracks"],
+    staleTime:Infinity,
     ...webSdk.getAllTracks,
   });
   return queryData;
@@ -11,7 +12,7 @@ export function useGetAllTracks() {
 export function useGetTrack(id?: number) {
   const queryData = useQuery({
     queryKey: ["web-tracks", id],
-
+    staleTime: Infinity,
     queryFn: () => {
       if (id) {
         return webSdk.getTrack(id);
@@ -25,7 +26,7 @@ export function useGetTrack(id?: number) {
 export function useGetTrackBySpotifyId(spotifyId?: string) {
   const queryData = useQuery({
     queryKey: ["web-tracks", spotifyId],
-
+    staleTime: Infinity,
     queryFn: async () => {
       if (spotifyId) {
         return webSdk.getTrackBySpotifyId(spotifyId);
@@ -46,7 +47,7 @@ export function useGetTrackBySpotifyId(spotifyId?: string) {
 export function useGetTrackChildren(id?: number) {
   const queryData = useQuery({
     queryKey: ["web-track-children", id],
-
+    staleTime: Infinity,
     queryFn: () => {
       if (id) {
         return webSdk.getTrackChildren(id);
@@ -60,7 +61,7 @@ export function useGetTrackChildren(id?: number) {
 export function useGetTrackParents(id?: number) {
   const queryData = useQuery({
     queryKey: ["web-track-parents", id],
-
+    staleTime: Infinity,
     queryFn: () => {
       if (id) {
         return webSdk.getTrackParents(id);

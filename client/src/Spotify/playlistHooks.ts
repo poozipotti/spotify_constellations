@@ -45,7 +45,6 @@ export function useGetPlaylist(
   const sdk = useSpotify();
   const query = useQuery({
     queryKey: ["playlist", playlistId],
-
     queryFn: () => {
       if (!playlistId) {
         throw new Error("no playlistId passed cannot get playlist");

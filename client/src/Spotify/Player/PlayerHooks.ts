@@ -7,7 +7,6 @@ export function useGetSpotifyPlaybackState() {
   const sdk = useSpotify();
   const queryData = useQuery({
     queryKey: ["playbackState"],
-
     queryFn: () => {
       return sdk.player.getPlaybackState();
     },
@@ -74,7 +73,7 @@ export function useGetNextTrack() {
   const sdk = useSpotify();
   const queryData = useQuery({
     queryKey: ["user-queue"],
-
+    staleTime: Infinity,
     queryFn: () => {
       return sdk.player.getUsersQueue();
     },

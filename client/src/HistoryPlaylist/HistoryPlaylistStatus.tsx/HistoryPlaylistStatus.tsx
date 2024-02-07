@@ -95,6 +95,7 @@ const AddNewSong: React.FC = () => {
     isTrackInConstellationGraph,
     isCurrentlyPlayingHistoryPlaylist,
     isTrackInLastThreeTracks,
+    isLoading: syncIsLoading,
   } = useGetHistorySyncStatus(currentTrack);
 
   const constellationGraph = useSpotifyConstellationGraph();
@@ -109,6 +110,7 @@ const AddNewSong: React.FC = () => {
     <Button
       disabled={!canAdd}
       isLoading={
+        syncIsLoading ||
         constellationGraph?.addChildren.isPending ||
         !currentTrack ||
         addToHistory.isPending
@@ -138,8 +140,9 @@ const ResumeHistoryFromEnd: React.FC = () => {
     useHistoryLastTrack();
   const {
     isTrackInConstellationGraph,
-    isCurrentlyPlayingHistoryPlaylist,
     isTrackInLastThreeTracks,
+    isCurrentlyPlayingHistoryPlaylist,
+    isLoading: syncIsLoading,
   } = useGetHistorySyncStatus(lastTrackData);
 
   const canResume =
@@ -153,7 +156,7 @@ const ResumeHistoryFromEnd: React.FC = () => {
   return (
     <Button
       disabled={!canResume}
-      isLoading={lastTrackLoading || playHistory.isPending}
+      isLoading={syncIsLoading || lastTrackLoading || playHistory.isPending}
       onClick={() => {
         if (canResume) {
           playHistory.mutate(lastTrackData, {

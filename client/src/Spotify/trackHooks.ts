@@ -5,7 +5,7 @@ export function useGetSpotifyTrack(id?: string) {
   const sdk = useSpotify();
   const queryData = useQuery({
     queryKey: ["spotify_track", id],
-
+    staleTime: Infinity,
     queryFn: () => {
       if (!id) {
         throw new Error(
@@ -23,7 +23,7 @@ export function useGetSpotifyTracks(ids?: string[]) {
   const sdk = useSpotify();
   const queryData = useQuery({
     queryKey: ["spotify_track", ids],
-
+    staleTime: Infinity,
     queryFn: () => {
       if (!ids) {
         throw new Error(

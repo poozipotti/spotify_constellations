@@ -1,5 +1,6 @@
 import { useSpotifyPlayer } from "@app/Spotify/Player";
 import { usePlayPlaylist } from "@app/Spotify/Player/PlayerHooks";
+import { player } from "@app/Spotify/Player/PlayerProvider";
 import {
   useAddTracksToPlaylist,
   useCreatePlaylist,
@@ -133,11 +134,18 @@ export function useGetHistorySyncStatus(track?: Track) {
       isTrackInConstellationGraph,
       isTrackInLastThreeTracks,
       isCurrentlyPlayingHistoryPlaylist,
+      isLoading: track
+        ? lastThreeTracks.isLoading || webTrack.isLoading
+        : player.isLoading,
     }),
     [
       isTrackInConstellationGraph,
       isTrackInLastThreeTracks,
       isCurrentlyPlayingHistoryPlaylist,
+      lastThreeTracks.isLoading,
+      player.isLoading,
+      webTrack.isLoading,
+      track
     ]
   );
   return data;
